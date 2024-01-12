@@ -20,20 +20,20 @@ Fourth, it will eventually link up with a machine learning platform that will au
 
 # Documentation
 
-[Requirements document](https://pennstateoffice365-my.sharepoint.com/:w:/r/personal/msp5393_psu_edu/_layouts/15/Doc.aspx?sourcedoc=%7B17803455-7E94-4A4A-9E36-71CADA04D65F%7D&file=Facial%20Analytics%20Project%20Requirements.docx&action=default&mobileredirect=true)  
+[**Requirements document**](https://pennstateoffice365-my.sharepoint.com/:w:/r/personal/msp5393_psu_edu/_layouts/15/Doc.aspx?sourcedoc=%7B17803455-7E94-4A4A-9E36-71CADA04D65F%7D&file=Facial%20Analytics%20Project%20Requirements.docx&action=default&mobileredirect=true)  
 
-[Database Design](https://drive.google.com/file/d/1EI9w-PoYzTP_i9AJYBGYWvi-uNHV-ZL-/view)  
+[**Database Design**](https://drive.google.com/file/d/1EI9w-PoYzTP_i9AJYBGYWvi-uNHV-ZL-/view)  
 
-[Graphic User Interface](https://pennstateoffice365-my.sharepoint.com/personal/msp5393_psu_edu/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fmsp5393%5Fpsu%5Fedu%2FDocuments%2Ffa&ga=1)  
+[**Graphic User Interface**](https://pennstateoffice365-my.sharepoint.com/personal/msp5393_psu_edu/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fmsp5393%5Fpsu%5Fedu%2FDocuments%2Ffa&ga=1)  
 
 
 # To-do list and other coordination
 
-[Facial Analytics Checklist](https://pennstateoffice365-my.sharepoint.com/:x:/g/personal/msp5393_psu_edu/EZh5t_dYPsNFq0JaZCNACAEB13Uo0YzhOKBRcONIOyd8cw?e=JBWeEK)  
+[**Facial Analytics Checklist**](https://pennstateoffice365-my.sharepoint.com/:x:/g/personal/msp5393_psu_edu/EZh5t_dYPsNFq0JaZCNACAEB13Uo0YzhOKBRcONIOyd8cw?e=JBWeEK)  
 
 
 # Facial Paralysis WebApp/Server Github Repository
 
-["Facial Analytics"](https://github.com/mpeschel10/capstone-facial-paralysis?tab=readme-ov-file#facial-analytics-checklist)  
+[**"Facial Analytics"**](https://github.com/mpeschel10/capstone-facial-paralysis?tab=readme-ov-file#facial-analytics-checklist)  
 
 
