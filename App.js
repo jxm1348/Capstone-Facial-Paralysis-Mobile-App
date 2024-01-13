@@ -3,6 +3,14 @@ import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 
 
+
+const App = () => {
+
+
+
+};
+
+
 const Stack = createNativeStackNavigator();
 
 const MyStack = () => {
@@ -32,6 +40,72 @@ const MyStack = () => {
                 />
               </Stack.Navigator>
         </NavigationContainer>
+    );
+};
+
+const LoginScreen = ({navigation}) => {
+    return (
+        <Button
+            title=""
+            onPress={() =>
+                navigation.navigate('', {name: ''})
+            }
+        />
+    );
+};
+
+const ClinicianHomeScreen = ({navigation}) => {
+    return (
+        <Button
+            title=""
+            onPress={() =>
+                navigation.navigate('', {name: ''})
+            }
+        />
+    );
+};
+
+const PatientHomeScreen = ({navigation}) => {
+    return (
+        <Button
+            title=""
+            onPress={() =>
+                navigation.navigate('', {name: ''})
+            }
+        />
+    );
+};
+
+const PatientUploadScreen = ({navigation}) => {
+    return (
+        <Button
+            title=""
+            onPress={() =>
+                navigation.navigate('', {name: ''})
+            }
+        />
+    );
+};
+
+const PatientMessagesScreen = ({navigation}) => {
+    return (
+        <Button
+            title=""
+            onPress={() =>
+                navigation.navigate('', {name: ''})
+            }
+        />
+    );
+};
+
+const  = ({navigation}) => {
+    return (
+        <Button
+            title=""
+            onPress={() =>
+                navigation.navigate('', {name: ''})
+            }
+        />
     );
 };
 
