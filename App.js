@@ -3,9 +3,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from './LoginScreen';
 import ClinicianHomeScreen from './ClinicianHomeScreen';
+import PatientHomeScreen from './PatientHomeScreen';
 import ClinicianViewScreen from './ClinicianViewScreen';
 import ClinicianViewInfoScreen from './ClinicianViewInfoScreen';
-import PatientHomeScreen from './PatientHomeScreen';
 import PatientMessagesScreen from './PatientMessagesScreen';
 import PatientUploadScreen from './PatientUploadScreen';
 
@@ -18,7 +18,7 @@ const App = () => {
         <Stack.Screen
           name="Login"
           component={LoginScreen}
-          options={{ title: 'Welcome' }}
+          options={{title: 'Welcome'}}
         />
         <Stack.Screen
           name="ClinicianHome"
