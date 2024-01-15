@@ -2,13 +2,13 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
-import LoginScreen from './src/screens/LoginScreen';
-import ClinicianHomeScreen from './src/screens/ClinicianHomeScreen';
-import ClinicianViewScreen from './src/screens/ClinicianViewScreen';
-import ClinicianViewInfoScreen from './src/screens/ClinicianViewInfoScreen';
-import PatientHomeScreen from './src/screens/PatientHomeScreen';
-import PatientMessagesScreen from './src/screens/PatientMessagesScreen';
-import PatientUploadScreen from './src/screens/PatientUploadScreen';
+import LoginScreen from './LoginScreen';
+import ClinicianHomeScreen from './ClinicianHomeScreen';
+import ClinicianViewScreen from './ClinicianViewScreen';
+import ClinicianViewInfoScreen from './ClinicianViewInfoScreen';
+import PatientHomeScreen from './PatientHomeScreen';
+import PatientMessagesScreen from './PatientMessagesScreen';
+import PatientUploadScreen from './PatientUploadScreen';
 
 const App = () => {
     return (
