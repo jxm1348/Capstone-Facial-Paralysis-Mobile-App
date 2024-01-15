@@ -1,51 +1,28 @@
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import LoginScreen from './LoginScreen';
-import ClinicianHomeScreen from './ClinicianHomeScreen';
-import PatientHomeScreen from './PatientHomeScreen';
-import ClinicianViewScreen from './ClinicianViewScreen';
-import ClinicianViewInfoScreen from './ClinicianViewInfoScreen';
-import PatientMessagesScreen from './PatientMessagesScreen';
-import PatientUploadScreen from './PatientUploadScreen';
+import Login from './LoginScreen';
+import ClinicianHome from './ClinicianHomeScreen';
+import PatientHome from './PatientHomeScreen';
+import ClinicianView from './ClinicianViewScreen';
+import ClinicianViewInfo from './ClinicianViewInfoScreen';
+import PatientMessages from './PatientMessagesScreen';
+import PatientUpload from './PatientUploadScreen';
 
 const Stack = createNativeStackNavigator();
 
 const App = () => {
   return (
-    <NavigationContainer>
+    <NavigationContainer initialRouteName='Login'>
       <Stack.Navigator>
-        <Stack.Screen
-          name="Login"
-          component={LoginScreen}
-          options={{title: 'Welcome'}}
-        />
-        <Stack.Screen
-          name="ClinicianHome"
-          component={ClinicianHomeScreen}
-        />
-        <Stack.Screen
-          name="ClinicianView"
-          component={ClinicianViewScreen}
-        />
-        <Stack.Screen
-          name="ClinicianViewInfo"
-          component={ClinicianViewInfoScreen}
-        />
-        <Stack.Screen
-          name="PatientHome"
-          component={PatientHomeScreen}
-        />
-        <Stack.Screen
-          name="PatientUpload"
-          component={PatientUploadScreen}
-        />
-        <Stack.Screen
-          name="PatientMessages"
-          component={PatientMessagesScreen}
-        />
+        <Stack.Screen name="Login" component={Login} options={{title: 'Welcome'}} />
+        <Stack.Screen name="ClinicianHome" component={ClinicianHome} />
+        <Stack.Screen name="ClinicianView" component={ClinicianView} />
+        <Stack.Screen name="ClinicianViewInfo" component={ClinicianViewInfo} />
+        <Stack.Screen name="PatientHome" component={PatientHome} />
+        <Stack.Screen name="PatientUpload" component={PatientUpload} />
+        <Stack.Screen name="PatientMessages" component={PatientMessages} />
       </Stack.Navigator>
-      navigation.navigate('Login')
     </NavigationContainer>
   );
 };

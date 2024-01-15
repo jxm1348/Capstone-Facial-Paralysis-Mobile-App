@@ -1,10 +1,10 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
-import LoginScreen from './LoginScreen';
-import ClinicianViewScreen from './ClinicianViewScreen';
-import ClinicianViewInfoScreen from './ClinicianViewInfoScreen';
+import Login from './LoginScreen';
+import ClinicianView from './ClinicianViewScreen';
+import ClinicianViewInfo from './ClinicianViewInfoScreen';
 
-const ClinicianHomeScreen = ({ navigation }) => {
+const ClinicianHome = ({ navigation }) => {
   return (
     <View>
       <Button
@@ -15,3 +15,4 @@ const ClinicianHomeScreen = ({ navigation }) => {
   );
 };
 
+export default ClinicianHome;

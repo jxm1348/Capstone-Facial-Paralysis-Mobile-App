@@ -1,10 +1,10 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
-import LoginScreen from './LoginScreen';
-import PatientMessagesScreen from './PatientMessagesScreen';
-import PatientUploadScreen from './PatientUploadScreen';
+import Login from './LoginScreen';
+import PatientMessages from './PatientMessagesScreen';
+import PatientUpload from './PatientUploadScreen';
 
-const PatientHomeScreen = ({navigation}) => {
+const PatientHome = ({navigation}) => {
   return (
     <View>
 
@@ -16,3 +16,5 @@ const PatientHomeScreen = ({navigation}) => {
     </View>
   );
 };
+
+export default PatientHome;
