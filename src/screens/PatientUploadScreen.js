@@ -1,16 +1,12 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
-import PatientHome from './PatientHomeScreen';
+import { View, Button } from 'react-native';
 
-const PatientUpload = ({navigation}) => {
+const PatientUploadScreen = ({ navigation }) => {
   return (
     <View>
-      <Button
-        title="Back"
-        onPress={() => navigation.navigate('PatientHome')}
-      />
+      <Button title="Back" onPress={() => navigation.navigate('PatientHome')} />
     </View>
   );
 };
 
-export default PatientUpload;
+export default PatientUploadScreen;

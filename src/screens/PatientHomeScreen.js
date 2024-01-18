@@ -1,20 +1,15 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
-import Login from './LoginScreen';
-import PatientMessages from './PatientMessagesScreen';
-import PatientUpload from './PatientUploadScreen';
+import { View, Button, Text } from 'react-native';
+import PatientTabStack from '../navigation/navigation';
 
-const PatientHome = ({navigation}) => {
+const PatientHomeScreen = ({ navigation }) => {
   return (
     <View>
-
-
-      <Button
-        title="Sign Out"
-        onPress={() => navigation.navigate('Login')}
-      />
+      <Text>Welcome Patient!</Text>
+      <Button title="Sign Out" onPress={() => navigation.navigate('Login')} />
+      <PTab.Screen name="Login" component={LoginScreen} />
     </View>
   );
 };
 
-export default PatientHome;
+export default PatientHomeScreen;

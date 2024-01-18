@@ -1,18 +1,14 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
-import Login from './LoginScreen';
-import ClinicianView from './ClinicianViewScreen';
-import ClinicianViewInfo from './ClinicianViewInfoScreen';
+import { View, Button, Text } from 'react-native';
+import ClinicianTabStack from '../navigation/navigation';
 
-const ClinicianHome = ({ navigation }) => {
+const ClinicianHomeScreen = ({ navigation }) => {
   return (
     <View>
-      <Button
-        title="Sign Out"
-        onPress={() => navigation.navigate('Login')}
-      />
+      <Text>Welcome Clinician!</Text>
+      <Button title="Sign Out" onPress={() => navigation.navigate('Login')} />
     </View>
   );
 };
 
-export default ClinicianHome;
+export default ClinicianHomeScreen;
