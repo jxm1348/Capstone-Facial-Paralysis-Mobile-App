@@ -15,7 +15,7 @@ const App = () => {
   return (
     <NavigationContainer initialRouteName='Login'>
       <Stack.Navigator>
-        <Stack.Screen name="Login" component={Login} options={{title: 'Welcome'}} />
+        <Stack.Screen name="Login" component={Login}  />
         <Stack.Screen name="ClinicianHome" component={ClinicianHome} />
         <Stack.Screen name="ClinicianView" component={ClinicianView} />
         <Stack.Screen name="ClinicianViewInfo" component={ClinicianViewInfo} />

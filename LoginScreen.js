@@ -5,7 +5,6 @@ const Login = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  // Login navigation based on User account type
   const handleLogin = async () => {
     try {
       const response = await fetch('http://localhost:3000/login', {
@@ -24,7 +23,6 @@ const Login = ({ navigation }) => {
 
         const userType = data.userType;
 
-        // Navigation based on user type
         if (userType === 'Clinician') {
           navigation.navigate('ClinicianHome');
         } else if (userType === 'Patient') {
@@ -45,16 +43,13 @@ const Login = ({ navigation }) => {
     <View>
       <TextInput
         placeholder="Username"
-        value={username}
-        onChangeText={(text) => setUsername(text)}
       />
       <TextInput
         placeholder="Password"
-        secureTextEntry
-        value={password}
-        onChangeText={(text) => setPassword(text)}
       />
       <Button title="Login" onPress={handleLogin} />
+      <Button title="next clinician" onPress={navigation.navigate('ClinicianHome')} />
+      <Button title="next patient" onPress={navigation.navigate('PatientHome')} />
     </View>
   );
 };
