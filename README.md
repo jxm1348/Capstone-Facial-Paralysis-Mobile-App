@@ -31,9 +31,6 @@ Fourth, it will eventually link up with a machine learning platform that will au
 
 [**Facial Analytics Checklist**](https://pennstateoffice365-my.sharepoint.com/:x:/g/personal/msp5393_psu_edu/EZh5t_dYPsNFq0JaZCNACAEB13Uo0YzhOKBRcONIOyd8cw?e=JBWeEK)  
 
-
-# Facial Paralysis WebApp/Server Github Repository
-
-[**"Facial Analytics"**](https://github.com/mpeschel10/capstone-facial-paralysis?tab=readme-ov-file#facial-analytics-checklist)  
+[**Facial Analytics WebApp/Server Repository**](https://github.com/mpeschel10/capstone-facial-paralysis?tab=readme-ov-file#facial-analytics-checklist)  
 
 
