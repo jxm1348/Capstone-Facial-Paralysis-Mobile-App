@@ -1,7 +1,7 @@
 // I have no idea if this is an antipattern or not.
-
-// Run by useEffect hopefully exactly once by navigation.js.
-const state = {};
+const state = {
+    demoIsDebug: true,
+};
 export default state;
 
 export function init() {
@@ -9,4 +9,6 @@ export function init() {
         return 3;
     }
 }
+
+init();
 

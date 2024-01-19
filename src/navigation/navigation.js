@@ -9,12 +9,9 @@ import ClinicianViewInfoScreen from '../screens/ClinicianViewInfoScreen';
 import PatientMessagesScreen from '../screens/PatientMessagesScreen';
 import PatientUploadScreen from '../screens/PatientUploadScreen';
 
-import { init } from '../state';
-
 const Stack = createNativeStackNavigator();
 
 export default function MainNavigator() {
-  React.useEffect(init, []);
   return (
     <NavigationContainer initialRouteName='Login'>
         <Stack.Navigator>
