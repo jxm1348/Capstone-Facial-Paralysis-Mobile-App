@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, Button, Text, StyleSheet, TextInput } from 'react-native';
-import ClinicianTabStack from '../navigation/navigation';
+import { View, Text, StyleSheet } from 'react-native';
 import ClinicianNavBar from '../components/ClinicianNavBar';
 import { Button1 } from '../components/buttons';
 

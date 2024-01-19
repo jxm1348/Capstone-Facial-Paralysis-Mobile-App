@@ -1,4 +1,4 @@
-import { View, Text, Button, StyleSheet } from "react-native";
+import { View, Button, StyleSheet } from "react-native";
 
 import state from "../state";
 import UnreadBadge from "./UnreadBadge";
@@ -21,8 +21,8 @@ const styles = StyleSheet.create({
         display: "flex",
         justifyContent: "space-evenly",
         flexDirection: "row",
-        // backgroundColor: "#dddddd",
         padding: 12,
+        backgroundColor: "#efefee",
         borderTopColor: '#dddddd',
         borderTopWidth: 2,
     },

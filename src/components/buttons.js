@@ -4,7 +4,7 @@
 // That will take some time, so until we have a pressing need, I've hacked a component together that has adjustable size etc.
 // In particular, Button does not respond to setting text color or size. Maybe I'm just doing something wrong.
 
-import { Button, Text, View } from "react-native";
+import { Button, View } from "react-native";
 
 export function Button1({onPress, title}) {
     return (

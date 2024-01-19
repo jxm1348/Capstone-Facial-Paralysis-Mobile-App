@@ -29,7 +29,6 @@ const ClinicianViewScreen = ({ navigation }) => {
         margin: 10,
       }}>Patients</Text>
       <View>{patientItems}</View>
-      {/* <Button title="Back" onPress={() => navigation.navigate('ClinicianHome')} /> */}
     </View>
   );
 };
