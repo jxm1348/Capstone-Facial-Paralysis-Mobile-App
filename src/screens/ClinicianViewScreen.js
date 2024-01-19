@@ -2,15 +2,16 @@ import React from 'react';
 import { View, Button, Text, StyleSheet } from 'react-native';
 
 import state from '../state';
+import UnreadBadge from '../components/UnreadBadge';
 
 const ClinicianViewScreen = ({ navigation }) => {
 
   const patientItems = state.demoPatientMessages.map(({name, unread}) => {
     return (<View key={name} style={styles.patientRow}>
-      <Button title={name} onPress={() => navigation.navigate('ClinicianViewInfo')}></Button>
-      <Text style={{
-        display: unread > 0 ? 'flex' : 'none'
-      }}>{unread} Unread</Text>
+      <View>
+        <Button title={name} onPress={() => navigation.navigate('ClinicianViewInfo')} />
+        <UnreadBadge value={unread} />
+      </View>
     </View>)
 
   })
