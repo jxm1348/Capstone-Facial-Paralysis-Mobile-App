@@ -1,15 +1,11 @@
 import React from 'react';
 import { View, Button, Text, StyleSheet } from 'react-native';
 
-const ClinicianViewScreen = ({ navigation }) => {
-  const patientData = [
-    {name:'John Doe', unread: 2},
-    {name:'Mark Peschel', unread: 1},
-    {name:'Gabriel Marx', unread: 0},
-    {name:'Quinn Wilson', unread: 0},
-  ];
+import state from '../state';
 
-  const patientItems = patientData.map(({name, unread}) => {
+const ClinicianViewScreen = ({ navigation }) => {
+
+  const patientItems = state.demoPatientMessages.map(({name, unread}) => {
     return (<View key={name} style={styles.patientRow}>
       <Button title={name} onPress={() => navigation.navigate('ClinicianViewInfo')}></Button>
       <Text style={{
@@ -18,8 +14,6 @@ const ClinicianViewScreen = ({ navigation }) => {
     </View>)
 
   })
-  console.log(patientData);
-  console.log(patientItems);
 
   return (
     <View>
