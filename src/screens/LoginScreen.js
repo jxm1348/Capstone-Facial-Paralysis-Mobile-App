@@ -40,7 +40,7 @@ const LoginScreen = ({ navigation }) => {
     if (username === 'Jane doe' && password === 'password') {
       navigation.navigate('Clinician Home');
     } else if (username === 'John doe' && password === 'password') {
-      navigation.navigate('Patient Home');
+      navigation.navigate('PatientHome');
     } else {
       if (state.demoIsDebug)
         navigation.navigate('Clinician Home');
