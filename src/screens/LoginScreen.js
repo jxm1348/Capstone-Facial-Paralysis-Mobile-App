@@ -37,12 +37,15 @@ const LoginScreen = ({ navigation }) => {
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
-    if (true || (username === 'Jane doe' && password === 'password')) {
+    if (username === 'Jane doe' && password === 'password') {
       navigation.navigate('Clinician Home');
     } else if (username === 'John doe' && password === 'password') {
       navigation.navigate('Patient Home');
     } else {
-      Alert.alert('Invalid credentials');
+      if (state.demoIsDebug)
+        navigation.navigate('Clinician Home');
+      else
+        Alert.alert('Invalid credentials');
     }
   };
 
