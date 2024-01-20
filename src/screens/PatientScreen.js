@@ -20,7 +20,7 @@ const PatientScreen = ({navigation, route}) => {
   return (
     <View>
       <Text style={globalStyles.h1}>{name}</Text>
-      <View style={{gap: 6}}>
+      <View style={{gap: 6, paddingHorizontal: 40}}>
         {messageComponents}
       </View>
     </View>
