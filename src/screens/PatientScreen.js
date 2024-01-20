@@ -1,9 +1,8 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
-import ClinicianViewScreen from './PatientsScreen';
-import MainNavigator from'../navigation/navigation';
 
-const ClinicianViewInfoScreen = ({navigation}) => {
+const PatientScreen = ({navigation}) => {
+  
   return (
     <View>
       <Button
@@ -15,4 +14,4 @@ const ClinicianViewInfoScreen = ({navigation}) => {
 };
 
 
-export default ClinicianViewInfoScreen;
+export default PatientScreen;

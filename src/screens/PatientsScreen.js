@@ -4,7 +4,7 @@ import { View, Text, StyleSheet, Pressable, Image } from 'react-native';
 import state from '../state';
 import UnreadBadge from '../components/UnreadBadge';
 
-const ClinicianViewScreen = ({ navigation }) => {
+const PatientsScreen = ({ navigation }) => {
 
   const patientItems = state.demoPatientMessages.map(({name, unread}) => {
     return (
@@ -58,4 +58,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default ClinicianViewScreen;
+export default PatientsScreen;
