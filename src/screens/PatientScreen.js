@@ -1,16 +1,21 @@
 import React from 'react';
-import { Text, View, Button } from 'react-native';
+import { Text, View, Pressable } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 import ReportRow from '../components/ReportRow';
 
 import globalStyles from '../globalStyles';
 import state from '../state';
 
 const PatientScreen = ({navigation, route}) => {
+  useIsFocused();
+
   const { name } = route.params;
   const patient = state.demoGetPatientByName(name);
   
   const messageComponents = patient.messages.map((message, index) =>
-    (<ReportRow key={index} {...{message}} />)
+    (<Pressable onPress={() => navigation.navigate('Report', {name: patient.name, index})}>
+      <ReportRow key={index} {...{message}} />
+    </Pressable>)
   );
   
   for (const message of patient.messages) {
