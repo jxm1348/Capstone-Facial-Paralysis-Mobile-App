@@ -3,13 +3,15 @@ import { View, Text, StyleSheet } from 'react-native';
 import ClinicianNavBar from '../components/ClinicianNavBar';
 import { Button1 } from '../components/buttons';
 
+import globalStyles from '../globalStyles';
+
 const ClinicianHomeScreen = ({ navigation, colors }) => {
   return (
     <View style={styles.container}>
         <View style={{
           flexGrow: 1,
         }}>
-          <Text style={styles.h1}>Welcome, Jane Doe!</Text>
+          <Text style={globalStyles.h2}>Welcome, Jane Doe!</Text>
           <View style={styles.spacerFull}></View>
           <View style={{
             alignItems: 'center',
@@ -27,10 +29,6 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     backgroundColor: "#ffffff",
-  }, h1: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
   }, btnSignout: {
     margin: 10,
     padding: 10,

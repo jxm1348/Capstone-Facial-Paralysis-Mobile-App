@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Pressable, Image } from 'react-native';
 
 import state from '../state';
 import UnreadBadge from '../components/UnreadBadge';
+import globalStyles from '../globalStyles';
 
 const PatientsScreen = ({ navigation }) => {
 
@@ -10,7 +11,7 @@ const PatientsScreen = ({ navigation }) => {
     return (
       <Pressable
         key={name}
-        style={styles.patientContainer} onPress={() => navigation.navigate('Patient')}
+        style={styles.patientContainer} onPress={() => navigation.navigate('Patient', {name})}
       >
         <Text style={styles.patientName}>{name}</Text>
         <View>
@@ -28,18 +29,14 @@ const PatientsScreen = ({ navigation }) => {
 
   return (
     <View>
-      <Text style={styles.h1}>Patients</Text>
+      <Text style={globalStyles.h1}>Patients</Text>
       <View>{patientItems}</View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  h1: {
-    fontSize: 40,
-    textAlign: 'center',
-    margin: 10,
-  }, patientContainer: {
+  patientContainer: {
       flexDirection: 'row',
       alignItems: 'center',
       marginVertical: 10,
