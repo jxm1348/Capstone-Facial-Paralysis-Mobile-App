@@ -1,15 +1,46 @@
 import React, { useState } from 'react';
-import { StyleSheet, TextInput, View, Button, Alert } from 'react-native';
+import { StyleSheet, TextInput, View, Button, Alert, Platform } from 'react-native';
+
+import state from "../state";
 
 const LoginScreen = ({ navigation }) => {
+  if (state.demoIsDebug && Platform.OS === 'web') {
+    React.useEffect(() => {
+      state.demoChord = false;
+    })
+
+    React.useEffect(() => {
+      window.addEventListener("keydown", (event) => {
+        if (event.key === 'k' && event.ctrlKey) {
+          state.demoChord = true;
+          event.preventDefault();
+        } else if (state.demoChord) {
+          if (event.key === 'Control') return;
+          
+          console.log("Chord", event.key);
+          if (event.key === 'w') {
+            navigation.navigate('Report', {name: "Mark Peschel", index: 0});
+            event.preventDefault();
+          }
+          
+          state.demoChord = false;
+        } else {
+          state.demoChord = false;
+        }
+      });
+    }, []);
+  }
+
+
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
-    if (username === 'Jane doe' && password === 'password') {
-      navigation.navigate('ClinicianHome');
+    if (true || (username === 'Jane doe' && password === 'password')) {
+      navigation.navigate('Clinician Home');
     } else if (username === 'John doe' && password === 'password') {
-      navigation.navigate('PatientHome');
+      navigation.navigate('Patient Home');
     } else {
       Alert.alert('Invalid credentials');
     }
