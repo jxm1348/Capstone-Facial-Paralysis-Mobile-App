@@ -7,7 +7,9 @@ import globalStyles from '../globalStyles';
 
 const PatientsScreen = ({ navigation }) => {
 
-  const patientItems = state.demoPatientMessages.map(({name, unread}) => {
+  const patientItems = state.demoPatients.map(patient => {
+    const { name } = patient;
+    const unread = state.demoGetUnreadPatient(patient);
     return (
       <Pressable
         key={name}

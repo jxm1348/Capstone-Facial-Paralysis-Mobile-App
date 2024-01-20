@@ -9,7 +9,7 @@ function ClinicianNavBar({navigation}) {
             <Button title="Home" onPress={() => navigation.navigate("Clinician Home")}/>
             <View>
                 <Button title="Patients" onPress={() => navigation.navigate("Patients")} />
-                <UnreadBadge value={state.demoGetUnread()}></UnreadBadge>
+                <UnreadBadge value={state.demoGetUnreadTotal()}></UnreadBadge>
             </View>
             <Button title="Options" onPress={() => navigation.navigate("Clinician Home")}/>
         </View>
