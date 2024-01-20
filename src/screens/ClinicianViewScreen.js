@@ -16,9 +16,8 @@ const ClinicianViewScreen = ({ navigation }) => {
         <View>
           <Image
             style={styles.patientThumbnail}
-            // source={require('/assets/face-f-at-rest.png')}
             source={{
-              uri: 'https://reactnative.dev/img/tiny_logo.png',
+              uri: 'https://mpeschel10.github.io/fa/test/face-f-at-rest.svg',
             }}
               />
           <UnreadBadge value={unread} />
