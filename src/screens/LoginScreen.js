@@ -43,6 +43,12 @@ const LoginScreen = ({ navigation }) => {
       <Button 
         title="Login"
         onPress={handleLogin} />
+      <Button
+      //Temp button for testing purposes
+        title="Camera"
+        onPress={()=>navigation.navigate('PatientCamera')}
+      />
+
     </View>
   );
 };
