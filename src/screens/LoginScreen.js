@@ -1,5 +1,12 @@
 import React, { useState, createRef } from 'react';
-import { StyleSheet, TextInput, View, Button, Alert } from 'react-native';
+import {
+  Image,
+  StyleSheet, 
+  TextInput, 
+  View, 
+  Button, 
+  Alert 
+} from 'react-native';
 
 const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
@@ -20,6 +27,9 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <Image
+        source={require('../resources/face-f-root.png')}
+      />
       <TextInput
         ref={usernameInput}
         autoComplete='username'
