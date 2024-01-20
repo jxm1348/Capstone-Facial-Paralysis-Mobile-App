@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, createRef } from 'react';
 import { StyleSheet, TextInput, View, Button, Alert } from 'react-native';
 
 const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+
+  const usernameInput = createRef();
+  const passwordInput = createRef();
 
   const handleLogin = () => {
     if (username === 'Jane doe' && password === 'password') {
@@ -18,17 +21,28 @@ const LoginScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <TextInput
+        ref={usernameInput}
+        autoComplete='username'
+        autoFocus={true}
+        returnKeyType='next'
         style={styles.input}
         placeholder="Username"
+        onSubmitEditing={() => passwordInput.current?.focus()}
         onChangeText={(text) => setUsername(text)}
       />
       <TextInput
+        ref={passwordInput}
+        autoComplete='current-password'
+        returnKeyType='go'
         style={styles.input}
         placeholder="Password"
         secureTextEntry={true}
+        onSubmitEditing={handleLogin}
         onChangeText={(text) => setPassword(text)}
       />
-      <Button title="Login" onPress={handleLogin} />
+      <Button 
+        title="Login"
+        onPress={handleLogin} />
     </View>
   );
 };
