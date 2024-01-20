@@ -3,16 +3,16 @@ const state = {
     demoIsDebug: true,
     demoPatients: [
         {name:'Mark Peschel', messages: [
-            {read: false, message: 'hi'},
-            {read: true, message: 'hi'},
-            {read: true, message: 'hi'},
+            {read: false, deepRead: false, message: 'hi'},
+            {read: true, deepRead: false, message: 'hi'},
+            {read: true, deepRead: false, message: 'hi'},
         ]},
         {name:'Gabriel Marx', messages: [
-            {read: true, message: 'hi'},
+            {read: true, deepRead: false, message: 'hi'},
         ]},
         {name:'John Doe', messages: [
-            {read: false, message: 'hi'},
-            {read: false, message: 'hi'},
+            {read: false, deepRead: false, message: 'hi'},
+            {read: false, deepRead: false, message: 'hi'},
         ]},
         {name:'Owen Wilson', messages: [
         ]},
