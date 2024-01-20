@@ -6,8 +6,11 @@ import UnreadBadge from '../components/UnreadBadge';
 import globalStyles from '../globalStyles';
 
 const PatientsScreen = ({ navigation }) => {
-
-  const patientItems = state.demoPatients.map(patient => {
+  const patientItems = state
+    .demoPatients
+    .slice()
+    .sort((p1, p2) => (state.demoGetUnreadPatient(p2) - state.demoGetUnreadPatient(p1))) // ascending
+    .map(patient => {
     const { name } = patient;
     const unread = state.demoGetUnreadPatient(patient);
     return (
