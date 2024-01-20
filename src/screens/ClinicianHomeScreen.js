@@ -1,11 +1,14 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 import ClinicianNavBar from '../components/ClinicianNavBar';
 import { Button1 } from '../components/buttons';
 
 import globalStyles from '../globalStyles';
 
 const ClinicianHomeScreen = ({ navigation, colors }) => {
+  const isFocused = useIsFocused() // Force refresh
+  
   return (
     <View style={styles.container}>
         <View style={{

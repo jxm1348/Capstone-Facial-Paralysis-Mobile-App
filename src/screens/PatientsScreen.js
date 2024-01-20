@@ -4,8 +4,11 @@ import { View, Text, StyleSheet, Pressable, Image } from 'react-native';
 import state from '../state';
 import UnreadBadge from '../components/UnreadBadge';
 import globalStyles from '../globalStyles';
+import { useIsFocused } from '@react-navigation/native';
 
 const PatientsScreen = ({ navigation }) => {
+  const isFocused = useIsFocused() // Force refresh
+
   const patientItems = state
     .demoPatients
     .slice()
