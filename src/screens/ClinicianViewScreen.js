@@ -16,8 +16,11 @@ const ClinicianViewScreen = ({ navigation }) => {
         <View>
           <Image
             style={styles.patientThumbnail}
-            source={require('/assets/face-f-at-rest.png')}
-          />
+            // source={require('/assets/face-f-at-rest.png')}
+            source={{
+              uri: 'https://reactnative.dev/img/tiny_logo.png',
+            }}
+              />
           <UnreadBadge value={unread} />
         </View>
       </Pressable>
