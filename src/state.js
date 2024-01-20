@@ -12,20 +12,20 @@ const placeholderImages = [
 const state = {
     demoIsDebug: true,
     demoPatients: [
+        {name:'Owen Wilson', messages: [
+        ], latestMessage: '1970-01-01'},
         {name:'Mark Peschel', messages: [
             {date: "Jan 20, 2024", read: false, deepRead: false, message: '', images: placeholderImages},
             {date: "Jan 13, 2024", read: true, deepRead: true, message: '', images: placeholderImages},
             {date: "Jan 6, 2024", read: true, deepRead: true, message: '', images: placeholderImages},
-        ]},
+        ], latestMessage: '2024-01-20'},
         {name:'Gabriel Marx', messages: [
             {date: "Jan 6, 2024", read: true, deepRead: true, message: 'Hi.', images: placeholderImages},
-        ]},
+        ], latestMessage: '2024-01-06'},
         {name:'John Doe', messages: [
             {date: "Jan 19, 2024, 3:38 pm", read: false, deepRead: false, message: 'Please inore my last message. Was a mosquito bite.', images: placeholderImages},
             {date: "Jan 19, 2024, 3:17 pm", read: false, deepRead: false, message: 'Strange swelling and itchy redness above my right eyebrow. Did you put in more botulin there last time? I hope it\s not an allergy. I just worry because I know allergies tend to get worse if every time you\'re exposed. That might juts be for bee stings, though.', images: placeholderImages},
-        ]},
-        {name:'Owen Wilson', messages: [
-        ]},
+        ], latestMessage: '2024-01-19'},
       ],
     demoGetUnreadPatient(patient) {
         let total = 0;

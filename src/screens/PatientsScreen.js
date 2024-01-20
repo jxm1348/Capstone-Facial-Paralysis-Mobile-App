@@ -12,7 +12,16 @@ const PatientsScreen = ({ navigation }) => {
   const patientItems = state
     .demoPatients
     .slice()
-    .sort((p1, p2) => (state.demoGetUnreadPatient(p2) - state.demoGetUnreadPatient(p1))) // ascending
+    .sort((p1, p2) => {
+      const p2read = state.demoGetUnreadPatient(p2);
+      const p1read = state.demoGetUnreadPatient(p1);
+      // Sort by unread messages first, then by most recent message.
+      if (p2read !== p1read) {
+        return p2read - p1read;
+      } else {
+        return p2.latestMessage.localeCompare(p1.latestMessage);
+      }
+    })
     .map(patient => {
     const { name } = patient;
     const unread = state.demoGetUnreadPatient(patient);
