@@ -1,12 +1,22 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Image } from 'react-native';
+
+import NewBadge from '../components/NewBadge';
+
+function ReportTile({source}) {
+    return <Image style={styles.tile} source={{uri: source}}/>;
+}
 
 function ReportRow({message}) {
     return (<View style={styles.container}>
+        <NewBadge value={!message.deepRead} />
         <View style={{flexDirection: 'row', gap: 20}}>
-            <View style={styles.tile} /><View style={styles.tile} /><View style={styles.tile} /><View style={styles.tile} /><View style={styles.tile} /><View style={styles.tile} /><View style={styles.tile} />
+            {message.images.map(source =>
+                <ReportTile key={source} source={source} />
+            )}
         </View>
-        <Text style={{}}>
-            {message.message}, read: {message.deepRead.toString()}
+        <Text>{message.date}</Text>
+        <Text style={{display: message.message === null ? 'none' : 'flex'}}>
+            {message.message}
         </Text>
     </View>);
 }
@@ -22,7 +32,6 @@ const styles = StyleSheet.create({
       }, tile: {
         width: 100,
         height: 100,
-        backgroundColor: 'magenta',
     }
 });
 
