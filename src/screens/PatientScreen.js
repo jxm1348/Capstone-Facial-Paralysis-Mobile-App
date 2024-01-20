@@ -13,8 +13,8 @@ const PatientScreen = ({navigation, route}) => {
   const patient = state.demoGetPatientByName(name);
   
   const messageComponents = patient.messages.map((message, index) =>
-    (<Pressable onPress={() => navigation.navigate('Report', {name: patient.name, index})}>
-      <ReportRow key={index} {...{message}} />
+    (<Pressable key={index} onPress={() => navigation.navigate('Report', {name: patient.name, index})}>
+      <ReportRow {...{message}} />
     </Pressable>)
   );
   
