@@ -8,7 +8,7 @@ const ClinicianViewInfoScreen = ({navigation}) => {
     <View>
       <Button
         title="Back"
-        onPress={() => navigation.navigate('ClinicianView')}
+        onPress={() => navigation.navigate('Patients')}
       />
     </View>
   );

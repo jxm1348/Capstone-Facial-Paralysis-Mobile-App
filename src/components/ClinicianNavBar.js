@@ -6,12 +6,12 @@ import UnreadBadge from "./UnreadBadge";
 function ClinicianNavBar({navigation}) {
     return (
         <View style={styles.container}>
-            <Button title="Home" onPress={() => navigation.navigate("ClinicianHome")}/>
+            <Button title="Home" onPress={() => navigation.navigate("Clinician Home")}/>
             <View>
-                <Button title="Patients" onPress={() => navigation.navigate("ClinicianView")} />
+                <Button title="Patients" onPress={() => navigation.navigate("Patients")} />
                 <UnreadBadge value={state.demoGetUnread()}></UnreadBadge>
             </View>
-            <Button title="Options" onPress={() => navigation.navigate("ClinicianHome")}/>
+            <Button title="Options" onPress={() => navigation.navigate("Clinician Home")}/>
         </View>
     );
 }

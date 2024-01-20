@@ -10,7 +10,7 @@ const ClinicianViewScreen = ({ navigation }) => {
     return (
       <Pressable
         key={name}
-        style={styles.patientContainer} onPress={() => navigation.navigate('ClinicianViewInfo')}
+        style={styles.patientContainer} onPress={() => navigation.navigate('Patient')}
       >
         <Text style={styles.patientName}>{name}</Text>
         <View>
