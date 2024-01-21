@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { StyleSheet, TextInput, View, Button, Alert, Platform } from 'react-native';
+import { StyleSheet, TextInput, View, Button, Alert, Platform, Pressable, Text } from 'react-native';
 
-import state from "../state";
+import state from '../state';
+import globalStyles from '../globalStyles';
 
 const LoginScreen = ({ navigation }) => {
   if (state.demoIsDebug && Platform.OS === 'web') {
@@ -31,6 +32,15 @@ const LoginScreen = ({ navigation }) => {
     }, []);
   }
 
+  const debugButtons = [];
+  if (state.demoIsDebug) {
+    debugButtons.push(<Pressable key={1} style={globalStyles.button} onPress={() => navigation.navigate('Clinician Home')}>
+      <Text style={{color: 'white'}}>Debug log in as clinician</Text>
+    </Pressable>);
+    debugButtons.push(<Pressable key={2} style={globalStyles.button} onPress={() => navigation.navigate('PatientHome')}>
+      <Text style={{color: 'white'}}>Debug log in as patient</Text>
+    </Pressable>);
+  }
 
 
   const [username, setUsername] = useState('');
@@ -42,10 +52,7 @@ const LoginScreen = ({ navigation }) => {
     } else if (username === 'John doe' && password === 'password') {
       navigation.navigate('PatientHome');
     } else {
-      if (state.demoIsDebug)
-        navigation.navigate('Clinician Home');
-      else
-        Alert.alert('Invalid credentials');
+      Alert.alert('Invalid credentials');
     }
   };
 
@@ -63,6 +70,7 @@ const LoginScreen = ({ navigation }) => {
         onChangeText={(text) => setPassword(text)}
       />
       <Button title="Login" onPress={handleLogin} />
+      {debugButtons}
     </View>
   );
 };
