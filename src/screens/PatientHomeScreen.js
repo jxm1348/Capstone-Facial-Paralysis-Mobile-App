@@ -7,7 +7,7 @@ const PatientHomeScreen = ({ navigation }) => {
     <View>
       <Text>Welcome Patient!</Text>
       <Button title="Sign Out" onPress={() => navigation.navigate('Login')} />
-      <PTab.Screen name="Login" component={LoginScreen} />
+
     </View>
   );
 };
