@@ -25,7 +25,7 @@ export default function MainNavigator() {
             <Stack.Screen name="Patient" component={PatientScreen} />
             <Stack.Screen name="Report" component={ReportScreen} />
             
-            <Stack.Screen name="PatientHome" component={PatientHomeScreen} />
+            <Stack.Screen name="Patient Home" component={PatientHomeScreen} />
             <Stack.Screen name="PatientUpload" component={PatientUploadScreen} />
             <Stack.Screen name="PatientMessages" component={PatientMessagesScreen} />
         </Stack.Navigator>

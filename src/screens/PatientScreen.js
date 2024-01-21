@@ -14,7 +14,7 @@ const PatientScreen = ({navigation, route}) => {
   
   const messageComponents = patient.messages.map((message, index) =>
     (<Pressable key={index} onPress={() => navigation.navigate('Report', {name: patient.name, index})}>
-      <ReportRow {...{message}} />
+      <ReportRow message={message} showBadge={true}/>
     </Pressable>)
   );
   
