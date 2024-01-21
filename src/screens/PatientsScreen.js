@@ -35,7 +35,7 @@ const PatientsScreen = ({ navigation }) => {
           <Image
             style={styles.patientThumbnail}
             source={{
-              uri: 'https://mpeschel10.github.io/fa/test/face-f-at-rest.svg',
+              uri: patient.thumbnail,
             }}
               />
           <UnreadBadge value={unread} />
