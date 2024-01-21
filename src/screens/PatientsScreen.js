@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Pressable, Image } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Image, ScrollView } from 'react-native';
 
 import state from '../state';
 import UnreadBadge from '../components/UnreadBadge';
@@ -45,10 +45,10 @@ const PatientsScreen = ({ navigation }) => {
   })
 
   return (
-    <View>
+    <ScrollView style={{flexGrow: 1}}>
       <Text style={globalStyles.h1}>Patients</Text>
       <View>{patientItems}</View>
-    </View>
+    </ScrollView>
   );
 };
 

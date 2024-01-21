@@ -1,4 +1,4 @@
-import { Text, View, Image, StyleSheet, Dimensions } from 'react-native';
+import { Text, View, Image, StyleSheet, Dimensions, ScrollView } from 'react-native';
 
 import globalStyles from '../globalStyles';
 import state from '../state';
@@ -16,7 +16,7 @@ export default function ReportScreen({navigation, route}) {
         <Image style={{width, height: width}} source={{uri: source}} key={source}/>
     );
     
-    return (<>
+    return (<ScrollView style={{flexGrow: 1}}>
         <Text style={globalStyles.h2}>Report from {name}</Text>
         <Text style={{textAlign: 'center'}}>{message.date}</Text>
         <View style={styles.images}>
@@ -25,7 +25,7 @@ export default function ReportScreen({navigation, route}) {
         <View style={{display: message.message !== null ? 'flex' : 'none'}}>
             <Text style={globalStyles.h2}>{message.message}</Text>
         </View>
-    </>);
+    </ScrollView>);
 }
 
 const styles = StyleSheet.create({
