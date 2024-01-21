@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, Pressable } from 'react-native';
+import { Text, View, Pressable, ScrollView } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import ReportRow from '../components/ReportRow';
 
@@ -23,11 +23,15 @@ const PatientScreen = ({navigation, route}) => {
   }
 
   return (
-    <View>
+    <View style={{flexGrow: 1}}>
       <Text style={globalStyles.h1}>{name}</Text>
-      <View style={{gap: 6, paddingHorizontal: 40}}>
-        {messageComponents}
-      </View>
+      <ScrollView style={{flexGrow: 1}}>
+        <ScrollView style={{flexGrow: 1, marginBottom: 100}} vertical={true} horizontal={true}>
+          <View style={{gap: 6, paddingHorizontal: 40, paddingVertical: 10}}>
+            {messageComponents}
+          </View>
+        </ScrollView>
+      </ScrollView>
     </View>
   );
 };
