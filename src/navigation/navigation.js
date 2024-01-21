@@ -8,7 +8,7 @@ import ClinicianViewScreen from '../screens/ClinicianViewScreen';
 import ClinicianViewInfoScreen from '../screens/ClinicianViewInfoScreen';
 import PatientMessagesScreen from '../screens/PatientMessagesScreen';
 import PatientUploadScreen from '../screens/PatientUploadScreen';
-import PatientUploadPictureScreen
+import PatientUploadPictureScreen from '../screens/PatientUploadPictureScreen'
 
 const Stack = createNativeStackNavigator();
 
