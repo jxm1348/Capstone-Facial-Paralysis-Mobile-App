@@ -1,7 +1,6 @@
 import {Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Camera, CameraType } from 'expo-camera';
 import { useState, useEffect, useRef } from 'react';
-//https://www.freecodecamp.org/news/how-to-create-a-camera-app-with-expo-and-react-native/
 
 function CameraYes() {
   const cameraRef = useRef(null);
