@@ -1,11 +1,14 @@
 import React from 'react';
+import { View, Text } from 'react-native';
+import ActionButton from '../components/ActionButton';
+import MainNavigator from '../navigation/navigation';
 
-const PatientUploadPictureScreen ({navigation, const Page = null?}) => {
-    return(
+const PatientUploadPictureScreen = ({ navigation, item }) => {
+  return (
     <View>
-        <Button title="Back" onPress={() => navigation.navigate('PatientHome')} />
+      <Text>Temporary Text</Text>
     </View>
-    )
+  );
 };
 
 export default PatientUploadPictureScreen;

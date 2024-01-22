@@ -1,23 +1,20 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
 import ActionButton from '../components/ActionButton';
-import NavigationBar from '../components/NavigationBar';
+import MainNavigator from '../navigation/navigation';
 
-const PatientHomeScreen = ({ navigation }) => {
-
+const PatientMessageScreen = ({navigation}) => {
   const buttons = [
     { title: 'Sign Out', onPress: () => navigation.navigate('Login') },
     { title: 'Home', onPress: () => navigation.navigate('PatientHome') },
     { title: 'Upload Images', onPress: () => navigation.navigate('PatientUpload') },
     { title: 'Messages', onPress: () => navigation.navigate('PatientMessages') }
   ];
-
-  return (
-    <View style={{ flex: 1 }}>
-      <Text>Welcome Patient!</Text>
-      <NavigationBar buttons={buttons} />
-    </View>
-  );
+    return(
+        <View>
+            <Text>Hello</Text>
+            <NavigationBar buttons={buttons} />
+        </View>
+    );
 };
 
-export default PatientHomeScreen;
+export default PatientMessageScreen;
