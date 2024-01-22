@@ -1,13 +1,20 @@
 import React from 'react';
-import { View, Button, Text } from 'react-native';
-import PatientTabStack from '../navigation/navigation';
+import { View, Text, StyleSheet } from 'react-native';
+import ActionButton from '../components/ActionButton';
+import NavigationBar from '../components/NavigationBar';
 
 const PatientHomeScreen = ({ navigation }) => {
+
+  const buttons = [
+    { title: 'Sign Out', onPress: () => navigation.navigate('Login') },
+    { title: 'Upload Images', onPress: () => navigation.navigate('PatientUpload') },
+    { title: 'Messages', onPress: () => navigation.navigate('PatientMessages') }
+  ];
+
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <Text>Welcome Patient!</Text>
-      <Button title="Sign Out" onPress={() => navigation.navigate('Login')} />
-      <PTab.Screen name="Login" component={LoginScreen} />
+      <NavigationBar buttons={buttons} />
     </View>
   );
 };
