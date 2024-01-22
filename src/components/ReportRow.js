@@ -6,9 +6,9 @@ function ReportTile({source}) {
     return <Image style={styles.tile} source={{uri: source}}/>;
 }
 
-function ReportRow({message, showBadge}) {
+function ReportRow({message}) {
     return (<View style={styles.container}>
-        { showBadge ? <NewBadge value={!message.deepRead} /> : undefined }
+        <NewBadge value={!message.deepRead} />
         <View style={{flexDirection: 'row', gap: 20}}>
             {message.images.map(source =>
                 <ReportTile key={source} source={source} />

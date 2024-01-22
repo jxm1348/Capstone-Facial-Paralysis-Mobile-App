@@ -37,7 +37,7 @@ const LoginScreen = ({ navigation }) => {
     debugButtons.push(<Pressable key={1} style={globalStyles.button} onPress={() => navigation.navigate('Clinician Home')}>
       <Text style={{color: 'white'}}>Debug log in as clinician</Text>
     </Pressable>);
-    debugButtons.push(<Pressable key={2} style={globalStyles.button} onPress={() => navigation.navigate('Patient Home')}>
+    debugButtons.push(<Pressable key={2} style={globalStyles.button} onPress={() => navigation.navigate('PatientHome')}>
       <Text style={{color: 'white'}}>Debug log in as patient</Text>
     </Pressable>);
   }
@@ -50,7 +50,7 @@ const LoginScreen = ({ navigation }) => {
     if (username === 'Jane doe' && password === 'password') {
       navigation.navigate('Clinician Home');
     } else if (username === 'John doe' && password === 'password') {
-      navigation.navigate('Patient Home');
+      navigation.navigate('PatientHome');
     } else {
       Alert.alert('Invalid credentials');
     }
