@@ -11,7 +11,6 @@ import ReportScreen from '../screens/ReportScreen';
 import PatientHomeScreen from '../screens/PatientHomeScreen';
 import PatientMessagesScreen from '../screens/PatientMessagesScreen';
 import PatientUploadScreen from '../screens/PatientUploadScreen';
-import CreateReportScreen from '../screens/CreateReportScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -29,7 +28,6 @@ export default function MainNavigator() {
             <Stack.Screen name="Patient Home" component={PatientHomeScreen} />
             <Stack.Screen name="PatientUpload" component={PatientUploadScreen} />
             <Stack.Screen name="PatientMessages" component={PatientMessagesScreen} />
-            <Stack.Screen name="Create Report" component={CreateReportScreen} />
         </Stack.Navigator>
     </NavigationContainer>
   );

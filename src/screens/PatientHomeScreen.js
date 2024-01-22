@@ -12,7 +12,7 @@ const PatientHomeScreen = ({ navigation }) => {
         <Text>Welcome, John Doe</Text>
         <Image style={{width: 30, height:30}} source={{uri: "https://mpeschel10.github.io/fa/test/hamburger-icon.png"}}></Image>
       </View>
-      <Pressable style={globalStyles.button} onPress={() => navigation.navigate("Create Report")}>
+      <Pressable style={globalStyles.button}>
         <Text style={{color: 'white'}}>Create new report</Text>
       </Pressable>
       <View>
