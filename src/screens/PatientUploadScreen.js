@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, Button } from 'react-native';
 import MainNavigator from '../navigation/navigation';
+import ActionButton from '../components/ActionButton';
 
 const PatientUploadScreen = ({ navigation }) => {
   return (
     <View>
 
-      <Button title="Upload Image" onPress={() => navigation.navigate('PatientUploadPicture')}
     </View>
   );
 };

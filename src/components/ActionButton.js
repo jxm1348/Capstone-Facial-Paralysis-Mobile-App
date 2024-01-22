@@ -3,7 +3,7 @@ import { View, Button, Text, StyleSheet } from 'react-native';
 import MainNavigator from '../navigation/navigation';
 
 
-export default function NavigationButton ({title, onPress}) => {
+export default function ActionButton ({title, onPress}) => {
     return (
         <TouchableOpacity style={styles.button} onPress={onPress}>
           <Text style={styles.buttonText}>{title}</Text>
