@@ -10,7 +10,6 @@ const placeholderImages = [
 
 const placeholderThumbnail = 'https://mpeschel10.github.io/fa/test/face-f-at-rest.png';
 
-// I have no idea if this is an antipattern or not.
 const state = {
     demoIsDebug: true,
     demoPatients: [
@@ -44,7 +43,16 @@ const state = {
             total += read ? 0 : 1;
         }
         return total;
-    }
+    },
+
+    patient:{
+        workingPhotoSet:[null, null, null, null, null, null, null, ],
+        photoSets:[
+            ["imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", ],
+            ["imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", ],
+            ["imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", ],
+        ]
+      },
 };
 
 export function init() {

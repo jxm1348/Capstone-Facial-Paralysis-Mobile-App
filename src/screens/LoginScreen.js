@@ -1,5 +1,16 @@
-import React, { useState } from 'react';
-import { StyleSheet, TextInput, View, Button, Alert, Platform, Pressable, Text } from 'react-native';
+import React, { useState, createRef } from 'react';
+import {
+  Image,
+  StyleSheet, 
+  TextInput, 
+  View, 
+  Button, 
+  Alert,
+  Platform,
+  Pressable,
+  Text 
+} from 'react-native';
+
 import state from '../state';
 import globalStyles from '../globalStyles';
 import ActionButton from '../components/ActionButton';
@@ -46,6 +57,9 @@ const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
+  const usernameInput = createRef();
+  const passwordInput = createRef();
+
   const handleLogin = () => {
     if (username === 'Jane doe' && password === 'password') {
       navigation.navigate('Clinician Home');
@@ -58,18 +72,38 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <Image
+        source={require('../resources/face-f-root.png')}
+      />
       <TextInput
+        ref={usernameInput}
+        autoComplete='username'
+        autoFocus={true}
+        returnKeyType='next'
         style={styles.input}
         placeholder="Username"
+        onSubmitEditing={() => passwordInput.current?.focus()}
         onChangeText={(text) => setUsername(text)}
       />
       <TextInput
+        ref={passwordInput}
+        autoComplete='current-password'
+        returnKeyType='go'
         style={styles.input}
         placeholder="Password"
         secureTextEntry={true}
+        onSubmitEditing={handleLogin}
         onChangeText={(text) => setPassword(text)}
       />
-      <Button title="Login" onPress={handleLogin} />
+      <Button 
+        title="Login"
+        onPress={handleLogin} />
+      <Button
+      //Temp button for testing purposes
+        title="Camera"
+        onPress={()=>navigation.navigate('PatientCamera')}
+      />
+
       {debugButtons}
     </View>
   );
