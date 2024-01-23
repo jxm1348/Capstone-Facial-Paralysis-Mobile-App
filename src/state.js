@@ -14,7 +14,7 @@ const state = {
     demoIsDebug: true,
     demoPatients: [
         {name:'Owen Wilson', thumbnail: placeholderThumbnail, messages: [
-        ], latestMessage: '1970-01-01'},
+        ], latestMessage: null},
         {name:'Mark Peschel', thumbnail: placeholderThumbnail, messages: [
             {date: "Jan 20, 2024", read: false, deepRead: false, message: '', images: placeholderImages},
             {date: "Jan 13, 2024", read: true, deepRead: true, message: '', images: placeholderImages},
@@ -31,11 +31,11 @@ const state = {
             {date: "Jan 19, 2024, 3:17 pm", read: false, deepRead: false, message: 'Strange swelling and itchy redness above my right eyebrow. Did you put in more botulin there last time? I hope it\s not an allergy. I just worry because I know allergies tend to get worse if every time you\'re exposed. That might juts be for bee stings, though.', images: placeholderImages},
         ], latestMessage: '2024-01-19'},
         {name:'Denzel W', thumbnail: placeholderThumbnail, messages: [
-        ], latestMessage: '1970-01-01'},
+        ], latestMessage: null},
         {name:'Ameila Earhart', thumbnail: placeholderThumbnail, messages: [
-        ], latestMessage: '1970-01-01'},
+        ], latestMessage: null},
         {name:'Brad Pitt', thumbnail: placeholderThumbnail, messages: [
-        ], latestMessage: '1970-01-01'},
+        ], latestMessage: null},
       ],
     demoGetUnreadPatient(patient) {
         let total = 0;

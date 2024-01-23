@@ -6,43 +6,48 @@ import UnreadBadge from '../components/UnreadBadge';
 import globalStyles from '../globalStyles';
 import { useIsFocused } from '@react-navigation/native';
 
+function PatientMessagesPressable({patient, navigation}) {
+  const { name } = patient;
+  return (
+    <Pressable
+      style={styles.patientContainer} onPress={() => navigation.navigate('Patient', {name})}
+    >
+    <View style={{flexGrow: 1, marginHorizontal: 25, flexShrink: 1}}>
+      <Text style={{fontSize: 35}}>{name}</Text>
+      { patient.latestMessage !== null ?
+        <Text style={{}}>Last message {patient.latestMessage}</Text> :
+        undefined
+      }
+    </View>
+    <View>
+      <Image
+        style={styles.patientThumbnail}
+        source={{
+          uri: patient.thumbnail,
+        }}
+      />
+      <UnreadBadge value={state.demoGetUnreadPatient(patient)} />
+    </View>
+    </Pressable>
+  );
+}
+
+function compareMostRecent(p1, p2) {
+  if (p1.latestMessage === null) return 1;
+  if (p2.latestMessage === null) return -1;
+  return -p1.latestMessage.localeCompare(p2.latestMessage);
+}
+
 const PatientsScreen = ({ navigation }) => {
-  const isFocused = useIsFocused() // Force refresh
+  useIsFocused() // Force refresh
 
   const patientItems = state
     .demoPatients
     .slice()
-    .sort((p1, p2) => {
-      const p2read = state.demoGetUnreadPatient(p2);
-      const p1read = state.demoGetUnreadPatient(p1);
-      // Sort by unread messages first, then by most recent message.
-      if (p2read !== p1read) {
-        return p2read - p1read;
-      } else {
-        return p2.latestMessage.localeCompare(p1.latestMessage);
-      }
-    })
-    .map(patient => {
-    const { name } = patient;
-    const unread = state.demoGetUnreadPatient(patient);
-    return (
-      <Pressable
-        key={name}
-        style={styles.patientContainer} onPress={() => navigation.navigate('Patient', {name})}
-      >
-        <Text style={styles.patientName}>{name}</Text>
-        <View>
-          <Image
-            style={styles.patientThumbnail}
-            source={{
-              uri: patient.thumbnail,
-            }}
-              />
-          <UnreadBadge value={unread} />
-        </View>
-      </Pressable>
+    .sort(compareMostRecent)
+    .map(patient =>
+      <PatientMessagesPressable key={patient.name} patient={patient} navigation={navigation}/>
     );
-  })
 
   return (
     <ScrollView style={{flexGrow: 1}}>
@@ -65,10 +70,6 @@ const styles = StyleSheet.create({
   }, patientThumbnail: {
     width: 90,
     height: 90,
-  }, patientName: {
-    flexGrow: 1,
-    textAlign: 'center',
-    fontSize: 35,
   }
 });
 
