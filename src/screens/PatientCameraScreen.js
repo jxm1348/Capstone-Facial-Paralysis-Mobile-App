@@ -1,6 +1,7 @@
 import {Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Camera, CameraType } from 'expo-camera';
 import { useState, useEffect, useRef } from 'react';
+import {state} from '../state';
 
 function CameraYes() {
   const cameraRef = useRef(null);
@@ -10,7 +11,10 @@ function CameraYes() {
     // console.log(cameraRef.current);
     if(cameraRef.current){
       let photo = await cameraRef.current.takePictureAsync();
-      console.log(photo.uri);//TODO throw uri onto state in some useful way to display on other screen
+      // console.log(photo.uri);
+      state.patient.workingPhotoSet[0] = photo.uri;  
+      //TODO receive state data from PatientUploadScreen to determine index of overwrite, and have PatientUploadScreen take image from state if not null
+      //TODO overlay outline on camera using same index, maybe make versions of the face images that are just outlines? need to see it in action first
     }
   }
 

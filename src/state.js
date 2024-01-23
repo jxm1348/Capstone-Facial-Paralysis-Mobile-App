@@ -1,4 +1,3 @@
-// I have no idea if this is an antipattern or not.
 const state = {
     demoIsDebug: true,
     demoPatientMessages: [
@@ -7,6 +6,15 @@ const state = {
         {name:'Gabriel Marx', unread: 0},
         {name:'Quinn Wilson', unread: 0},
       ],
+
+      patient:{
+        workingPhotoSet:[null, null, null, null, null, null, null, ],
+        photoSets:[
+            ["imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", ],
+            ["imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", ],
+            ["imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", ],
+        ]
+      },
 };
 
 export function init() {
