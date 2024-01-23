@@ -5,10 +5,13 @@ import { useState, useEffect, useRef } from 'react';
 function CameraYes() {
   const cameraRef = useRef(null);
 
-  function takePicture() {
-    // Do something here
-    
-    console.log(cameraRef.current);
+
+  async function takePicture() {
+    // console.log(cameraRef.current);
+    if(cameraRef.current){
+      let photo = await cameraRef.current.takePictureAsync();
+      console.log(photo.uri);//TODO throw uri onto state in some useful way to display on other screen
+    }
   }
 
   return (<Camera
