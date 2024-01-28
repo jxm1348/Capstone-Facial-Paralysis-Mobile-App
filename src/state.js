@@ -79,6 +79,7 @@ const state = {
 
     credentials: {username: null, password: null},
     async login(username, password) {}, // Empty method body so type hints work in vscode
+    async fetchUnreadCount() {},
 };
 
 export function init() {
@@ -103,6 +104,13 @@ export function init() {
         const setCookie = await result.json();
         state.loginCookie = parseSetCookie(setCookie);
     };
+
+    state.fetchUnreadCount = async () => {
+        await new Promise(resolve => {
+            setTimeout(resolve, 3000);
+        });
+        return 3;
+    }
 
 }
 
