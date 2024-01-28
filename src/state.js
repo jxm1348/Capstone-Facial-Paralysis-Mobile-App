@@ -1,3 +1,6 @@
+const debug = true;
+const SERVER_URL = !debug ? 'https://test.fa.mpeschel10.com' : 'http://localhost:3000';
+
 const placeholderImages = [
     'https://mpeschel10.github.io/fa/test/face-f-at-rest.png',
     'https://mpeschel10.github.io/fa/test/face-f-eyebrows-up.png',
@@ -9,6 +12,24 @@ const placeholderImages = [
 ]
 
 const placeholderThumbnail = 'https://mpeschel10.github.io/fa/test/face-f-at-rest.png';
+
+function split(string, separator, limit) {
+    // In the official string.split, setting the limit means discarding elements to shorten the array.
+    // So you can't just "split on the first equals sign", you split on all the equals signs, then discard the rest of the string.
+    // Bizarre...
+
+    // For this function, limit is the number of separators consumed.
+    // If limit is two, the result array will have 3 elements.
+    const firstPart = string.split(separator, limit);
+    const firstPartSize = firstPart.reduce((prev, current) => prev + current.length, 0) + limit * separator.length;
+    return firstPart.concat([string.slice(firstPartSize)]);
+}
+
+function parseSetCookie(setCookie) {
+    const [cookieKey, cookieSetter] = split(setCookie, "=", 1);
+    const [cookieValue] = cookieSetter.split(";", 1);
+    return [cookieKey, cookieValue];
+}
 
 const state = {
     demoIsDebug: true,
@@ -52,11 +73,15 @@ const state = {
             ["imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", ],
             ["imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", ],
         ]
-      },
+    },
+
+    loginCookie: ['cookieKey', 'cookieValue'],
+
+    credentials: {username: null, password: null},
+    async login(username, password) {}, // Empty method body so type hints work in vscode
 };
 
 export function init() {
-
     state.demoGetUnreadTotal = () => state.demoPatients.reduce(
         (acc, patient) => acc + state.demoGetUnreadPatient(patient), 0
     );
@@ -64,6 +89,21 @@ export function init() {
     state.demoGetPatientByName = name => {
         return state.demoPatients.find(patient => patient.name === name);
     }
+    
+    state.login = async (username, password) => {
+        console.log("Trying to log in");
+        state.credentials = {username, password};
+        const credentials = btoa(`${username}:${password}`);
+        const result = await fetch(SERVER_URL + '/api/login.json', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Basic ${credentials}`,
+                }
+        });
+        const setCookie = await result.json();
+        state.loginCookie = parseSetCookie(setCookie);
+    };
+
 }
 
 init();

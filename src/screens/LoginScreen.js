@@ -16,6 +16,12 @@ import globalStyles from '../globalStyles';
 import ActionButton from '../components/ActionButton';
 
 const LoginScreen = ({ navigation }) => {
+  const debugClinicianLogin = async () => {
+    await state.login('Jane doe', 'password');
+    navigation.navigate('Clinician Home');
+  };
+  
+  
   if (state.demoIsDebug && Platform.OS === 'web') {
     React.useEffect(() => {
       state.demoChord = false;
@@ -45,7 +51,7 @@ const LoginScreen = ({ navigation }) => {
 
   const debugButtons = [];
   if (state.demoIsDebug) {
-    debugButtons.push(<Pressable key={1} style={globalStyles.button} onPress={() => navigation.navigate('Clinician Home')}>
+    debugButtons.push(<Pressable key={1} style={globalStyles.button} onPress={debugClinicianLogin}>
       <Text style={{color: 'white'}}>Debug log in as clinician</Text>
     </Pressable>);
     debugButtons.push(<Pressable key={2} style={globalStyles.button} onPress={() => navigation.navigate('PatientHome')}>
