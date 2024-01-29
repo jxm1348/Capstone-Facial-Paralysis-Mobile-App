@@ -1,3 +1,29 @@
+// I have no idea how to actually build for mobile.
+// Try uncommenting the following line, maybe?
+// import firebase from '@react-native-firebase/app';
+
+import { initializeApp } from "firebase/app";
+import { getFirestore, collection, addDoc, getDocs } from "firebase/firestore";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyAvOsIabWRaKNBWKwLsYCY5PHlCN_lWwY0",
+  authDomain: "facial-analytics-f8b9e.firebaseapp.com",
+  projectId: "facial-analytics-f8b9e",
+  storageBucket: "facial-analytics-f8b9e.appspot.com",
+  messagingSenderId: "1087200042336",
+  appId: "1:1087200042336:web:c0c22a9037cd8b92f41205"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const debug = true;
+const SERVER_URL = !debug ? 'https://test.fa.mpeschel10.com' : 'http://localhost:3000';
+
 const placeholderImages = [
     'https://mpeschel10.github.io/fa/test/face-f-at-rest.png',
     'https://mpeschel10.github.io/fa/test/face-f-eyebrows-up.png',
@@ -9,6 +35,24 @@ const placeholderImages = [
 ]
 
 const placeholderThumbnail = 'https://mpeschel10.github.io/fa/test/face-f-at-rest.png';
+
+function split(string, separator, limit) {
+    // In the official string.split, setting the limit means discarding elements to shorten the array.
+    // So you can't just "split on the first equals sign", you split on all the equals signs, then discard the rest of the string.
+    // Bizarre...
+
+    // For this function, limit is the number of separators consumed.
+    // If limit is two, the result array will have 3 elements.
+    const firstPart = string.split(separator, limit);
+    const firstPartSize = firstPart.reduce((prev, current) => prev + current.length, 0) + limit * separator.length;
+    return firstPart.concat([string.slice(firstPartSize)]);
+}
+
+function parseSetCookie(setCookie) {
+    const [cookieKey, cookieSetter] = split(setCookie, "=", 1);
+    const [cookieValue] = cookieSetter.split(";", 1);
+    return [cookieKey, cookieValue];
+}
 
 const state = {
     demoIsDebug: true,
@@ -52,17 +96,48 @@ const state = {
             ["imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", ],
             ["imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", ],
         ]
-      },
+    },
+
+    app, db,
+
+    loginCookie: ['cookieKey', 'cookieValue'],
+
+    credentials: {username: null, password: null},
+    async login(username, password) {}, // Empty method body so type hints work in vscode
+    async fetchUnreadCount() {},
+
 };
 
-export function init() {
+function getUnreadCountMessages(messages) {
+    const result = messages.reduce((acc, message) => acc + (message.read ? 0 : 1), 0);
+    // console.log(result, "unread for messages", messages);
+    return result;
+}
 
+function getUnreadCountPatients(patients) {
+    console.log("Getting unread count for patients", patients);
+    return patients.reduce((acc, patient) => acc + getUnreadCountMessages(patient.messages), 0);
+}
+
+export function init() {
     state.demoGetUnreadTotal = () => state.demoPatients.reduce(
         (acc, patient) => acc + state.demoGetUnreadPatient(patient), 0
     );
     
     state.demoGetPatientByName = name => {
         return state.demoPatients.find(patient => patient.name === name);
+    }
+    
+    state.login = async (username, password) => {
+        console.log("Trying to log in");
+        state.credentials = {username, password};
+    };
+
+    state.fetchUnreadCount = async () => {
+        const usersSnapshot = await getDocs(collection(state.db, 'users'));
+        const result = getUnreadCountPatients(usersSnapshot.docs.map(doc => doc.data()));
+        // console.log('Fetching unread count', result);
+        return result;
     }
 }
 
