@@ -2,11 +2,6 @@
 // Try uncommenting the following line, maybe?
 // import firebase from '@react-native-firebase/app';
 
-// console.log(firebase);
-// const otherApp = firebase.app('facial-analytics');
-// const firestoreForOtherApp = firebase.firestore(otherApp);
-// console.log(firestoreForOtherApp);
-
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, addDoc, getDocs } from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
@@ -23,27 +18,8 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-// const app = initializeApp(firebaseConfig);
-// const db = getFirestore(app);
-// console.log(db);
-
-// try {
-//     const docRef = await addDoc(collection(db, "users"), {
-//       first: "James",
-//       last: "Madison",
-//       born: 1760
-//     });
-  
-//     console.log("Document written with ID: ", docRef.id);
-//   } catch (e) {
-//     console.error("Error adding document: ", e);
-// }
-
-// const querySnapshot = await getDocs(collection(db, "users"));
-// querySnapshot.forEach((doc) => {
-//   console.log(`${doc.id} => ${JSON.stringify(doc.data())}`);
-// });
-
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 const debug = true;
 const SERVER_URL = !debug ? 'https://test.fa.mpeschel10.com' : 'http://localhost:3000';
@@ -122,11 +98,16 @@ const state = {
         ]
     },
 
+    db,
+
     loginCookie: ['cookieKey', 'cookieValue'],
 
     credentials: {username: null, password: null},
     async login(username, password) {}, // Empty method body so type hints work in vscode
     async fetchUnreadCount() {},
+
+    async addDoc(collectionName, doc) {},
+    async getDocs(collectionName) {}
 };
 
 export function init() {
@@ -159,6 +140,21 @@ export function init() {
         return 3;
     }
 
+    state.addDoc = async (collectionName, doc) => {
+        try {
+            const docRef = await addDoc(collection(state.db, collectionName), doc);
+            console.log("Document written with ID: ", docRef.id);
+        } catch (e) {
+            console.error("Error adding document: ", e);
+        }
+    };
+
+    state.getDocs = collectionName => getDocs(collection(state.db, collectionName));
+
+    // state.forEach = async (collectionName, callback) => {
+    //     const querySnapshot = await state.getDocs(collectionName);
+    //     querySnapshot.forEach(callback);
+    // };
 }
 
 init();
