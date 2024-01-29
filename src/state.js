@@ -1,3 +1,50 @@
+// I have no idea how to actually build for mobile.
+// Try uncommenting the following line, maybe?
+// import firebase from '@react-native-firebase/app';
+
+// console.log(firebase);
+// const otherApp = firebase.app('facial-analytics');
+// const firestoreForOtherApp = firebase.firestore(otherApp);
+// console.log(firestoreForOtherApp);
+
+import { initializeApp } from "firebase/app";
+import { getFirestore, collection, addDoc, getDocs } from "firebase/firestore";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyAvOsIabWRaKNBWKwLsYCY5PHlCN_lWwY0",
+  authDomain: "facial-analytics-f8b9e.firebaseapp.com",
+  projectId: "facial-analytics-f8b9e",
+  storageBucket: "facial-analytics-f8b9e.appspot.com",
+  messagingSenderId: "1087200042336",
+  appId: "1:1087200042336:web:c0c22a9037cd8b92f41205"
+};
+
+// Initialize Firebase
+// const app = initializeApp(firebaseConfig);
+// const db = getFirestore(app);
+// console.log(db);
+
+// try {
+//     const docRef = await addDoc(collection(db, "users"), {
+//       first: "James",
+//       last: "Madison",
+//       born: 1760
+//     });
+  
+//     console.log("Document written with ID: ", docRef.id);
+//   } catch (e) {
+//     console.error("Error adding document: ", e);
+// }
+
+// const querySnapshot = await getDocs(collection(db, "users"));
+// querySnapshot.forEach((doc) => {
+//   console.log(`${doc.id} => ${JSON.stringify(doc.data())}`);
+// });
+
+
 const debug = true;
 const SERVER_URL = !debug ? 'https://test.fa.mpeschel10.com' : 'http://localhost:3000';
 
