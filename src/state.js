@@ -98,7 +98,7 @@ const state = {
         ]
     },
 
-    db,
+    app, db,
 
     loginCookie: ['cookieKey', 'cookieValue'],
 
@@ -106,8 +106,6 @@ const state = {
     async login(username, password) {}, // Empty method body so type hints work in vscode
     async fetchUnreadCount() {},
 
-    async addDoc(collectionName, doc) {},
-    async getDocs(collectionName) {}
 };
 
 export function init() {
@@ -139,22 +137,6 @@ export function init() {
         });
         return 3;
     }
-
-    state.addDoc = async (collectionName, doc) => {
-        try {
-            const docRef = await addDoc(collection(state.db, collectionName), doc);
-            console.log("Document written with ID: ", docRef.id);
-        } catch (e) {
-            console.error("Error adding document: ", e);
-        }
-    };
-
-    state.getDocs = collectionName => getDocs(collection(state.db, collectionName));
-
-    // state.forEach = async (collectionName, callback) => {
-    //     const querySnapshot = await state.getDocs(collectionName);
-    //     querySnapshot.forEach(callback);
-    // };
 }
 
 init();
