@@ -1,7 +1,7 @@
 import {Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Camera, CameraType } from 'expo-camera';
 import { useState, useEffect, useRef } from 'react';
-import state from '../state.js';
+import state from '../state';
 
 function CameraYes() {
   const cameraRef = useRef(null);
