@@ -108,6 +108,17 @@ const state = {
 
 };
 
+function getUnreadCountMessages(messages) {
+    const result = messages.reduce((acc, message) => acc + (message.read ? 0 : 1), 0);
+    // console.log(result, "unread for messages", messages);
+    return result;
+}
+
+function getUnreadCountPatients(patients) {
+    console.log("Getting unread count for patients", patients);
+    return patients.reduce((acc, patient) => acc + getUnreadCountMessages(patient.messages), 0);
+}
+
 export function init() {
     state.demoGetUnreadTotal = () => state.demoPatients.reduce(
         (acc, patient) => acc + state.demoGetUnreadPatient(patient), 0
@@ -120,22 +131,13 @@ export function init() {
     state.login = async (username, password) => {
         console.log("Trying to log in");
         state.credentials = {username, password};
-        const credentials = btoa(`${username}:${password}`);
-        const result = await fetch(SERVER_URL + '/api/login.json', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Basic ${credentials}`,
-                }
-        });
-        const setCookie = await result.json();
-        state.loginCookie = parseSetCookie(setCookie);
     };
 
     state.fetchUnreadCount = async () => {
-        await new Promise(resolve => {
-            setTimeout(resolve, 3000);
-        });
-        return 3;
+        const usersSnapshot = await getDocs(collection(state.db, 'users'));
+        const result = getUnreadCountPatients(usersSnapshot.docs.map(doc => doc.data()));
+        // console.log('Fetching unread count', result);
+        return result;
     }
 }
 
