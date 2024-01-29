@@ -6,7 +6,7 @@ import {
     terminate,
 } from 'firebase/firestore';
 
-import state from './state.js';
+import state from './state.mjs';
 
 describe('Firebase', () => {
     const testDoc = {name: 'fewljwkfeewflkjfds'};
