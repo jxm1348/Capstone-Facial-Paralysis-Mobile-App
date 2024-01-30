@@ -5,6 +5,7 @@ import state from '../state';
 import UnreadBadge from '../components/UnreadBadge';
 import globalStyles from '../globalStyles';
 import { useIsFocused } from '@react-navigation/native';
+import PatientsSkeleton from '../skeletons/PatientsSkeleton';
 
 function PatientMessagesPressable({patient, navigation}) {
   const { name } = patient;
@@ -41,13 +42,24 @@ function compareMostRecent(p1, p2) {
 const PatientsScreen = ({ navigation }) => {
   useIsFocused() // Force refresh
 
-  const patientItems = state
-    .demoPatients
+  const [patients, setPatients] = React.useState(null);
+
+  let patientItems;
+  if (patients === null) {
+    patientItems = (<PatientsSkeleton />);
+  } else {
+    patientItems = patients
     .slice()
     .sort(compareMostRecent)
     .map(patient =>
       <PatientMessagesPressable key={patient.name} patient={patient} navigation={navigation}/>
     );
+  }
+
+  React.useEffect(async () => {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    setPatients(state.demoPatients);
+  }, [])
 
   return (
     <ScrollView style={{flexGrow: 1}}>
