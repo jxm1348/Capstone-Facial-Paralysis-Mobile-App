@@ -9,7 +9,7 @@ import { getFirestore, collection, addDoc, getDocs } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAvOsIabWRaKNBWKwLsYCY5PHlCN_lWwY0",
+  apiKey: "AIzaSyA0cVD15lMtM9qYAedfKVvzDYQ6t0WizJs",
   authDomain: "facial-analytics-f8b9e.firebaseapp.com",
   projectId: "facial-analytics-f8b9e",
   storageBucket: "facial-analytics-f8b9e.appspot.com",
