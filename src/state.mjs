@@ -110,12 +110,10 @@ const state = {
 
 function getUnreadCountMessages(messages) {
     const result = messages.reduce((acc, message) => acc + (message.read ? 0 : 1), 0);
-    // console.log(result, "unread for messages", messages);
     return result;
 }
 
 function getUnreadCountPatients(patients) {
-    console.log("Getting unread count for patients", patients);
     return patients.reduce((acc, patient) => acc + getUnreadCountMessages(patient.messages), 0);
 }
 
@@ -136,7 +134,6 @@ export function init() {
     state.fetchUnreadCount = async () => {
         const usersSnapshot = await getDocs(collection(state.db, 'users'));
         const result = getUnreadCountPatients(usersSnapshot.docs.map(doc => doc.data()));
-        // console.log('Fetching unread count', result);
         return result;
     }
 }

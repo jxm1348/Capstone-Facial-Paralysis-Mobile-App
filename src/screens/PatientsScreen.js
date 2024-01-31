@@ -16,7 +16,7 @@ function PatientMessagesPressable({patient, navigation}) {
   const { name } = patient;
   return (
     <Pressable
-      style={styles.patientContainer} onPress={() => navigation.navigate('Patient', {name})}
+      style={styles.patientContainer} onPress={() => navigation.navigate('Patient', {id: patient.id, name})}
     >
     <View style={{flexGrow: 1, marginHorizontal: 25, flexShrink: 1}}>
       <Text style={{fontSize: 35}}>{name}</Text>
@@ -44,11 +44,18 @@ function compareMostRecent(p1, p2) {
   return -p1.latestMessage.localeCompare(p2.latestMessage);
 }
 
+function getDataWithIds(snapshot) {
+  return snapshot.docs.map(document => {
+    const result = document.data();
+    result.id = document.id;
+    return result;
+  });
+}
+
 const PatientsScreen = ({ navigation }) => {
   useIsFocused() // Force refresh
 
   const [patients, setPatients] = React.useState(null);
-  console.log('Patients is', patients);
 
   let patientItems;
   if (patients === null) {
@@ -65,7 +72,7 @@ const PatientsScreen = ({ navigation }) => {
   React.useEffect(() => {
     getDocs(collection(state.db, 'users'))
       .then(usersSnapshot => setPatients(
-        usersSnapshot.docs.map(document => document.data())
+        getDataWithIds(usersSnapshot)
       ));
   }, [])
 

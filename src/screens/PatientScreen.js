@@ -10,11 +10,12 @@ import PatientSkeleton from '../skeletons/PatientSkeleton.mjs';
 const PatientScreen = ({navigation, route}) => {
   useIsFocused();
 
-  const { name } = route.params;
+  const { id, name } = route.params;
 
   const [ patient, setPatient ] = React.useState(null);
   React.useEffect(() => {
-    setPatient(state.demoGetPatientByName(name))
+    // setPatient(state.demoGetPatientByName(name))
+    console.log("Trying to load patient with id", id);
   }, []);
 
   let messageComponents;
@@ -22,7 +23,7 @@ const PatientScreen = ({navigation, route}) => {
     messageComponents = <PatientSkeleton />;
   } else {
     messageComponents = patient.messages.map((message, index) =>
-      (<Pressable key={index} onPress={() => navigation.navigate('Report', {name: patient.name, index})}>
+      (<Pressable key={index} onPress={() => navigation.navigate('Report', {name, index})}>
         <ReportRow {...{message}} />
       </Pressable>)
     );
