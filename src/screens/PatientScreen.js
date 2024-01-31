@@ -10,18 +10,26 @@ const PatientScreen = ({navigation, route}) => {
   useIsFocused();
 
   const { name } = route.params;
-  const patient = state.demoGetPatientByName(name);
-  
-  const messageComponents = patient.messages.map((message, index) =>
-    (<Pressable key={index} onPress={() => navigation.navigate('Report', {name: patient.name, index})}>
-      <ReportRow {...{message}} />
-    </Pressable>)
-  );
-  
-  for (const message of patient.messages) {
-    message.read = true;
-  }
 
+  const [ patient, setPatient ] = React.useState(null);
+  React.useEffect(() => {
+    setPatient(state.demoGetPatientByName(name))
+  }, []);
+
+  let messageComponents;
+  if (patient === null) {
+    messageComponents = <Text>Loading...</Text>;
+  } else {
+    messageComponents = patient.messages.map((message, index) =>
+      (<Pressable key={index} onPress={() => navigation.navigate('Report', {name: patient.name, index})}>
+        <ReportRow {...{message}} />
+      </Pressable>)
+    );
+    for (const message of patient.messages) {
+      message.read = true;
+    }
+  }
+  
   return (
     <View style={{flexGrow: 1}}>
       <Text style={globalStyles.h1}>{name}</Text>
