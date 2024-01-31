@@ -25,7 +25,7 @@ const PatientScreen = ({navigation, route}) => {
     messageComponents = <PatientSkeleton />;
   } else {
     messageComponents = patient.messages.map((message, index) =>
-      (<Pressable key={index} onPress={() => navigation.navigate('Report', {name, index})}>
+      (<Pressable key={index} onPress={() => navigation.navigate('Report', {name, index, id})}>
         <ReportRow {...{message}} />
       </Pressable>)
     );
