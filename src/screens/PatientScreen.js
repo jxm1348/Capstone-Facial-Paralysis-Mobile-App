@@ -1,10 +1,12 @@
 import React from 'react';
 import { Text, View, Pressable, ScrollView } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
-import ReportRow from '../components/ReportRow';
+import { getDoc, doc } from 'firebase/firestore';
 
 import globalStyles from '../globalStyles';
 import state from '../state';
+
+import ReportRow from '../components/ReportRow';
 import PatientSkeleton from '../skeletons/PatientSkeleton.mjs';
 
 const PatientScreen = ({navigation, route}) => {
@@ -14,8 +16,8 @@ const PatientScreen = ({navigation, route}) => {
 
   const [ patient, setPatient ] = React.useState(null);
   React.useEffect(() => {
-    // setPatient(state.demoGetPatientByName(name))
-    console.log("Trying to load patient with id", id);
+    getDoc(doc(state.db, "users", id))
+      .then(document => setPatient(document.data()));
   }, []);
 
   let messageComponents;
