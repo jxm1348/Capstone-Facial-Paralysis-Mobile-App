@@ -5,6 +5,7 @@ import ReportRow from '../components/ReportRow';
 
 import globalStyles from '../globalStyles';
 import state from '../state';
+import PatientSkeleton from '../skeletons/PatientSkeleton.mjs';
 
 const PatientScreen = ({navigation, route}) => {
   useIsFocused();
@@ -18,7 +19,7 @@ const PatientScreen = ({navigation, route}) => {
 
   let messageComponents;
   if (patient === null) {
-    messageComponents = <Text>Loading...</Text>;
+    messageComponents = <PatientSkeleton />;
   } else {
     messageComponents = patient.messages.map((message, index) =>
       (<Pressable key={index} onPress={() => navigation.navigate('Report', {name: patient.name, index})}>
