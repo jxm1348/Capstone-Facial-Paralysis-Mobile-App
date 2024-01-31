@@ -1,10 +1,15 @@
 import React from 'react';
 import { View, Text, StyleSheet, Pressable, Image, ScrollView } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
+
+import {
+  collection,
+  getDocs,
+} from 'firebase/firestore';
 
 import state from '../state';
 import UnreadBadge from '../components/UnreadBadge';
 import globalStyles from '../globalStyles';
-import { useIsFocused } from '@react-navigation/native';
 import PatientsSkeleton from '../skeletons/PatientsSkeleton';
 
 function PatientMessagesPressable({patient, navigation}) {
@@ -43,6 +48,7 @@ const PatientsScreen = ({ navigation }) => {
   useIsFocused() // Force refresh
 
   const [patients, setPatients] = React.useState(null);
+  console.log('Patients is', patients);
 
   let patientItems;
   if (patients === null) {
@@ -56,9 +62,11 @@ const PatientsScreen = ({ navigation }) => {
     );
   }
 
-  React.useEffect(async () => {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setPatients(state.demoPatients);
+  React.useEffect(() => {
+    getDocs(collection(state.db, 'users'))
+      .then(usersSnapshot => setPatients(
+        usersSnapshot.docs.map(document => document.data())
+      ));
   }, [])
 
   return (
