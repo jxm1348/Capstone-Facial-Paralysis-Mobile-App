@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, View, Pressable, ScrollView } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
-import { getDoc, doc } from 'firebase/firestore';
+import { getDoc, doc, updateDoc } from 'firebase/firestore';
 
 import globalStyles from '../globalStyles';
 import state from '../state';
@@ -32,9 +32,13 @@ const PatientScreen = ({navigation, route}) => {
         <ReportRow {...{message}} />
       </Pressable>)
     );
-    for (const message of patient.messages) {
-      message.read = true;
-    }
+
+    patient.messages.forEach(message => message.read = true);
+
+    updateDoc(
+      doc(state.db, 'users', id),
+      {messages:patient.messages}
+    );
   }
   
   return (

@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable, Image, ScrollView } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 
@@ -53,9 +53,9 @@ function getDataWithIds(snapshot) {
 }
 
 const PatientsScreen = ({ navigation }) => {
-  useIsFocused() // Force refresh
+  // useIsFocused(); // Force refresh no longer works for some reason.
 
-  const [patients, setPatients] = React.useState(null);
+  const [patients, setPatients] = useState(null);
 
   let patientItems;
   if (patients === null) {
@@ -69,7 +69,7 @@ const PatientsScreen = ({ navigation }) => {
     );
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     getDocs(collection(state.db, 'users'))
       .then(usersSnapshot => setPatients(
         getDataWithIds(usersSnapshot)
