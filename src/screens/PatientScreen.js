@@ -7,7 +7,10 @@ import globalStyles from '../globalStyles';
 import state from '../state';
 
 import ReportRow from '../components/ReportRow';
-import PatientSkeleton from '../skeletons/PatientSkeleton.mjs';
+
+function PatientSkeleton() {
+    return (<Text>Loading...</Text>);
+}
 
 const PatientScreen = ({navigation, route}) => {
   useIsFocused();
