@@ -43,12 +43,24 @@ function PatientMessagesPressable({patient, navigation}) {
   );
 }
 
-function compareMostRecent(p1, p2) {
+function compareDateAscending(p1, p2) {
   if (p1.latestMessage === null) return 1;
   if (p2.latestMessage === null) return -1;
   return -p1.latestMessage.localeCompare(p2.latestMessage);
 }
-function compareOldest(p1, p2) { return -compareMostRecent(p1, p2); }
+function compareDateDescending(p1, p2) { return -compareDateAscending(p1, p2); }
+
+function compareNameAscending(p1, p2) { return p1.name.localeCompare(p2.name); }
+function compareNameDescending(p1, p2) { return -compareNameAscending(p1, p2); }
+function getSort(sortBy, sortAscending) {
+  if (sortBy === 'date') {
+    return sortAscending ? compareDateAscending : compareDateDescending;
+  } else if (sortBy === 'name') {
+    return sortAscending ? compareNameAscending : compareNameDescending;
+  } else {
+    throw new Error("getSort: Unknown sortBy " + sortBy);
+  }
+}
 
 function getDataWithIds(snapshot) {
   return snapshot.docs.map(document => {
@@ -58,17 +70,14 @@ function getDataWithIds(snapshot) {
   });
 }
 
-function SearchSortBar({onChangeText, searchAscending, setSearchAscending}) {
-  const [sortBy, setSortBy] = useState("date");
-  console.log(sortBy);
-
+function SearchSortBar({onChangeText, searchAscending, setSearchAscending, sortBy, setSortBy}) {
   return (<View style={{flexDirection: 'row'}}>
     <TextInput
       style={styles.inputSearch}
       placeholder="Search"
       onChangeText={(text) => onChangeText(text.toLowerCase())}
     />
-    <Text>Sort by </Text>
+    <View style={{height: 40, justifyContent: 'center'}}><Text>Sort by </Text></View>
     <Picker
       style={{height: 40}}
       selectedValue={sortBy}
@@ -79,7 +88,7 @@ function SearchSortBar({onChangeText, searchAscending, setSearchAscending}) {
       <Picker.Item label="Last Message" value="date" />
       <Picker.Item label="Name" value="name" />
     </Picker>
-    <Pressable style={{justifyContent: 'center', marginLeft: 20}} onPress={() => {setSearchAscending(!searchAscending)}}>
+    <Pressable style={{justifyContent: 'center', marginLeft: 20, height: 40}} onPress={() => {setSearchAscending(!searchAscending)}}>
       <Ionicons
         name={searchAscending ? 'arrow-up-outline' : 'arrow-down-outline'}
         size={32}
@@ -96,6 +105,7 @@ const PatientsScreen = ({ navigation }) => {
   const [ search, setSearch ] = useState("");
 
   const [ searchAscending, setSearchAscending ] = useState(true);
+  const [ sortBy, setSortBy ] = useState("date");
 
   let patientItems;
   if (patients === null) {
@@ -104,7 +114,7 @@ const PatientsScreen = ({ navigation }) => {
     patientItems = patients
     .slice()
     .filter(patient => patient.name.toLowerCase().indexOf(search) >= 0)
-    .sort(searchAscending ? compareMostRecent : compareOldest)
+    .sort(getSort(sortBy, searchAscending))
     .map(patient =>
       <PatientMessagesPressable key={patient.name} patient={patient} navigation={navigation}/>
     );
@@ -122,7 +132,7 @@ const PatientsScreen = ({ navigation }) => {
       <View style={{marginHorizontal: 40, }}>
         
       <Text style={globalStyles.h1}>Patients</Text>
-      <SearchSortBar onChangeText={setSearch} {...{searchAscending, setSearchAscending}} />
+      <SearchSortBar onChangeText={setSearch} {...{searchAscending, setSearchAscending, sortBy, setSortBy}} />
       <View>{patientItems}</View>
       </View>
     </ScrollView>
@@ -142,12 +152,15 @@ const styles = StyleSheet.create({
     width: 90,
     height: 90,
   }, inputSearch: {
-    height: 40,
+    flexGrow: 1,
+    minWidth: 0,
+
     borderColor: 'gray',
     borderWidth: 1,
-    marginBottom: 20,
+    
+    height: 40,
     padding: 10,
-    flexGrow: 1,
+    marginBottom: 20,
     marginRight: 20,
   },
 });
