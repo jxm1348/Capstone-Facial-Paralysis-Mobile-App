@@ -54,6 +54,15 @@ function parseSetCookie(setCookie) {
     return [cookieKey, cookieValue];
 }
 
+export function getUnreadPatient(patient) {
+    let total = 0;
+    for (const key in patient.messages) {
+        total += patient.messages[key].read ? 0 : 1;
+    }
+    return total;
+}
+
+
 const state = {
     demoIsDebug: true,
     demoPatients: [
@@ -81,13 +90,6 @@ const state = {
         {name:'Brad Pitt', thumbnail: placeholderThumbnail, messages: [
         ], latestMessage: null},
       ],
-    demoGetUnreadPatient(patient) {
-        let total = 0;
-        for (const key in patient.messages) {
-            total += patient.messages[key].read ? 0 : 1;
-        }
-        return total;
-    },
 
     patient:{
         workingPhotoSet:[null, null, null, null, null, null, null, ],

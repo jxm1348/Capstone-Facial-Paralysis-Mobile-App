@@ -7,7 +7,7 @@ import {
   getDocs,
 } from 'firebase/firestore';
 
-import state from '../state';
+import state, { getUnreadPatient } from '../state';
 import UnreadBadge from '../components/UnreadBadge';
 import globalStyles from '../globalStyles';
 import PatientsSkeleton from '../skeletons/PatientsSkeleton';
@@ -32,7 +32,7 @@ function PatientMessagesPressable({patient, navigation}) {
           uri: patient.thumbnail,
         }}
       />
-      <UnreadBadge value={state.demoGetUnreadPatient(patient)} />
+      <UnreadBadge value={getUnreadPatient(patient)} />
     </View>
     </Pressable>
   );
