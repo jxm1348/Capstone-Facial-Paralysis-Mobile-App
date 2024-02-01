@@ -52,6 +52,13 @@ function getDataWithIds(snapshot) {
   });
 }
 
+function SearchSortBar() {
+  return (<View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+    <Text>Search bar</Text>
+    <Text>Sort dropdown</Text>
+  </View>)
+}
+
 const PatientsScreen = ({ navigation }) => {
   // useIsFocused(); // Force refresh no longer works for some reason.
 
@@ -77,9 +84,13 @@ const PatientsScreen = ({ navigation }) => {
   }, [])
 
   return (
-    <ScrollView style={{flexGrow: 1}}>
+    <ScrollView style={{flexGrow: 1, }}>
+      <View style={{marginHorizontal: 40, }}>
+        
       <Text style={globalStyles.h1}>Patients</Text>
+      <SearchSortBar />
       <View>{patientItems}</View>
+      </View>
     </ScrollView>
   );
 };
@@ -89,7 +100,6 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       alignItems: 'center',
       marginVertical: 10,
-      marginHorizontal: 40,
       padding: 5,
       borderColor: '#2060dd',
       borderWidth: 2,
