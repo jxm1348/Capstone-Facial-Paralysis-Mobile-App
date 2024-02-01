@@ -64,6 +64,9 @@ function SearchSortBar({onChangeText}) {
       onChangeText={(text) => onChangeText(text.toLowerCase())}
     />
     <Text>Sort dropdown</Text>
+    <View style={{justifyContent: 'center', marginLeft: 20}}>
+      <Text>UP</Text>
+    </View>
   </View>)
 }
 
