@@ -5,6 +5,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import {Picker} from '@react-native-picker/picker';
 import { useIsFocused } from '@react-navigation/native';
 
 import {
@@ -57,10 +58,9 @@ function getDataWithIds(snapshot) {
   });
 }
 
-const upIconName = 'arrow-up-outline';
-const downIconName = 'arrow-down-outline';
-
 function SearchSortBar({onChangeText, searchAscending, setSearchAscending}) {
+  const [sortBy, setSortBy] = useState("date");
+  console.log(sortBy);
 
   return (<View style={{flexDirection: 'row'}}>
     <TextInput
@@ -68,7 +68,17 @@ function SearchSortBar({onChangeText, searchAscending, setSearchAscending}) {
       placeholder="Search"
       onChangeText={(text) => onChangeText(text.toLowerCase())}
     />
-    <Text>Sort dropdown</Text>
+    <Text>Sort by </Text>
+    <Picker
+      style={{height: 40}}
+      selectedValue={sortBy}
+      onValueChange={(itemValue, itemIndex) =>
+        setSortBy(itemValue)
+      }
+    >
+      <Picker.Item label="Last Message" value="date" />
+      <Picker.Item label="Name" value="name" />
+    </Picker>
     <Pressable style={{justifyContent: 'center', marginLeft: 20}} onPress={() => {setSearchAscending(!searchAscending)}}>
       <Ionicons
         name={searchAscending ? 'arrow-up-outline' : 'arrow-down-outline'}
