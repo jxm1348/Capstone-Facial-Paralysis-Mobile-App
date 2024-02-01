@@ -1,5 +1,9 @@
-import { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Pressable, Image, ScrollView } from 'react-native';
+import { useState, useEffect, } from 'react';
+import {
+  View, ScrollView,
+  Text, Image, Pressable, TextInput,
+  StyleSheet,
+} from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 
 import {
@@ -53,8 +57,15 @@ function getDataWithIds(snapshot) {
 }
 
 function SearchSortBar() {
-  return (<View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-    <Text>Search bar</Text>
+  const [ query, setQuery ] = useState('');
+  console.log('Query is', query);
+
+  return (<View style={{flexDirection: 'row'}}>
+    <TextInput
+      style={styles.inputSearch}
+      placeholder="Search"
+      onChangeText={(text) => setQuery(text)}
+    />
     <Text>Sort dropdown</Text>
   </View>)
 }
@@ -107,7 +118,15 @@ const styles = StyleSheet.create({
   }, patientThumbnail: {
     width: 90,
     height: 90,
-  }
+  }, inputSearch: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 20,
+    padding: 10,
+    flexGrow: 1,
+    marginRight: 20,
+  },
 });
 
 export default PatientsScreen;
