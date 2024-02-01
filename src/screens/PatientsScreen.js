@@ -4,6 +4,7 @@ import {
   Text, Image, Pressable, TextInput,
   StyleSheet,
 } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useIsFocused } from '@react-navigation/native';
 
 import {
@@ -46,6 +47,7 @@ function compareMostRecent(p1, p2) {
   if (p2.latestMessage === null) return -1;
   return -p1.latestMessage.localeCompare(p2.latestMessage);
 }
+function compareOldest(p1, p2) { return -compareMostRecent(p1, p2); }
 
 function getDataWithIds(snapshot) {
   return snapshot.docs.map(document => {
@@ -55,7 +57,10 @@ function getDataWithIds(snapshot) {
   });
 }
 
-function SearchSortBar({onChangeText}) {
+const upIconName = 'arrow-up-outline';
+const downIconName = 'arrow-down-outline';
+
+function SearchSortBar({onChangeText, searchAscending, setSearchAscending}) {
 
   return (<View style={{flexDirection: 'row'}}>
     <TextInput
@@ -64,9 +69,13 @@ function SearchSortBar({onChangeText}) {
       onChangeText={(text) => onChangeText(text.toLowerCase())}
     />
     <Text>Sort dropdown</Text>
-    <View style={{justifyContent: 'center', marginLeft: 20}}>
-      <Text>UP</Text>
-    </View>
+    <Pressable style={{justifyContent: 'center', marginLeft: 20}} onPress={() => {setSearchAscending(!searchAscending)}}>
+      <Ionicons
+        name={searchAscending ? 'arrow-up-outline' : 'arrow-down-outline'}
+        size={32}
+        color="green"
+      />
+    </Pressable>
   </View>)
 }
 
@@ -76,6 +85,8 @@ const PatientsScreen = ({ navigation }) => {
   const [ patients, setPatients ] = useState(null);
   const [ search, setSearch ] = useState("");
 
+  const [ searchAscending, setSearchAscending ] = useState(true);
+
   let patientItems;
   if (patients === null) {
     patientItems = (<PatientsSkeleton />);
@@ -83,7 +94,7 @@ const PatientsScreen = ({ navigation }) => {
     patientItems = patients
     .slice()
     .filter(patient => patient.name.toLowerCase().indexOf(search) >= 0)
-    .sort(compareMostRecent)
+    .sort(searchAscending ? compareMostRecent : compareOldest)
     .map(patient =>
       <PatientMessagesPressable key={patient.name} patient={patient} navigation={navigation}/>
     );
@@ -101,7 +112,7 @@ const PatientsScreen = ({ navigation }) => {
       <View style={{marginHorizontal: 40, }}>
         
       <Text style={globalStyles.h1}>Patients</Text>
-      <SearchSortBar onChangeText={setSearch} />
+      <SearchSortBar onChangeText={setSearch} {...{searchAscending, setSearchAscending}} />
       <View>{patientItems}</View>
       </View>
     </ScrollView>
