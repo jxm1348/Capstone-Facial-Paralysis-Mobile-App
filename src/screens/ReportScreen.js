@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Text, View, Image, StyleSheet, Dimensions, ScrollView } from 'react-native';
-import { getDoc, doc } from 'firebase/firestore';
+import { getDoc, doc, updateDoc } from 'firebase/firestore';
 
 import globalStyles from '../globalStyles';
 import state from '../state';
@@ -9,9 +9,19 @@ function ReportSkeleton() {
     return <Text>Loading...</Text>;
 }
 
-function Report(message) {
-    if (message === undefined) return <ReportSkeleton />;
-    message.deepRead = true;
+function Report(patient, index) {
+    if (!patient) return <ReportSkeleton />;
+    const message = patient.messages[index];
+
+    if (!message.deepRead) {
+        const key = `messages.${index}.deepRead`;
+        const query = {};
+        query[key] = true;
+        
+        updateDoc(doc(state.db, 'users', patient.id), query).then(result => {
+            console.log("Performed updateDoc with messages", patient.messages);
+        });
+    }
     
     const {width, height} = Dimensions.get('window');
     
@@ -34,13 +44,17 @@ export default function ReportScreen({navigation, route}) {
     const { params } = route;
     const { name, id, index } = params;
 
-    const [ patient, setPatient ] = useState(null);
+    const [ patient, setPatient ] = useState(undefined);
     useEffect(() => {
         getDoc(doc(state.db, 'users', id))
-            .then(snapshot => setPatient(snapshot.data()));
+            .then(snapshot => {
+                const result = snapshot.data();
+                result.id = snapshot.id;
+                setPatient(result);
+            });
     }, []);
 
-    const report = Report(patient?.messages[index]);
+    const report = Report(patient, index);
     
     return (<ScrollView style={{flexGrow: 1}}>
         <Text style={globalStyles.h2}>Report from {name}</Text>

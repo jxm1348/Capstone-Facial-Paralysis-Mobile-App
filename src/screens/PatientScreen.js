@@ -27,18 +27,22 @@ const PatientScreen = ({navigation, route}) => {
   if (patient === null) {
     messageComponents = <PatientSkeleton />;
   } else {
-    messageComponents = patient.messages.map((message, index) =>
+    const messagesEntries = Object.entries(patient.messages);
+    messageComponents = messagesEntries.map(([index, message]) =>
       (<Pressable key={index} onPress={() => navigation.navigate('Report', {name, index, id})}>
         <ReportRow {...{message}} />
       </Pressable>)
     );
 
-    patient.messages.forEach(message => message.read = true);
+    messagesEntries.forEach(([index, message]) => {
+      if (message.read) return;
+      const key = `messages.${index}.read`;
+      const query = {};
+      query[key] = true;
+      
+      updateDoc(doc(state.db, 'users', id), query);
+    });
 
-    updateDoc(
-      doc(state.db, 'users', id),
-      {messages:patient.messages}
-    );
   }
   
   return (

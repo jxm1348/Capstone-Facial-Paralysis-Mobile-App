@@ -83,8 +83,8 @@ const state = {
       ],
     demoGetUnreadPatient(patient) {
         let total = 0;
-        for (const {read} of patient.messages) {
-            total += read ? 0 : 1;
+        for (const key in patient.messages) {
+            total += patient.messages[key].read ? 0 : 1;
         }
         return total;
     },
@@ -109,7 +109,10 @@ const state = {
 };
 
 function getUnreadCountMessages(messages) {
-    const result = messages.reduce((acc, message) => acc + (message.read ? 0 : 1), 0);
+    let result = 0;
+    for (const key in messages) {
+        result += messages[key].read ? 0 : 1;
+    }
     return result;
 }
 
