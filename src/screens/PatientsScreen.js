@@ -20,7 +20,8 @@ function PatientMessagesPressable({patient, navigation}) {
   const { name } = patient;
   return (
     <Pressable
-      style={styles.patientContainer} onPress={() => navigation.navigate('Patient', {id: patient.id, name})}
+      style={styles.patientContainer}
+      onPress={() => navigation.navigate('Patient', {id: patient.id, name})}
     >
     <View style={{flexGrow: 1, marginHorizontal: 25, flexShrink: 1}}>
       <Text style={{fontSize: 35}}>{name}</Text>
@@ -32,9 +33,7 @@ function PatientMessagesPressable({patient, navigation}) {
     <View>
       <Image
         style={styles.patientThumbnail}
-        source={{
-          uri: patient.thumbnail,
-        }}
+        source={{ uri: patient.thumbnail }}
       />
       <UnreadBadge value={getUnreadPatient(patient)} />
     </View>
@@ -56,15 +55,13 @@ function getDataWithIds(snapshot) {
   });
 }
 
-function SearchSortBar() {
-  const [ query, setQuery ] = useState('');
-  console.log('Query is', query);
+function SearchSortBar({onChangeText}) {
 
   return (<View style={{flexDirection: 'row'}}>
     <TextInput
       style={styles.inputSearch}
       placeholder="Search"
-      onChangeText={(text) => setQuery(text)}
+      onChangeText={(text) => onChangeText(text.toLowerCase())}
     />
     <Text>Sort dropdown</Text>
   </View>)
@@ -73,7 +70,8 @@ function SearchSortBar() {
 const PatientsScreen = ({ navigation }) => {
   // useIsFocused(); // Force refresh no longer works for some reason.
 
-  const [patients, setPatients] = useState(null);
+  const [ patients, setPatients ] = useState(null);
+  const [ search, setSearch ] = useState("");
 
   let patientItems;
   if (patients === null) {
@@ -81,6 +79,7 @@ const PatientsScreen = ({ navigation }) => {
   } else {
     patientItems = patients
     .slice()
+    .filter(patient => patient.name.toLowerCase().indexOf(search) >= 0)
     .sort(compareMostRecent)
     .map(patient =>
       <PatientMessagesPressable key={patient.name} patient={patient} navigation={navigation}/>
@@ -99,7 +98,7 @@ const PatientsScreen = ({ navigation }) => {
       <View style={{marginHorizontal: 40, }}>
         
       <Text style={globalStyles.h1}>Patients</Text>
-      <SearchSortBar />
+      <SearchSortBar onChangeText={setSearch} />
       <View>{patientItems}</View>
       </View>
     </ScrollView>
