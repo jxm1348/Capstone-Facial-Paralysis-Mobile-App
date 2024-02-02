@@ -19,9 +19,8 @@ const placeholderImages = [
 
 async function deleteCollection(collectionName) {
     const querySnapshot = await getDocs(collection(state.db, collectionName));
-    console.debug(`Deleting collection ${collectionName} with ${querySnapshot.docs.length} entries.`);
     const deletePromises = querySnapshot.docs.map(document => deleteDoc(
-        doc(state.db, 'users', document.id)
+        doc(state.db, collectionName, document.id)
     ));
     await Promise.all(deletePromises);
 }
@@ -78,6 +77,7 @@ const tables = {
 // users, messages
 async function resetTable(name) {
     const table = tables[name];
+    console.debug(`Deleting collection ${name}.`);
     await deleteCollection(name);
 
     console.log('Inserting', table.length, 'records into collection', name);
