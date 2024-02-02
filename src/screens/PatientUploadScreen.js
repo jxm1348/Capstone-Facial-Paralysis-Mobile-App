@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView, TouchableHighlight, Text, StyleSheet, Image } from 'react-native';
+import { View, ScrollView, TouchableHighlight, Text, StyleSheet, Image, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import ActionButton from '../components/ActionButton';
 import NavigationBar from '../components/NavigationBar';
@@ -39,7 +39,7 @@ const PatientUploadScreen = () => {
             key={item}
             style={styles.touchableItem}
             underlayColor="#ddd"
-            onPress={() => navigateToPatientUploadPicture(item)}
+            onPress={() => navigation.navigate('PatientCamera', {item})}
           >
             <>
               <Image source={images[index % images.length]} style={styles.itemImage} />
@@ -47,6 +47,13 @@ const PatientUploadScreen = () => {
             </>
           </TouchableHighlight>
         ))}
+        <Button 
+        title="Upload"
+        style={
+          {
+            marginTop: 3,
+          }
+        }>Upload</Button>
       </ScrollView>
       <ActionButton title="Go Back" onPress={() => navigation.goBack()} />
     </View>
