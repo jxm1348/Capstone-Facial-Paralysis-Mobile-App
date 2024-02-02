@@ -7,6 +7,7 @@ import globalStyles from '../globalStyles';
 import state from '../state';
 
 import ReportRow from '../components/ReportRow';
+import { setPatientRead } from '../state.mjs';
 
 function PatientSkeleton() {
     return (<Text>Loading...</Text>);
@@ -20,7 +21,11 @@ const PatientScreen = ({navigation, route}) => {
   const [ patient, setPatient ] = React.useState(null);
   React.useEffect(() => {
     getDoc(doc(state.db, "users", id))
-      .then(document => setPatient(document.data()));
+      .then(document => {
+        const result = document.data();
+        result.id = id;
+        setPatient(result);
+      });
   }, []);
 
   let messageComponents;
@@ -34,15 +39,7 @@ const PatientScreen = ({navigation, route}) => {
       </Pressable>)
     );
 
-    messagesEntries.forEach(([index, message]) => {
-      if (message.read) return;
-      const key = `messages.${index}.read`;
-      const query = {};
-      query[key] = true;
-      
-      updateDoc(doc(state.db, 'users', id), query);
-    });
-
+    setPatientRead(patient);
   }
   
   return (
