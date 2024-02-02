@@ -3,7 +3,11 @@
 // import firebase from '@react-native-firebase/app';
 
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, getDocs } from "firebase/firestore";
+import {
+    getFirestore,
+    getDocs,
+    collection, query, where,
+} from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -48,7 +52,6 @@ const state = {
     credentials: {username: null, password: null},
     async login(username, password) {}, // Empty method body so type hints work in vscode
     async fetchUnreadCount() {},
-
 };
 
 function getUnreadCountMessages(messages) {
@@ -74,7 +77,29 @@ export function init() {
         const result = getUnreadCountPatients(usersSnapshot.docs.map(doc => doc.data()));
         return result;
     }
+
 }
+
+export const getPatientsIdsUnread = async () => {
+    const usersSnapshot = await getDocs(collection(state.db, 'users'));
+    const q = query(collection(state.db, 'messages'), where('to', '==', 'Jane doe'));
+    const messagesSnapshot = await getDocs(q);
+    const userCounts = {};
+    for (const message of messagesSnapshot.docs.map(d => d.data())) {
+        if (message.read) continue;
+        if (userCounts[message.from] === undefined)
+            userCounts[message.from] = 0;
+        userCounts[message.from]++;
+    }
+    
+
+    return usersSnapshot.docs.map(userDocument => {
+        const user = userDocument.data();
+        user.id = userDocument.id;
+        user.unread = userCounts[user.name] ?? 0;
+        return user;
+    });
+};
 
 init();
 export default state;
