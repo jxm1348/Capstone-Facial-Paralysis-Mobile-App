@@ -53,6 +53,7 @@ const state = {
     credentials: {username: null, password: null},
     async login(username, password) {}, // Empty method body so type hints work in vscode
     async fetchUnreadCount() {},
+    username: 'Jane doe',
 };
 
 function getUnreadCountMessages(messages) {

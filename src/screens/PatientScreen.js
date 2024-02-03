@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Text, View, Pressable, ScrollView } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
-import { getDoc, doc, updateDoc } from 'firebase/firestore';
+import {
+  getDoc, getDocs,
+  doc, collection, query,
+  where, and, or,
+} from 'firebase/firestore';
 
 import globalStyles from '../globalStyles';
 import state from '../state';
@@ -19,13 +23,28 @@ const PatientScreen = ({navigation, route}) => {
   const { id, name } = route.params;
 
   const [ patient, setPatient ] = useState(null);
+  const [ messages, setMessages ] = useState(null);
+  console.log("messages is", messages);
+  
   useEffect(() => {
-    getDoc(doc(state.db, "users", id))
-      .then(document => {
-        const result = document.data();
-        result.id = id;
-        setPatient(result);
-      });
+    getDoc(doc(state.db, 'users', id))
+    .then(document => {
+      const result = document.data();
+      result.id = id;
+      setPatient(result);
+    });
+    
+    getDocs(query(
+      collection(state.db, 'messages'),
+      or(
+        and(where('from', '==', name), where('to', '==', state.username),),
+        and(where('from', '==', state.username), where('to', '==', name),),
+      )
+    )).then(
+      querySnapshot => {setMessages(
+        querySnapshot.docs.map(document => document.data())
+      )}
+    )
   }, []);
 
   let messageComponents;
