@@ -17,6 +17,10 @@ function PatientSkeleton() {
     return (<Text>Loading...</Text>);
 }
 
+function compareDateDescending(m1, m2) {
+  return m2.date - m1.date;
+}
+
 const ClinicianPatientScreen = ({navigation, route}) => {
   useIsFocused();
 
@@ -55,11 +59,13 @@ const ClinicianPatientScreen = ({navigation, route}) => {
   if (patient === null || messages === undefined) {
     messageComponents = <PatientSkeleton />;
   } else {
-    messageComponents = messages.map((message, index) =>
-      (<Pressable key={message.id} onPress={() => navigation.navigate('Report', {name, id: message.id})}>
-        <ReportRow {...{message}} />
-      </Pressable>)
-    );
+    messageComponents = messages
+      .sort(compareDateDescending)
+      .map((message, index) =>
+        (<Pressable key={message.id} onPress={() => navigation.navigate('Report', {name, id: message.id})}>
+          <ReportRow {...{message}} />
+        </Pressable>)
+      );
 
     setPatientRead(patient);
   }
