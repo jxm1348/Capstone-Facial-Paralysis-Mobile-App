@@ -37,6 +37,7 @@ const defaultUsers = [
 
 const defaultMessages = [
     {date: new Date('Jan 20, 2024').getTime(), from: 'Mark Peschel', to: 'Jane doe', read: false, deepRead: false, message: '', images: placeholderImages},
+    {date: new Date('Jan 19, 2024').getTime(), from: 'Jane doe', to: 'Mark Peschel', read: true, deepRead: true, message: 'How is the soreness we discussed doing?', images: []},
     {date: new Date('Jan 15, 2024').getTime(), from: 'Mark Peschel', to: 'Jane doe', read: true, deepRead: true, message: 'Test message without images.', images: []},
     {date: new Date('Jan 15, 2024').getTime(), from: 'Mark Peschel', to: 'Fake user who does not eixst', read: false, deepRead: false, message: 'Test message that should never be visible.', images: []},
     {date: new Date('Jan 13, 2024').getTime(), from: 'Mark Peschel', to: 'Jane doe', read: true, deepRead: true, message: '', images: placeholderImages},
