@@ -5,8 +5,9 @@
 import { initializeApp } from "firebase/app";
 import {
     getFirestore,
-    getDocs,
-    collection, query, where, updateDoc, doc,
+    getDocs, updateDoc,
+    collection, query, doc,
+    and, where,
 } from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -101,14 +102,16 @@ export const getPatientsIdsUnread = async () => {
     });
 };
 
-export const setPatientRead = (patient) => {
-    Object.entries(patient.messages).forEach(([index, message]) => {
-        if (message.read) return;
-        const key = `messages.${index}.read`;
-        const query = {};
-        query[key] = true;
-        
-        updateDoc(doc(db, 'users', patient.id), query);
+export const setPatientRead = async (patient) => {
+    const q = query(
+        collection(db, 'messages'),
+        and(where('from', '==', patient.name), where('to', '==', 'Jane doe')),
+    );
+    
+    const messages = await getDocs(q);
+    messages.docs.forEach(document => {
+        if (document.data().read) return;
+        updateDoc(doc(db, 'messages', document.id), {read: true});
     });
 }
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
 import { Text, View, Pressable, ScrollView } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { getDoc, doc, updateDoc } from 'firebase/firestore';
@@ -18,8 +18,8 @@ const PatientScreen = ({navigation, route}) => {
 
   const { id, name } = route.params;
 
-  const [ patient, setPatient ] = React.useState(null);
-  React.useEffect(() => {
+  const [ patient, setPatient ] = useState(null);
+  useEffect(() => {
     getDoc(doc(state.db, "users", id))
       .then(document => {
         const result = document.data();
