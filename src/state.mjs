@@ -83,6 +83,7 @@ export function init() {
     state.login = async (username, password) => {
         console.log("Trying to log in");
         state.credentials = {username, password};
+        state.username = username;
     };
 }
 
