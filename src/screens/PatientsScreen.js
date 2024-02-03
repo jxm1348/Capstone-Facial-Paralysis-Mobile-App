@@ -8,12 +8,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import {Picker} from '@react-native-picker/picker';
 import { useIsFocused } from '@react-navigation/native';
 
-import {
-  collection,
-  getDocs,
-} from 'firebase/firestore';
-
-import state, { getUnreadPatient } from '../state';
+import { getPatientsIdsUnread } from '../state';
 import UnreadBadge from '../components/UnreadBadge';
 import globalStyles from '../globalStyles';
 import PatientsSkeleton from '../skeletons/PatientsSkeleton';
@@ -37,7 +32,7 @@ function PatientMessagesPressable({patient, navigation}) {
         style={styles.patientThumbnail}
         source={{ uri: patient.thumbnail }}
       />
-      <UnreadBadge value={getUnreadPatient(patient)} />
+      <UnreadBadge value={patient.unread} />
     </View>
     </Pressable>
   );
@@ -60,14 +55,6 @@ function getSort(sortBy, sortAscending) {
   } else {
     throw new Error("getSort: Unknown sortBy " + sortBy);
   }
-}
-
-function getDataWithIds(snapshot) {
-  return snapshot.docs.map(document => {
-    const result = document.data();
-    result.id = document.id;
-    return result;
-  });
 }
 
 function SearchSortBar({onChangeText, searchAscending, setSearchAscending, sortBy, setSortBy}) {
@@ -121,10 +108,7 @@ const PatientsScreen = ({ navigation }) => {
   }
 
   useEffect(() => {
-    getDocs(collection(state.db, 'users'))
-      .then(usersSnapshot => setPatients(
-        getDataWithIds(usersSnapshot)
-      ));
+    getPatientsIdsUnread().then(setPatients);
   }, [])
 
   return (

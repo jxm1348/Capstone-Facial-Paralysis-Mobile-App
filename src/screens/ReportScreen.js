@@ -9,17 +9,12 @@ function ReportSkeleton() {
     return <Text>Loading...</Text>;
 }
 
-function Report(patient, index) {
-    if (!patient) return <ReportSkeleton />;
-    const message = patient.messages[index];
+function Report(message) {
+    if (!message) return <ReportSkeleton />;
 
     if (!message.deepRead) {
-        const key = `messages.${index}.deepRead`;
-        const query = {};
-        query[key] = true;
-        
-        updateDoc(doc(state.db, 'users', patient.id), query).then(result => {
-            console.log("Performed updateDoc with messages", patient.messages);
+        updateDoc(doc(state.db, 'messages', message.id), {deepRead:true}).then(result => {
+            console.log("Set deepRead on message", message.id);
         });
     }
     
@@ -34,27 +29,28 @@ function Report(patient, index) {
         <View style={styles.images}>
             {imageComponents}
         </View>
-        <View style={{display: message.message !== null ? 'flex' : 'none'}}>
+        {message.message !== null && 
             <Text style={globalStyles.h2}>{message.message}</Text>
-        </View>
+        }
     </>);
 }
 
 export default function ReportScreen({navigation, route}) {
     const { params } = route;
-    const { name, id, index } = params;
+    const { name, id } = params;
 
-    const [ patient, setPatient ] = useState(undefined);
+    const [ message, setMessage ] = useState(undefined);
+    
     useEffect(() => {
-        getDoc(doc(state.db, 'users', id))
+        getDoc(doc(state.db, 'messages', id))
             .then(snapshot => {
                 const result = snapshot.data();
                 result.id = snapshot.id;
-                setPatient(result);
-            });
+                setMessage(result);
+            })
     }, []);
 
-    const report = Report(patient, index);
+    const report = Report(message);
     
     return (<ScrollView style={{flexGrow: 1}}>
         <Text style={globalStyles.h2}>Report from {name}</Text>
