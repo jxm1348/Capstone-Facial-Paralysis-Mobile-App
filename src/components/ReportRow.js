@@ -14,7 +14,7 @@ function ReportRow({message}) {
                 <ReportTile key={source} source={source} />
             )}
         </View>
-        <Text>{message.date}</Text>
+        <Text>{new Date(message.date).toString()}</Text>
         <Text style={{display: message.message === null ? 'none' : 'flex'}}>
             {message.message}
         </Text>

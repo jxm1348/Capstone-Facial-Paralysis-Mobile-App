@@ -26,45 +26,27 @@ async function deleteCollection(collectionName) {
 }
 
 const defaultUsers = [
-    {name:'Owen Wilson', thumbnail: placeholderThumbnail, messages: [
-    ], latestMessage: null},
-    {
-        name:'Mark Peschel', thumbnail: placeholderThumbnail, messages: {
-            0: {date: 'Jan 20, 2024', read: false, deepRead: false, message: '', images: placeholderImages},
-            1: {date: 'Jan 15, 2024', read: true, deepRead: true, message: 'Test message without images.', images: []},
-            2: {date: 'Jan 13, 2024', read: true, deepRead: true, message: '', images: placeholderImages},
-            3: {date: 'Jan 6, 2024', read: true, deepRead: true, message: '', images: placeholderImages},
-            4: {date: 'Dec 30, 2023', read: true, deepRead: true, message: '', images: placeholderImages},
-            5: {date: 'Dec 23, 2023', read: true, deepRead: true, message: '', images: placeholderImages},
-            6: {date: 'Dec 16, 2023', read: true, deepRead: true, message: '', images: placeholderImages},
-        }, latestMessage: '2024-01-20'
-    },
-    {name:'Gabriel Marx', thumbnail: placeholderThumbnail, messages: {
-        0: {date: 'Jan 6, 2024', read: true, deepRead: true, message: 'Hi.', images: placeholderImages},
-    }, latestMessage: '2024-01-06'},
-    {name:'John doe', thumbnail: placeholderThumbnail, messages: {
-        0: {date: 'Jan 19, 2024, 3:38 pm', read: false, deepRead: false, message: 'Please inore my last message. Was a mosquito bite.', images: placeholderImages},
-        1: {date: 'Jan 19, 2024, 3:17 pm', read: false, deepRead: false, message: 'Strange swelling and itchy redness above my right eyebrow. Did you put in more botulin there last time? I hope it\s not an allergy. I just worry because I know allergies tend to get worse if every time you\'re exposed. That might juts be for bee stings, though.', images: placeholderImages},
-    }, latestMessage: '2024-01-19'},
-    {name:'Denzel W', thumbnail: placeholderThumbnail, messages: [
-    ], latestMessage: null},
-    {name:'Ameila Earhart', thumbnail: placeholderThumbnail, messages: [
-    ], latestMessage: null},
-    {name:'Brad Pitt', thumbnail: placeholderThumbnail, messages: [
-    ], latestMessage: null},
+    {name:'Owen Wilson', thumbnail: placeholderThumbnail, latestMessage: null},
+    {name:'Mark Peschel', thumbnail: placeholderThumbnail, latestMessage: '2024-01-20'},
+    {name:'Gabriel Marx', thumbnail: placeholderThumbnail, latestMessage: '2024-01-06'},
+    {name:'John doe', thumbnail: placeholderThumbnail, latestMessage: '2024-01-19'},
+    {name:'Denzel W', thumbnail: placeholderThumbnail, latestMessage: null},
+    {name:'Ameila Earhart', thumbnail: placeholderThumbnail, latestMessage: null},
+    {name:'Brad Pitt', thumbnail: placeholderThumbnail, latestMessage: null},
 ];
 
 const defaultMessages = [
-    {date: 'Jan 20, 2024', from: 'Mark Peschel', to: 'Jane doe', read: false, deepRead: false, message: '', images: placeholderImages},
-    {date: 'Jan 15, 2024', from: 'Mark Peschel', to: 'Jane doe', read: true, deepRead: true, message: 'Test message without images.', images: []},
-    {date: 'Jan 13, 2024', from: 'Mark Peschel', to: 'Jane doe', read: true, deepRead: true, message: '', images: placeholderImages},
-    {date:  'Jan 6, 2024', from: 'Mark Peschel', to: 'Jane doe', read: true, deepRead: true, message: '', images: placeholderImages},
-    {date: 'Dec 30, 2023', from: 'Mark Peschel', to: 'Jane doe', read: true, deepRead: true, message: '', images: placeholderImages},
-    {date: 'Dec 23, 2023', from: 'Mark Peschel', to: 'Jane doe', read: true, deepRead: true, message: '', images: placeholderImages},
-    {date: 'Dec 16, 2023', from: 'Mark Peschel', to: 'Jane doe', read: true, deepRead: true, message: '', images: placeholderImages},
-    {date:  'Jan 6, 2024', from: 'Gabriel Marx', to: 'Jane doe', read: true, deepRead: true, message: 'Hi.', images: placeholderImages},
-    {date: 'Jan 19, 2024, 3:38 pm', read: false, from: 'John doe', to: 'Jane doe', deepRead: false, message: 'Please inore my last message. Was a mosquito bite.', images: placeholderImages},
-    {date: 'Jan 19, 2024, 3:17 pm', read: false, from: 'John doe', to: 'Jane doe', deepRead: false, message: 'Strange swelling and itchy redness above my right eyebrow. Did you put in more botulin there last time? I hope it\s not an allergy. I just worry because I know allergies tend to get worse if every time you\'re exposed. That might juts be for bee stings, though.', images: placeholderImages},
+    {date: new Date('Jan 20, 2024').getTime(), from: 'Mark Peschel', to: 'Jane doe', read: false, deepRead: false, message: '', images: placeholderImages},
+    {date: new Date('Jan 15, 2024').getTime(), from: 'Mark Peschel', to: 'Jane doe', read: true, deepRead: true, message: 'Test message without images.', images: []},
+    {date: new Date('Jan 15, 2024').getTime(), from: 'Mark Peschel', to: 'Fake user who does not eixst', read: false, deepRead: false, message: 'Test message that should never be visible.', images: []},
+    {date: new Date('Jan 13, 2024').getTime(), from: 'Mark Peschel', to: 'Jane doe', read: true, deepRead: true, message: '', images: placeholderImages},
+    {date:  new Date('Jan 6, 2024').getTime(), from: 'Mark Peschel', to: 'Jane doe', read: true, deepRead: true, message: '', images: placeholderImages},
+    {date: new Date('Dec 30, 2023').getTime(), from: 'Mark Peschel', to: 'Jane doe', read: true, deepRead: true, message: '', images: placeholderImages},
+    {date: new Date('Dec 23, 2023').getTime(), from: 'Mark Peschel', to: 'Jane doe', read: true, deepRead: true, message: '', images: placeholderImages},
+    {date: new Date('Dec 16, 2023').getTime(), from: 'Mark Peschel', to: 'Jane doe', read: true, deepRead: true, message: '', images: placeholderImages},
+    {date:  new Date('Jan 6, 2024').getTime(), from: 'Gabriel Marx', to: 'Jane doe', read: true, deepRead: true, message: 'Hi.', images: placeholderImages},
+    {date: new Date('Jan 19, 2024, 3:38 pm').getTime(), read: false, from: 'John doe', to: 'Jane doe', deepRead: false, message: 'Please inore my last message. Was a mosquito bite.', images: placeholderImages},
+    {date: new Date('Jan 19, 2024, 3:17 pm').getTime(), read: false, from: 'John doe', to: 'Jane doe', deepRead: false, message: 'Strange swelling and itchy redness above my right eyebrow. Did you put in more botulin there last time? I hope it\s not an allergy. I just worry because I know allergies tend to get worse if every time you\'re exposed. That might juts be for bee stings, though.', images: placeholderImages},
 ];
 
 const tables = {
