@@ -52,7 +52,6 @@ const state = {
 
     credentials: {username: null, password: null},
     async login(username, password) {}, // Empty method body so type hints work in vscode
-    async fetchUnreadCount() {},
     username: 'Jane doe',
 };
 
@@ -68,18 +67,23 @@ function getUnreadCountPatients(patients) {
     return patients.reduce((acc, patient) => acc + getUnreadCountMessages(patient.messages), 0);
 }
 
+export const fetchUnreadCount = async () => {
+    const messagesSnapshot = await getDocs(query(
+        collection(state.db, 'messages'),
+        and(
+            where('to', '==', state.username),
+            where('read', '==', false),
+        )
+    ));
+    console.log("Got unread count ", messagesSnapshot.docs.length);
+    return messagesSnapshot.docs.length;
+}
+
 export function init() {
     state.login = async (username, password) => {
         console.log("Trying to log in");
         state.credentials = {username, password};
     };
-
-    state.fetchUnreadCount = async () => {
-        const usersSnapshot = await getDocs(collection(state.db, 'users'));
-        const result = getUnreadCountPatients(usersSnapshot.docs.map(doc => doc.data()));
-        return result;
-    }
-
 }
 
 export const getPatientsIdsUnread = async () => {

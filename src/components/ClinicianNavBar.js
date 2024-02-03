@@ -1,6 +1,6 @@
 import { View, Button, StyleSheet } from "react-native";
 
-import state from "../state";
+import { fetchUnreadCount } from "../state";
 import FetchUnreadBadge from "./FetchUnreadBadge";
 
 function ClinicianNavBar({navigation}) {
@@ -9,7 +9,7 @@ function ClinicianNavBar({navigation}) {
             <Button title="Home" onPress={() => navigation.navigate("Clinician Home")}/>
             <View>
                 <Button title="Patients" onPress={() => navigation.navigate("Patients")} />
-                <FetchUnreadBadge fetchValue={state.fetchUnreadCount} />
+                <FetchUnreadBadge fetchValue={fetchUnreadCount} />
             </View>
             <Button title="Options" onPress={() => navigation.navigate("Clinician Home")}/>
         </View>
