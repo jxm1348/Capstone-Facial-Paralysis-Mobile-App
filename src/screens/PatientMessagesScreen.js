@@ -1,6 +1,9 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
+import { getDocs, collection, query, where, or } from 'firebase/firestore';
+
 import NavigationBar from '../components/NavigationBar';
+import state, { db } from '../state';
 
 const PatientMessagesScreen = ({ navigation }) => {
   const buttons = [
@@ -8,10 +11,26 @@ const PatientMessagesScreen = ({ navigation }) => {
   ];
 
   // Sample array of messages
-  const messages = [
+  const oldMessages = [
     { id: 1, sender: 'Sender 1', message: 'Message 1 content.' },
     { id: 2, sender: 'Sender 2', message: 'Message 2 content.' },
   ];
+
+  const [ messages, setMessages ] = useState(null);
+  useEffect(() => {
+    getDocs(query(
+      collection(db, 'messages'),
+      or(where('from', '==', state.username), where('to', '==', state.username))
+    )).then(querySnapshot => {
+      setMessages(querySnapshot.docs.map(document => {
+        const result = document.data();
+        result.id = document.id;
+        return result;
+      }))
+    })
+  }, []);
+
+  console.log("Messages are", messages);
 
   const navigateToMessage = (message) => {
     navigation.navigate('PatientMessage', { message });
@@ -21,7 +40,7 @@ const PatientMessagesScreen = ({ navigation }) => {
     <View style={styles.container}>
       <View style={styles.listView}>
         <FlatList
-          data={messages}
+          data={oldMessages}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <TouchableOpacity
