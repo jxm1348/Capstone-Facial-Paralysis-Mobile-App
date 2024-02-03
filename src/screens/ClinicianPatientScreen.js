@@ -1,17 +1,16 @@
-import { useEffect, useState } from 'react';
-import { Text, View, Pressable, ScrollView } from 'react-native';
+import { useEffect, useState, useRef } from 'react';
+import { Text, View, Pressable, ScrollView, TextInput } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import {
-  getDoc, getDocs,
+  getDoc, getDocs, addDoc,
   doc, collection, query,
   where, and, or,
 } from 'firebase/firestore';
 
 import globalStyles from '../globalStyles';
-import state from '../state';
+import state, { db, setPatientRead } from '../state';
 
 import ReportRow from '../components/ReportRow';
-import { setPatientRead } from '../state.mjs';
 
 function PatientSkeleton() {
     return (<Text>Loading...</Text>);
@@ -21,17 +20,54 @@ function compareDateDescending(m1, m2) {
   return m2.date - m1.date;
 }
 
+function NewMessagebar({toName}) {
+  const newMessageRef = useRef();
+
+  const sendMessage = () => {
+    const newMessage = {
+      message: newMessageRef.current.value,
+      images: [],
+      read: false,
+      deepRead: false,
+      from: state.username,
+      to: toName,
+      date: Date.now(),
+    };
+
+    addDoc(collection(db, 'messages'), newMessage);
+  };
+
+  return (<View style={{flexDirection: 'row', marginHorizontal: 40, alignItems: 'center' }}>
+  <TextInput 
+    style={{
+      flexGrow: 1,
+      minWidth: 0,
+  
+      borderColor: 'gray',
+      borderWidth: 1,
+      
+      height: 40,
+      padding: 10,
+    }}
+    ref={newMessageRef}
+    placeholder="New message..."
+  />
+  <Pressable style={globalStyles.button} onPress={sendMessage}><Text>Click me</Text></Pressable>
+  </View>);
+}
+
 const ClinicianPatientScreen = ({navigation, route}) => {
   useIsFocused();
 
   const { id, name } = route.params;
+  const patientName = name;
 
   const [ patient, setPatient ] = useState(null);
   const [ messages, setMessages ] = useState(undefined);
   console.log("messages is", messages);
   
   useEffect(() => {
-    getDoc(doc(state.db, 'users', id))
+    getDoc(doc(db, 'users', id))
     .then(document => {
       const result = document.data();
       result.id = id;
@@ -39,7 +75,7 @@ const ClinicianPatientScreen = ({navigation, route}) => {
     });
     
     getDocs(query(
-      collection(state.db, 'messages'),
+      collection(db, 'messages'),
       or(
         and(where('from', '==', name), where('to', '==', state.username),),
         and(where('from', '==', state.username), where('to', '==', name),),
@@ -74,6 +110,7 @@ const ClinicianPatientScreen = ({navigation, route}) => {
     <View style={{flexGrow: 1}}>
       <Text style={globalStyles.h1}>{name}</Text>
       <ScrollView style={{flexGrow: 1}}>
+        <NewMessagebar toName={patientName} />
         <ScrollView style={{flexGrow: 1, marginBottom: 100}} vertical={true} horizontal={true}>
           <View style={{gap: 6, paddingHorizontal: 40, paddingVertical: 10}}>
             {messageComponents}
