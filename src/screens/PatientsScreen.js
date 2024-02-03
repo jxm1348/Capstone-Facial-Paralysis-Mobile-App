@@ -18,7 +18,7 @@ function PatientMessagesPressable({patient, navigation}) {
   return (
     <Pressable
       style={styles.patientContainer}
-      onPress={() => navigation.navigate('Patient', {id: patient.id, name})}
+      onPress={() => navigation.navigate('ClinicianPatient', {id: patient.id, name})}
     >
     <View style={{flexGrow: 1, marginHorizontal: 25, flexShrink: 1}}>
       <Text style={{fontSize: 35}}>{name}</Text>

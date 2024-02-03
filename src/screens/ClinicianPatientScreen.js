@@ -17,7 +17,7 @@ function PatientSkeleton() {
     return (<Text>Loading...</Text>);
 }
 
-const PatientScreen = ({navigation, route}) => {
+const ClinicianPatientScreen = ({navigation, route}) => {
   useIsFocused();
 
   const { id, name } = route.params;
@@ -78,4 +78,4 @@ const PatientScreen = ({navigation, route}) => {
   );
 };
 
-export default PatientScreen;
+export default ClinicianPatientScreen;
