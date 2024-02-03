@@ -23,7 +23,7 @@ const PatientScreen = ({navigation, route}) => {
   const { id, name } = route.params;
 
   const [ patient, setPatient ] = useState(null);
-  const [ messages, setMessages ] = useState(null);
+  const [ messages, setMessages ] = useState(undefined);
   console.log("messages is", messages);
   
   useEffect(() => {
@@ -42,18 +42,21 @@ const PatientScreen = ({navigation, route}) => {
       )
     )).then(
       querySnapshot => {setMessages(
-        querySnapshot.docs.map(document => document.data())
+        querySnapshot.docs.map(document => {
+          const result = document.data();
+          result.id = document.id;
+          return result;
+        })
       )}
     )
   }, []);
 
   let messageComponents;
-  if (patient === null) {
+  if (patient === null || messages === undefined) {
     messageComponents = <PatientSkeleton />;
   } else {
-    const messagesEntries = Object.entries(patient.messages);
-    messageComponents = messagesEntries.map(([index, message]) =>
-      (<Pressable key={index} onPress={() => navigation.navigate('Report', {name, index, id})}>
+    messageComponents = messages.map((message, index) =>
+      (<Pressable key={message.id} onPress={() => navigation.navigate('Report', {name, index, id})}>
         <ReportRow {...{message}} />
       </Pressable>)
     );
