@@ -1,8 +1,8 @@
-import { useEffect, useState, useRef } from 'react';
-import { Text, View, Pressable, ScrollView, TextInput } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Text, View, Pressable, ScrollView } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import {
-  getDoc, getDocs, addDoc,
+  getDoc, getDocs,
   doc, collection, query,
   where, and, or,
 } from 'firebase/firestore';
@@ -10,6 +10,7 @@ import {
 import globalStyles from '../globalStyles';
 import state, { db, setPatientRead } from '../state';
 
+import NewMessagebar from '../components/NewMessageBar';
 import ReportRow from '../components/ReportRow';
 
 function PatientSkeleton() {
@@ -20,41 +21,6 @@ function compareDateDescending(m1, m2) {
   return m2.date - m1.date;
 }
 
-function NewMessagebar({toName}) {
-  const newMessageRef = useRef();
-
-  const sendMessage = () => {
-    const newMessage = {
-      message: newMessageRef.current.value,
-      images: [],
-      read: false,
-      deepRead: false,
-      from: state.username,
-      to: toName,
-      date: Date.now(),
-    };
-
-    addDoc(collection(db, 'messages'), newMessage);
-  };
-
-  return (<View style={{flexDirection: 'row', marginHorizontal: 40, alignItems: 'center' }}>
-  <TextInput 
-    style={{
-      flexGrow: 1,
-      minWidth: 0,
-  
-      borderColor: 'gray',
-      borderWidth: 1,
-      
-      height: 40,
-      padding: 10,
-    }}
-    ref={newMessageRef}
-    placeholder="New message..."
-  />
-  <Pressable style={globalStyles.button} onPress={sendMessage}><Text>Click me</Text></Pressable>
-  </View>);
-}
 
 const ClinicianPatientScreen = ({navigation, route}) => {
   useIsFocused();
