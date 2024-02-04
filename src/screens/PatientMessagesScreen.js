@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
-import { getDocs, collection, query, where, or } from 'firebase/firestore';
+import { getDocs, collection, query, where, or, and } from 'firebase/firestore';
 
 import NavigationBar from '../components/NavigationBar';
 import state, { db } from '../state';
 
-const PatientMessagesScreen = ({ navigation }) => {
+const PatientMessagesScreen = ({ navigation, route }) => {
+  const { withName } = route.params;
   const buttons = [
     { title: 'Home', onPress: () => navigation.navigate('PatientHome') },
   ];
@@ -20,7 +21,10 @@ const PatientMessagesScreen = ({ navigation }) => {
   useEffect(() => {
     getDocs(query(
       collection(db, 'messages'),
-      or(where('from', '==', state.username), where('to', '==', state.username))
+      or(
+        and(where('from', '==', state.username), where('to', '==', withName)),
+        and(where('from', '==', withName), where('to', '==', state.username)),
+      )
     )).then(querySnapshot => {
       setMessages(querySnapshot.docs.map(document => {
         const result = document.data();
