@@ -7,7 +7,11 @@ import NavigationBar from '../components/NavigationBar';
 import state, { db } from '../state';
 
 function PatientMessagesSkeleton() {
-  return <Text>Loading...</Text>;
+  return <View style={{flexGrow: 1}}><Text>Loading...</Text></View>;
+}
+
+function compareDateDescending(m1, m2) {
+  return m2.date - m1.date;
 }
 
 function PatientMessages({navigation, messages}) {
@@ -17,7 +21,7 @@ function PatientMessages({navigation, messages}) {
     navigation.navigate('PatientMessage', { id: message.id });
   };
   
-  return (<View style={styles.listView}>
+  return (<View style={{flexGrow: 1, flexBasis: 0}}>
   <FlatList
     data={messages}
     keyExtractor={(item) => item.id.toString()}
@@ -39,7 +43,7 @@ function curryFetchMessages({withName, setMessages}) {
         const result = document.data();
         result.id = document.id;
         return result;
-      }))
+      }).sort(compareDateDescending))
     })
   };
 }
@@ -54,33 +58,14 @@ const PatientMessagesScreen = ({ navigation, route }) => {
   useEffect(curryFetchMessages({withName, setMessages}), []);
 
   return (
-    <View style={styles.container}>
+    <View style={{flexGrow: 1}}>
       <PatientMessages {...{navigation, messages}}/>
-      <View style={styles.navigationBar}>
-        <NavigationBar buttons={buttons} />
-      </View>
+      <NavigationBar style={{backgroundColor: 'magenta'}} buttons={buttons} />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  listView: {
-    flex: 3,
-  },
-  touchableItem: {
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
-  },
-  itemText: {
-    fontSize: 18,
-  },
-  navigationBar: {
-    flex: 1,
-  },
 });
 
 export default PatientMessagesScreen;
