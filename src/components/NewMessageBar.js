@@ -5,7 +5,7 @@ import { View, Text, Pressable, TextInput } from 'react-native';
 import state, { db } from '../state.mjs';
 import globalStyles from '../globalStyles';
 
-export default function NewMessagebar({toName}) {
+export default function NewMessageBar({toName}) {
     const newMessageRef = useRef();
   
     const sendMessage = () => {

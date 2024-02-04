@@ -10,7 +10,7 @@ import {
 import globalStyles from '../globalStyles';
 import state, { db, setPatientRead } from '../state';
 
-import NewMessagebar from '../components/NewMessageBar';
+import NewMessageBar from '../components/NewMessageBar';
 import ReportRow from '../components/ReportRow';
 
 function PatientSkeleton() {
@@ -76,7 +76,7 @@ const ClinicianPatientScreen = ({navigation, route}) => {
     <View style={{flexGrow: 1}}>
       <Text style={globalStyles.h1}>{name}</Text>
       <ScrollView style={{flexGrow: 1}}>
-        <NewMessagebar toName={patientName} />
+        <NewMessageBar toName={patientName} />
         <ScrollView style={{flexGrow: 1, marginBottom: 100}} vertical={true} horizontal={true}>
           <View style={{gap: 6, paddingHorizontal: 40, paddingVertical: 10}}>
             {messageComponents}
