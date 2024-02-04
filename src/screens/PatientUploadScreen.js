@@ -21,10 +21,6 @@ const PatientUploadScreen = () => {
     require('../resources/face-f-root.png')
   ];
 
-  const navigateToPatientUploadPicture = (item) => {
-    navigation.navigate('PatientUploadPicture', { item });
-  };
-
   return (
     <View style={{ flex: 1 }}>
       <ScrollView
