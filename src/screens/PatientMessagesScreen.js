@@ -5,14 +5,35 @@ import { getDocs, collection, query, where, or, and } from 'firebase/firestore';
 import NavigationBar from '../components/NavigationBar';
 import state, { db } from '../state';
 
-const PatientMessagesScreen = ({ navigation, route }) => {
-  const { withName } = route.params;
-  const buttons = [
-    { title: 'Home', onPress: () => navigation.navigate('PatientHome') },
-  ];
+function PatientMessagesSkeleton() {
+  return <Text>Loading...</Text>;
+}
 
-  const [ messages, setMessages ] = useState(null);
-  useEffect(() => {
+function PatientMessages({navigation, messages}) {
+  if (!messages) return <PatientMessagesSkeleton />;
+
+  const navigateToMessage = (message) => {
+    navigation.navigate('PatientMessage', { id: message.id });
+  };
+
+  return (<View style={styles.listView}>
+  <FlatList
+    data={messages}
+    keyExtractor={(item) => item.id.toString()}
+    renderItem={({ item }) => (
+      <TouchableOpacity
+        style={styles.touchableItem}
+        onPress={() => navigateToMessage(item)}
+      >
+        <Text style={styles.itemText}>{item.message}</Text>
+      </TouchableOpacity>
+    )}
+  />
+  </View>);
+}
+
+function curryFetchMessages({withName, setMessages}) {
+  return () => {
     getDocs(query(
       collection(db, 'messages'),
       or(
@@ -26,30 +47,21 @@ const PatientMessagesScreen = ({ navigation, route }) => {
         return result;
       }))
     })
-  }, []);
-
-  console.log("Messages are", messages);
-
-  const navigateToMessage = (message) => {
-    navigation.navigate('PatientMessage', { id: message.id });
   };
+}
+
+const PatientMessagesScreen = ({ navigation, route }) => {
+  const { withName } = route.params;
+  const buttons = [
+    { title: 'Home', onPress: () => navigation.navigate('PatientHome') },
+  ];
+
+  const [ messages, setMessages ] = useState(null);
+  useEffect(curryFetchMessages({withName, setMessages}), []);
 
   return (
     <View style={styles.container}>
-      <View style={styles.listView}>
-        <FlatList
-          data={messages}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={styles.touchableItem}
-              onPress={() => navigateToMessage(item)}
-            >
-              <Text style={styles.itemText}>{item.message}</Text>
-            </TouchableOpacity>
-          )}
-        />
-      </View>
+      <PatientMessages {...{navigation, messages}}/>
       <View style={styles.navigationBar}>
         <NavigationBar buttons={buttons} />
       </View>
