@@ -11,12 +11,6 @@ const PatientMessagesScreen = ({ navigation, route }) => {
     { title: 'Home', onPress: () => navigation.navigate('PatientHome') },
   ];
 
-  // Sample array of messages
-  const oldMessages = [
-    { id: 1, sender: 'Sender 1', message: 'Message 1 content.' },
-    { id: 2, sender: 'Sender 2', message: 'Message 2 content.' },
-  ];
-
   const [ messages, setMessages ] = useState(null);
   useEffect(() => {
     getDocs(query(
@@ -37,21 +31,21 @@ const PatientMessagesScreen = ({ navigation, route }) => {
   console.log("Messages are", messages);
 
   const navigateToMessage = (message) => {
-    navigation.navigate('PatientMessage', { message });
+    navigation.navigate('PatientMessage', { id: message.id });
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.listView}>
         <FlatList
-          data={oldMessages}
+          data={messages}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <TouchableOpacity
               style={styles.touchableItem}
               onPress={() => navigateToMessage(item)}
             >
-              <Text style={styles.itemText}>{item.sender}</Text>
+              <Text style={styles.itemText}>{item.message}</Text>
             </TouchableOpacity>
           )}
         />
