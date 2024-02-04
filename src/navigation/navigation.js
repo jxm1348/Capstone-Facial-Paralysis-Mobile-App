@@ -5,7 +5,7 @@ import LoginScreen from '../screens/LoginScreen';
 
 import ClinicianHomeScreen from '../screens/ClinicianHomeScreen';
 import PatientsScreen from '../screens/PatientsScreen';
-import PatientScreen from '../screens/PatientScreen';
+import ClinicianPatientScreen from '../screens/ClinicianPatientScreen';
 import ReportScreen from '../screens/ReportScreen';
 
 import PatientHomeScreen from '../screens/PatientHomeScreen';
@@ -26,7 +26,7 @@ export default function MainNavigator() {
             
             <Stack.Screen name="Clinician Home" component={ClinicianHomeScreen} />
             <Stack.Screen name="Patients" component={PatientsScreen} />
-            <Stack.Screen name="Patient" component={PatientScreen} />
+            <Stack.Screen name="ClinicianPatient" component={ClinicianPatientScreen} />
             <Stack.Screen name="Report" component={ReportScreen} />
             
             <Stack.Screen name="PatientHome" component={PatientHomeScreen} />

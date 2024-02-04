@@ -1,63 +1,71 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
-import NavigationBar from '../components/NavigationBar';
+import { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, FlatList, StyleSheet, ScrollView } from 'react-native';
+import { getDocs, collection, query, where, or, and } from 'firebase/firestore';
 
-const PatientMessagesScreen = ({ navigation }) => {
+import { FlexNavigationBar } from '../components/NavigationBar';
+import NewMessageBar from '../components/NewMessageBar';
+import ReportRow from '../components/ReportRow';
+import state, { db } from '../state';
+
+function PatientMessagesSkeleton() {
+  return <View style={{flexGrow: 1}}><Text>Loading...</Text></View>;
+}
+
+function compareDateDescending(m1, m2) {
+  return m2.date - m1.date;
+}
+
+function PatientMessages({navigation, messages}) {
+  if (!messages) return <PatientMessagesSkeleton />;
+
+  return (<View style={{flexGrow: 1}}>
+  <FlatList
+    data={messages}
+    keyExtractor={(item) => item.id.toString()}
+    renderItem={({item}) => <ReportRow message={item} />}
+  />
+  </View>);
+}
+
+function curryFetchMessages({withName, setMessages}) {
+  return () => {
+    getDocs(query(
+      collection(db, 'messages'),
+      or(
+        and(where('from', '==', state.username), where('to', '==', withName)),
+        and(where('from', '==', withName), where('to', '==', state.username)),
+      )
+    )).then(querySnapshot => {
+      setMessages(querySnapshot.docs.map(document => {
+        const result = document.data();
+        result.id = document.id;
+        return result;
+      }).sort(compareDateDescending))
+    })
+  };
+}
+
+const PatientMessagesScreen = ({ navigation, route }) => {
+  const { withName } = route.params;
   const buttons = [
     { title: 'Home', onPress: () => navigation.navigate('PatientHome') },
   ];
 
-  // Sample array of messages
-  const messages = [
-    { id: 1, sender: 'Sender 1', message: 'Message 1 content.' },
-    { id: 2, sender: 'Sender 2', message: 'Message 2 content.' },
-  ];
-
-  const navigateToMessage = (message) => {
-    navigation.navigate('PatientMessage', { message });
-  };
+  const [ messages, setMessages ] = useState(null);
+  useEffect(curryFetchMessages({withName, setMessages}), []);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.listView}>
-        <FlatList
-          data={messages}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={styles.touchableItem}
-              onPress={() => navigateToMessage(item)}
-            >
-              <Text style={styles.itemText}>{item.sender}</Text>
-            </TouchableOpacity>
-          )}
-        />
-      </View>
-      <View style={styles.navigationBar}>
-        <NavigationBar buttons={buttons} />
-      </View>
+    <View style={{flexGrow: 1}}>
+      <ScrollView style={{flexGrow: 1, flexBasis: 0, display: 'flex'}}>
+        <NewMessageBar toName={'Jane doe'} />
+        <PatientMessages {...{navigation, messages}}/>
+      </ScrollView>
+      <FlexNavigationBar buttons={buttons} />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  listView: {
-    flex: 3,
-  },
-  touchableItem: {
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
-  },
-  itemText: {
-    fontSize: 18,
-  },
-  navigationBar: {
-    flex: 1,
-  },
 });
 
 export default PatientMessagesScreen;

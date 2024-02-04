@@ -3,7 +3,12 @@
 // import firebase from '@react-native-firebase/app';
 
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, getDocs } from "firebase/firestore";
+import {
+    getFirestore,
+    getDocs, updateDoc,
+    collection, query, doc,
+    and, where,
+} from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -19,7 +24,7 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+export const db = getFirestore(app);
 
 export function getUnreadPatient(patient) {
     let total = 0;
@@ -47,8 +52,7 @@ const state = {
 
     credentials: {username: null, password: null},
     async login(username, password) {}, // Empty method body so type hints work in vscode
-    async fetchUnreadCount() {},
-
+    username: 'Jane doe',
 };
 
 function getUnreadCountMessages(messages) {
@@ -63,17 +67,58 @@ function getUnreadCountPatients(patients) {
     return patients.reduce((acc, patient) => acc + getUnreadCountMessages(patient.messages), 0);
 }
 
+export const fetchUnreadCount = async () => {
+    const messagesSnapshot = await getDocs(query(
+        collection(state.db, 'messages'),
+        and(
+            where('to', '==', state.username),
+            where('read', '==', false),
+        )
+    ));
+    console.log("Got unread count ", messagesSnapshot.docs.length);
+    return messagesSnapshot.docs.length;
+}
+
 export function init() {
     state.login = async (username, password) => {
         console.log("Trying to log in");
         state.credentials = {username, password};
+        state.username = username;
     };
+}
 
-    state.fetchUnreadCount = async () => {
-        const usersSnapshot = await getDocs(collection(state.db, 'users'));
-        const result = getUnreadCountPatients(usersSnapshot.docs.map(doc => doc.data()));
-        return result;
+export const getPatientsIdsUnread = async () => {
+    const usersSnapshot = await getDocs(collection(db, 'users'));
+    const q = query(collection(db, 'messages'), where('to', '==', 'Jane doe'));
+    const messagesSnapshot = await getDocs(q);
+    const userCounts = {};
+    for (const message of messagesSnapshot.docs.map(d => d.data())) {
+        if (message.read) continue;
+        if (userCounts[message.from] === undefined)
+            userCounts[message.from] = 0;
+        userCounts[message.from]++;
     }
+    
+
+    return usersSnapshot.docs.map(userDocument => {
+        const user = userDocument.data();
+        user.id = userDocument.id;
+        user.unread = userCounts[user.name] ?? 0;
+        return user;
+    });
+};
+
+export const setPatientRead = async (patient) => {
+    const q = query(
+        collection(db, 'messages'),
+        and(where('from', '==', patient.name), where('to', '==', 'Jane doe')),
+    );
+    
+    const messages = await getDocs(q);
+    messages.docs.forEach(document => {
+        if (document.data().read) return;
+        updateDoc(doc(db, 'messages', document.id), {read: true});
+    });
 }
 
 init();

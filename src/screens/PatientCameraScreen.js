@@ -23,8 +23,12 @@ function CameraYes() {
     style={styles.camera}
     ref={cameraRef}
   >
+    <View style={{
+      width: "55vh", height:"70vh", borderRadius: "50%", border: "5px solid white",
+      marginBottom: 30
+    }}></View>
     <Pressable style={{
-      width: 100, height:100, borderRadius: 50, backgroundColor: 'magenta',
+      width: 100, height:100, borderRadius: 50, backgroundColor: '#041E42', border:"5px solid white",
       marginBottom: 30
     }} onPress={() => takePicture()}></Pressable>
   </Camera>);

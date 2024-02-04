@@ -20,6 +20,11 @@ const LoginScreen = ({ navigation }) => {
     await state.login('Jane doe', 'password');
     navigation.navigate('Clinician Home');
   };
+
+  const debugPatientLogin = async () => {
+    await state.login('Mark Peschel', 'password');
+    navigation.navigate('PatientHome');
+  }
   
   
   if (state.demoIsDebug && Platform.OS === 'web') {
@@ -54,7 +59,7 @@ const LoginScreen = ({ navigation }) => {
     debugButtons.push(<Pressable key={1} style={globalStyles.button} onPress={debugClinicianLogin}>
       <Text style={{color: 'white'}}>Debug log in as clinician</Text>
     </Pressable>);
-    debugButtons.push(<Pressable key={2} style={globalStyles.button} onPress={() => navigation.navigate('PatientHome')}>
+    debugButtons.push(<Pressable key={2} style={globalStyles.button} onPress={debugPatientLogin}>
       <Text style={{color: 'white'}}>Debug log in as patient</Text>
     </Pressable>);
   }
