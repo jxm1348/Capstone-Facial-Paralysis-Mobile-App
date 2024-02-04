@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, StyleSheet, ScrollView } from 'react-native';
 import { getDocs, collection, query, where, or, and } from 'firebase/firestore';
 
+import { FlexNavigationBar } from '../components/NavigationBar';
+import NewMessageBar from '../components/NewMessageBar';
 import ReportRow from '../components/ReportRow';
-import NavigationBar from '../components/NavigationBar';
 import state, { db } from '../state';
 
 function PatientMessagesSkeleton() {
@@ -17,11 +18,7 @@ function compareDateDescending(m1, m2) {
 function PatientMessages({navigation, messages}) {
   if (!messages) return <PatientMessagesSkeleton />;
 
-  const navigateToMessage = (message) => {
-    navigation.navigate('PatientMessage', { id: message.id });
-  };
-  
-  return (<View style={{flexGrow: 1, flexBasis: 0}}>
+  return (<View style={{flexGrow: 1}}>
   <FlatList
     data={messages}
     keyExtractor={(item) => item.id.toString()}
@@ -59,8 +56,11 @@ const PatientMessagesScreen = ({ navigation, route }) => {
 
   return (
     <View style={{flexGrow: 1}}>
-      <PatientMessages {...{navigation, messages}}/>
-      <NavigationBar style={{backgroundColor: 'magenta'}} buttons={buttons} />
+      <ScrollView style={{flexGrow: 1, flexBasis: 0, display: 'flex'}}>
+        <NewMessageBar toName={'Jane doe'} />
+        <PatientMessages {...{navigation, messages}}/>
+      </ScrollView>
+      <FlexNavigationBar buttons={buttons} />
     </View>
   );
 };
