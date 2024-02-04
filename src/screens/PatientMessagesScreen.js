@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 import { getDocs, collection, query, where, or, and } from 'firebase/firestore';
 
+import ReportRow from '../components/ReportRow';
 import NavigationBar from '../components/NavigationBar';
 import state, { db } from '../state';
 
@@ -15,19 +16,12 @@ function PatientMessages({navigation, messages}) {
   const navigateToMessage = (message) => {
     navigation.navigate('PatientMessage', { id: message.id });
   };
-
+  
   return (<View style={styles.listView}>
   <FlatList
     data={messages}
     keyExtractor={(item) => item.id.toString()}
-    renderItem={({ item }) => (
-      <TouchableOpacity
-        style={styles.touchableItem}
-        onPress={() => navigateToMessage(item)}
-      >
-        <Text style={styles.itemText}>{item.message}</Text>
-      </TouchableOpacity>
-    )}
+    renderItem={({item}) => <ReportRow message={item} />}
   />
   </View>);
 }
