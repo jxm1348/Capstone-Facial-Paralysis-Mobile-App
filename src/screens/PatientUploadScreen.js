@@ -1,21 +1,19 @@
-import { useState } from 'react';
 import { View, ScrollView, Pressable, Text, StyleSheet, Image, } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import ActionButton from '../components/ActionButton';
 import NavigationBar from '../components/NavigationBar';
+
+import state from '../state';
 import globalStyles from '../globalStyles';
 
 const PatientUploadScreen = () => {
   const navigation = useNavigation();
 
-  // Enforces an order on the images.
-  const [ imageKeys, setImageKeys ] = useState(() => (
-    ['at-rest', 'eyebrows-up', 'eyes-closed', 'nose-wrinkle', 'big-smile', 'lips-puckered', 'lower-teeth-bared']
-  ));
-  // setImageKeys will be called when I add the button for adding more images to the report at the end.
-
-  const [ images, setImages ] = useState(() => ({
+  // Enforces a display order on the images.
+  const imageKeys = ['at-rest', 'eyebrows-up', 'eyes-closed', 'nose-wrinkle', 'big-smile', 'lips-puckered', 'lower-teeth-bared'];
+  
+  const images = {
     'at-rest': require('../resources/face-f-at-rest.png'),
     'eyebrows-up': require('../resources/face-f-eyebrows-up.png'),
     'eyes-closed': require('../resources/face-f-eyes-closed.png'),
@@ -23,21 +21,16 @@ const PatientUploadScreen = () => {
     'big-smile': require('../resources/face-f-big-smile.png'),
     'lips-puckered': require('../resources/face-f-lips-puckered.png'),
     'lower-teeth-bared': require('../resources/face-f-lower-teeth-bared.png'),
-  }));
+  };
 
-  const currySetImage = (key) => {
-    return (value) => {
-      const change = {}; change[key] = value;
-      setImages(Object.assign({}, images, change));
-    }
-  }
+  Object.assign(images, state.workingMessage.images);
 
   const thumbnails = imageKeys.map(key => (
     <Pressable
       key={key}
       style={styles.touchableItem}
       underlayColor="#ddd"
-      onPress={() => navigation.navigate('PatientCamera', key)}
+      onPress={() => navigation.navigate('PatientCamera', {imageKey: key})}
     >
       <>
         <Image source={images[key]} style={styles.itemImage} />
@@ -50,10 +43,7 @@ const PatientUploadScreen = () => {
     <View style={{ flex: 1 }}>
       <ScrollView
         contentContainerStyle={styles.scrollViewContainer}
-        pagingEnabled
         horizontal={false}
-        showsVerticalScrollIndicator={false}
-        decelerationRate="fast"
       >
         {thumbnails}
         <Pressable style={globalStyles.button}><Text>Upload</Text></Pressable>
