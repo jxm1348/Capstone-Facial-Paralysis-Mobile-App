@@ -3,24 +3,12 @@ import { Camera, CameraType } from 'expo-camera';
 import { useState, useEffect, useRef } from 'react';
 import state from '../state';
 import { useNavigation } from '@react-navigation/native';
+import { ref, uploadBytes } from 'firebase/storage';
+import { storage } from '../state.mjs';
 
 function CameraYes({imageKey}) {
   const navigation = useNavigation();
   const cameraRef = useRef(null);
-
-  // Credit to "Matěj Pokorný" of https://stackoverflow.com/users/2438165/mat%c4%9bj-pokorn%c3%bd
-  // Via https://stackoverflow.com/a/18197341/6286797
-  function download(filename, blob) {
-    const element = document.createElement('a');
-    element.setAttribute('href', window.URL.createObjectURL(blob));
-    element.setAttribute('download', filename);
-  
-    element.style.display = 'none';
-    document.body.appendChild(element);
-    element.click();
-  
-    document.body.removeChild(element);
-  }
 
   // Credit to "devnull69" of https://stackoverflow.com/users/1030974/devnull69
   // Via https://stackoverflow.com/a/12300351/6286797
@@ -40,10 +28,15 @@ function CameraYes({imageKey}) {
     return new Blob([ab], {type: mimeString});
   }
 
+  function save(filename, uri) {
+    const testRef = ref(storage, filename);
+    return uploadBytes(testRef, dataURItoBlob(uri));
+  }
+
   async function takePicture() {
     if(cameraRef.current){
       let photo = await cameraRef.current.takePictureAsync();
-      download("image_i_hope.png", dataURItoBlob(photo.uri));
+      save("test_image_upload.png", photo.uri);
       return;
       // state.workingMessage.images[imageKey] = photo.uri;
       // navigation.navigate("PatientUpload");
