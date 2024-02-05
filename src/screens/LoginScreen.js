@@ -30,7 +30,7 @@ const LoginScreen = ({ navigation }) => {
 
   const testCloudStorage = () => {
     console.log("Setting source.");
-    setCloudImageSource({ 'uri': 'https://mpeschel10.github.io/fa/test/face-f-at-rest.png'});
+    setCloudImageSource({ 'uri': 'https://firebasestorage.googleapis.com/v0/b/facial-analytics-f8b9e.appspot.com/o/sad_cat_birthday.jpg?alt=media&token=d90c16ed-081f-4289-a1dd-fe42429ae551'});
   }
   
   if (state.demoIsDebug && Platform.OS === 'web') {
