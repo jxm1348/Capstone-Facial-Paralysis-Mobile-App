@@ -1,4 +1,4 @@
-import React, { useState, createRef } from 'react';
+import React, { useState, createRef, useRef } from 'react';
 import {
   Image,
   StyleSheet, 
@@ -16,6 +16,8 @@ import globalStyles from '../globalStyles';
 import ActionButton from '../components/ActionButton';
 
 const LoginScreen = ({ navigation }) => {
+  const [ cloudImageSource, setCloudImageSource ] = useState(undefined);
+
   const debugClinicianLogin = async () => {
     await state.login('Jane doe', 'password');
     navigation.navigate('Clinician Home');
@@ -25,7 +27,11 @@ const LoginScreen = ({ navigation }) => {
     await state.login('Mark Peschel', 'password');
     navigation.navigate('PatientHome');
   }
-  
+
+  const testCloudStorage = () => {
+    console.log("Setting source.");
+    setCloudImageSource({ 'uri': 'https://mpeschel10.github.io/fa/test/face-f-at-rest.png'});
+  }
   
   if (state.demoIsDebug && Platform.OS === 'web') {
     React.useEffect(() => {
@@ -56,7 +62,7 @@ const LoginScreen = ({ navigation }) => {
 
   const debugButtons = [];
   if (state.demoIsDebug) {
-    debugButtons.push(<Pressable key={3} style={globalStyles.button} onPress={()=>navigation.navigate('PatientCamera', {imageKey: 'eyebrows-up'})}>
+    debugButtons.push(<Pressable key={0} style={globalStyles.button} onPress={()=>navigation.navigate('PatientCamera', {imageKey: 'eyebrows-up'})}>
       <Text style={{color: 'white'}}>Debug Camera</Text>
     </Pressable>);
     debugButtons.push(<Pressable key={1} style={globalStyles.button} onPress={debugClinicianLogin}>
@@ -64,6 +70,9 @@ const LoginScreen = ({ navigation }) => {
     </Pressable>);
     debugButtons.push(<Pressable key={2} style={globalStyles.button} onPress={debugPatientLogin}>
       <Text style={{color: 'white'}}>Debug log in as patient</Text>
+    </Pressable>);
+    debugButtons.push(<Pressable key={3} style={globalStyles.button} onPress={testCloudStorage}>
+      <Text style={{color: 'white'}}>Debug do cloud storage</Text>
     </Pressable>);
   }
 
@@ -89,6 +98,7 @@ const LoginScreen = ({ navigation }) => {
       <Image
         source={require('../resources/face-f-root.png')}
       />
+      <Image style={{width: 50, height:50}} source={cloudImageSource}/>
       <TextInput
         ref={usernameInput}
         autoComplete='username'
