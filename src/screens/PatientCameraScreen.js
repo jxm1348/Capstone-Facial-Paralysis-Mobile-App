@@ -1,20 +1,18 @@
-import {Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Camera, CameraType } from 'expo-camera';
 import { useState, useEffect, useRef } from 'react';
 import state from '../state';
+import { useNavigation } from '@react-navigation/native';
 
 function CameraYes({imageKey}) {
+  const navigation = useNavigation();
   const cameraRef = useRef(null);
-
-  const [ imageUri, setImageUri ] = useState(undefined);
-  console.log("Image uri is ", imageUri);
 
   async function takePicture() {
     if(cameraRef.current){
       let photo = await cameraRef.current.takePictureAsync();
-      state.patient.workingPhotoSet[0] = photo.uri;  
-      setImageUri(photo.uri);
       state.workingMessage.images[imageKey] = photo.uri;
+      navigation.navigate("PatientUpload");
     }
   }
 
@@ -23,13 +21,6 @@ function CameraYes({imageKey}) {
     style={styles.camera}
     ref={cameraRef}
   >
-    <View style={{
-      position: 'absolute',
-      top: 40,
-      left: 120,
-      backgroundColor: 'red',
-      padding: 30,
-    }}><Image source={{uri: state.workingMessage.images['eyebrows-up']}} style={{width:200, height:200}}></Image></View>
     <View style={{
       width: "55vh", height:"70vh", borderRadius: "50%", border: "5px solid white",
       marginBottom: 30
@@ -59,7 +50,7 @@ function CameraMaybe({imageKey}) {
   }
 }
 
-const PatientUploadScreen = ({ navigation, route }) => {
+const PatientUploadScreen = ({ route }) => {
   const { imageKey } = route.params;
   return (
     <View style={styles.container}>
