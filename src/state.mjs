@@ -2,29 +2,31 @@
 // Try uncommenting the following line, maybe?
 // import firebase from '@react-native-firebase/app';
 
-import { initializeApp } from "firebase/app";
+import { initializeApp } from 'firebase/app';
+import { getStorage } from 'firebase/storage';
 import {
     getFirestore,
     getDocs, updateDoc,
     collection, query, doc,
     and, where,
-} from "firebase/firestore";
+} from 'firebase/firestore';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyA0cVD15lMtM9qYAedfKVvzDYQ6t0WizJs",
-  authDomain: "facial-analytics-f8b9e.firebaseapp.com",
-  projectId: "facial-analytics-f8b9e",
-  storageBucket: "facial-analytics-f8b9e.appspot.com",
-  messagingSenderId: "1087200042336",
-  appId: "1:1087200042336:web:c0c22a9037cd8b92f41205"
+  apiKey: 'AIzaSyA0cVD15lMtM9qYAedfKVvzDYQ6t0WizJs',
+  authDomain: 'facial-analytics-f8b9e.firebaseapp.com',
+  projectId: 'facial-analytics-f8b9e',
+  storageBucket: 'facial-analytics-f8b9e.appspot.com',
+  messagingSenderId: '1087200042336',
+  appId: '1:1087200042336:web:c0c22a9037cd8b92f41205',
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
+export const storage = getStorage(app);
 
 export function getUnreadPatient(patient) {
     let total = 0;
@@ -40,13 +42,13 @@ const state = {
     patient:{
         workingPhotoSet:[null, null, null, null, null, null, null, ],
         photoSets:[
-            ["imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", ],
-            ["imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", ],
-            ["imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", "imageAddress", ],
+            ['imageAddress', 'imageAddress', 'imageAddress', 'imageAddress', 'imageAddress', 'imageAddress', 'imageAddress', ],
+            ['imageAddress', 'imageAddress', 'imageAddress', 'imageAddress', 'imageAddress', 'imageAddress', 'imageAddress', ],
+            ['imageAddress', 'imageAddress', 'imageAddress', 'imageAddress', 'imageAddress', 'imageAddress', 'imageAddress', ],
         ]
     },
 
-    app, db,
+    app, db, storage,
 
     workingMessage: { images: {} },
 
@@ -77,13 +79,11 @@ export const fetchUnreadCount = async () => {
             where('read', '==', false),
         )
     ));
-    console.log("Got unread count ", messagesSnapshot.docs.length);
     return messagesSnapshot.docs.length;
 }
 
 export function init() {
     state.login = async (username, password) => {
-        console.log("Trying to log in");
         state.credentials = {username, password};
         state.username = username;
     };
