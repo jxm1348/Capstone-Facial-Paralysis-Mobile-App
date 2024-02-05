@@ -56,6 +56,9 @@ const LoginScreen = ({ navigation }) => {
 
   const debugButtons = [];
   if (state.demoIsDebug) {
+    debugButtons.push(<Pressable key={3} style={globalStyles.button} onPress={()=>navigation.navigate('PatientCamera', {imageKey: 'eyebrows-up'})}>
+      <Text style={{color: 'white'}}>Debug Camera</Text>
+    </Pressable>);
     debugButtons.push(<Pressable key={1} style={globalStyles.button} onPress={debugClinicianLogin}>
       <Text style={{color: 'white'}}>Debug log in as clinician</Text>
     </Pressable>);
@@ -109,12 +112,6 @@ const LoginScreen = ({ navigation }) => {
       <Button 
         title="Login"
         onPress={handleLogin} />
-      <Button
-      //Temp button for testing purposes
-        title="Camera"
-        onPress={()=>navigation.navigate('PatientCamera')}
-      />
-
       {debugButtons}
     </View>
   );

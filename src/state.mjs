@@ -48,6 +48,8 @@ const state = {
 
     app, db,
 
+    workingMessage: { images: {} },
+
     loginCookie: ['cookieKey', 'cookieValue'],
 
     credentials: {username: null, password: null},
