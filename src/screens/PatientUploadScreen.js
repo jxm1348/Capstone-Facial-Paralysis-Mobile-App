@@ -4,8 +4,9 @@ import { useNavigation } from '@react-navigation/native';
 import ActionButton from '../components/ActionButton';
 import NavigationBar from '../components/NavigationBar';
 
-import state from '../state';
+import state, { dataURItoBlob, storage } from '../state.mjs';
 import globalStyles from '../globalStyles';
+import { ref, uploadBytes } from 'firebase/storage';
 
 const PatientUploadScreen = () => {
   const navigation = useNavigation();
@@ -24,6 +25,19 @@ const PatientUploadScreen = () => {
   };
 
   Object.assign(images, state.workingMessage.images);
+
+  const upload = async () => {
+    const reportId = "12";
+    const uploadPromises = Object.entries(state.workingMessage.images).map(([key, uri]) =>
+      uploadBytes(
+        ref(storage, `images/${state.username}/${key}-${reportId}.png`),
+        dataURItoBlob(uri)
+      )
+    );
+    console.log("Uploads begun");
+    const results = await Promise.all(uploadPromises);
+    console.log("Uploads done, ", results);
+  }
 
   const thumbnails = imageKeys.map(key => (
     <Pressable
@@ -46,7 +60,7 @@ const PatientUploadScreen = () => {
         horizontal={false}
       >
         {thumbnails}
-        <Pressable style={globalStyles.button}><Text>Upload</Text></Pressable>
+        <Pressable style={globalStyles.button} onPress={upload}><Text>Upload</Text></Pressable>
       </ScrollView>
       <ActionButton title="Go Back" onPress={() => navigation.goBack()} />
     </View>
