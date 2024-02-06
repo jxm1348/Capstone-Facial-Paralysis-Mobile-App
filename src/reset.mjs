@@ -1,10 +1,10 @@
 import {
-    deleteDoc, getDocs, addDoc,
+    deleteDoc, getDocs, addDoc, setDoc,
     collection, doc,
     terminate,
 } from 'firebase/firestore';
 
-import state from './state.mjs';
+import { db } from './state.mjs';
 
 const placeholderThumbnail = 'https://mpeschel10.github.io/fa/test/face-f-at-rest.png';
 const placeholderImages = [
@@ -18,9 +18,9 @@ const placeholderImages = [
 ]
 
 async function deleteCollection(collectionName) {
-    const querySnapshot = await getDocs(collection(state.db, collectionName));
+    const querySnapshot = await getDocs(collection(db, collectionName));
     const deletePromises = querySnapshot.docs.map(document => deleteDoc(
-        doc(state.db, collectionName, document.id)
+        doc(db, collectionName, document.id)
     ));
     await Promise.all(deletePromises);
 }
@@ -50,9 +50,14 @@ const defaultMessages = [
     {date: new Date('Jan 19, 2024, 3:17 pm').getTime(), read: false, from: 'John doe', to: 'Jane doe', deepRead: false, message: 'Strange swelling and itchy redness above my right eyebrow. Did you put in more botulin there last time? I hope it\s not an allergy. I just worry because I know allergies tend to get worse if every time you\'re exposed. That might juts be for bee stings, though.', images: placeholderImages},
 ];
 
+const defaultGlobals = {
+    uniqueInt: {value: 0},
+};
+
 const tables = {
     users: defaultUsers,
     messages: defaultMessages,
+    globals: defaultGlobals,
 };
 
 // Deletes everything and then re-uploads a test dataset.
@@ -63,12 +68,20 @@ async function resetTable(name) {
     console.debug(`Deleting collection ${name}.`);
     await deleteCollection(name);
 
-    console.log('Inserting', table.length, 'records into collection', name);
-    await Promise.all(
-        table.map(entry => addDoc(collection(state.db, name), entry))
-    );
+    console.log('Inserting', Object.keys(table).length, 'records into collection', name);
+    if (table.map) {
+        await Promise.all(
+            table.map(entry => addDoc(collection(db, name), entry))
+        );
+    } else {
+        await Promise.all(
+            Object.entries(table).map(([key, value]) =>
+                setDoc(doc(db, name, key), value)
+            )
+        );
+    }
 }
 
 await Promise.all(Object.entries(tables).map(([name, entry]) => resetTable(name)));
 // Closing the database connection is necessary so node.js doesn't hang after the reset function is done.
-terminate(state.db);
+terminate(db);

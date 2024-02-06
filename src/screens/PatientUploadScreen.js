@@ -8,12 +8,13 @@ import ActionButton from '../components/ActionButton';
 import NavigationBar from '../components/NavigationBar';
 
 import { imageKeyOrder } from '../constants';
-import state, { dataURItoBlob, db, storage } from '../state.mjs';
+import state, { dataURItoBlob, db, fetchUniqueInt, storage } from '../state.mjs';
 import globalStyles from '../globalStyles';
 
 
 const saveImages = async () => {
-  const reportId = "12";
+  console.log("Getting unique id...");
+  const reportId = await fetchUniqueInt();
   const keyUriPairs = Object.entries(state.workingMessage.images);
   const uploadPromises = keyUriPairs.map(([key, uri]) =>
     uploadBytes(
