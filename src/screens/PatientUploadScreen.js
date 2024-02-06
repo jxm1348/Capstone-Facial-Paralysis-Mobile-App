@@ -6,7 +6,20 @@ import NavigationBar from '../components/NavigationBar';
 
 import state, { dataURItoBlob, storage } from '../state.mjs';
 import globalStyles from '../globalStyles';
-import { ref, uploadBytes } from 'firebase/storage';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+
+const saveImages = async () => {
+  const reportId = "12";
+  const keyUriPairs = Object.entries(state.workingMessage.images);
+  const uploadPromises = keyUriPairs.map(([key, uri]) =>
+    uploadBytes(
+      ref(storage, `images/${state.username}/${key}-${reportId}.png`),
+      dataURItoBlob(uri)
+    ).then(result => getDownloadURL(result.ref))
+  );
+  const results = await Promise.all(uploadPromises);
+  return results;
+}
 
 const PatientUploadScreen = () => {
   const navigation = useNavigation();
@@ -27,16 +40,8 @@ const PatientUploadScreen = () => {
   Object.assign(images, state.workingMessage.images);
 
   const upload = async () => {
-    const reportId = "12";
-    const uploadPromises = Object.entries(state.workingMessage.images).map(([key, uri]) =>
-      uploadBytes(
-        ref(storage, `images/${state.username}/${key}-${reportId}.png`),
-        dataURItoBlob(uri)
-      )
-    );
-    console.log("Uploads begun");
-    const results = await Promise.all(uploadPromises);
-    console.log("Uploads done, ", results);
+    const saveURLs = await saveImages();
+    console.log(saveURLs);
   }
 
   const thumbnails = imageKeys.map(key => (
@@ -46,10 +51,8 @@ const PatientUploadScreen = () => {
       underlayColor="#ddd"
       onPress={() => navigation.navigate('PatientCamera', {imageKey: key})}
     >
-      <>
-        <Image source={images[key]} style={styles.itemImage} />
-        <Text style={styles.itemText}>{key}</Text>
-      </>
+      <Image source={images[key]} style={styles.itemImage} />
+      <Text style={styles.itemText}>{key}</Text>
     </Pressable>
   ));
 
