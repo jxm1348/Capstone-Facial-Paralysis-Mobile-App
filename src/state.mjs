@@ -8,7 +8,7 @@ import {
     getFirestore,
     getDocs, updateDoc,
     collection, query, doc,
-    and, where,
+    and, where, runTransaction,
 } from 'firebase/firestore';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -86,6 +86,16 @@ function getUnreadCountMessages(messages) {
 
 function getUnreadCountPatients(patients) {
     return patients.reduce((acc, patient) => acc + getUnreadCountMessages(patient.messages), 0);
+}
+
+export const fetchUniqueInt = async () => {
+    const idCounterRef = doc(db, 'globals', 'uniqueInt');
+    return await runTransaction(db, async transaction => {
+        const idCounterDocument = await transaction.get(idCounterRef);
+        const nextId = idCounterDocument.data().value;
+        transaction.update(idCounterRef, {'value': nextId + 1});
+        return nextId;
+    });
 }
 
 export const fetchUnreadCount = async () => {
