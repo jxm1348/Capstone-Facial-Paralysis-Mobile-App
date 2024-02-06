@@ -16,7 +16,6 @@ import globalStyles from '../globalStyles';
 import ActionButton from '../components/ActionButton';
 
 const LoginScreen = ({ navigation }) => {
-  const [ cloudImageSource, setCloudImageSource ] = useState(undefined);
 
   const debugClinicianLogin = async () => {
     await state.login('Jane doe', 'password');
@@ -28,11 +27,6 @@ const LoginScreen = ({ navigation }) => {
     navigation.navigate('PatientHome');
   }
 
-  const testCloudStorage = () => {
-    console.log("Setting source.");
-    setCloudImageSource({ 'uri': 'https://firebasestorage.googleapis.com/v0/b/facial-analytics-f8b9e.appspot.com/o/sad_cat_birthday.jpg?alt=media&token=d90c16ed-081f-4289-a1dd-fe42429ae551'});
-  }
-  
   if (state.demoIsDebug && Platform.OS === 'web') {
     React.useEffect(() => {
       state.demoChord = false;
@@ -71,9 +65,6 @@ const LoginScreen = ({ navigation }) => {
     debugButtons.push(<Pressable key={2} style={globalStyles.button} onPress={debugPatientLogin}>
       <Text style={{color: 'white'}}>Debug log in as patient</Text>
     </Pressable>);
-    debugButtons.push(<Pressable key={3} style={globalStyles.button} onPress={testCloudStorage}>
-      <Text style={{color: 'white'}}>Debug do cloud storage</Text>
-    </Pressable>);
   }
 
 
@@ -98,7 +89,6 @@ const LoginScreen = ({ navigation }) => {
       <Image
         source={require('../resources/face-f-root.png')}
       />
-      <Image style={{width: 50, height:50}} source={cloudImageSource}/>
       <TextInput
         ref={usernameInput}
         autoComplete='username'
