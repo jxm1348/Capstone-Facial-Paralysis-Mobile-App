@@ -54,7 +54,6 @@ export function getUnreadPatient(patient) {
     return total;
 }
 
-
 const state = {
     demoIsDebug: true,
     patient:{
@@ -73,8 +72,8 @@ const state = {
     loginCookie: ['cookieKey', 'cookieValue'],
 
     credentials: {username: null, password: null},
-    async login(username, password) {}, // Empty method body so type hints work in vscode
-    username: 'Jane doe',
+    username: undefined,
+    clinician: undefined,
 };
 
 function getUnreadCountMessages(messages) {
@@ -100,16 +99,17 @@ export const fetchUnreadCount = async () => {
     return messagesSnapshot.docs.length;
 }
 
-export function init() {
-    state.login = async (username, password) => {
-        state.credentials = {username, password};
-        state.username = username;
-    };
+export const login = async (username, password) => {
+    state.credentials = {username, password};
+    state.username = username;
+    state.clinician = {'Mark Peschel': 'Jane doe'}[username];
 }
 
+// This function is called in ClinicianPatientsScreen
+// It returns a list of patients for the current user as well as the counts of their unread messages.
 export const getPatientsIdsUnread = async () => {
     const usersSnapshot = await getDocs(collection(db, 'users'));
-    const q = query(collection(db, 'messages'), where('to', '==', 'Jane doe'));
+    const q = query(collection(db, 'messages'), where('to', '==', state.username));
     const messagesSnapshot = await getDocs(q);
     const userCounts = {};
     for (const message of messagesSnapshot.docs.map(d => d.data())) {
@@ -131,7 +131,7 @@ export const getPatientsIdsUnread = async () => {
 export const setPatientRead = async (patient) => {
     const q = query(
         collection(db, 'messages'),
-        and(where('from', '==', patient.name), where('to', '==', 'Jane doe')),
+        and(where('from', '==', patient.name), where('to', '==', state.username)),
     );
     
     const messages = await getDocs(q);
@@ -141,6 +141,5 @@ export const setPatientRead = async (patient) => {
     });
 }
 
-init();
 export default state;
 

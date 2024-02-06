@@ -8,7 +8,7 @@ const PatientHomeScreen = ({ navigation }) => {
   const buttons = [
     { title: 'Sign Out', onPress: () => navigation.navigate('Login') },
     { title: 'Upload Images', onPress: () => navigation.navigate('PatientUpload') },
-    { title: 'Messages', onPress: () => navigation.navigate('PatientMessages', {withName: 'Jane doe'}) }
+    { title: 'Messages', onPress: () => navigation.navigate('PatientMessages', {withName: state.clinician}) }
   ];
 
   return (

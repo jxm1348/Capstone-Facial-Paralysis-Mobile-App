@@ -85,7 +85,7 @@ function SearchSortBar({onChangeText, searchAscending, setSearchAscending, sortB
   </View>)
 }
 
-const PatientsScreen = ({ navigation }) => {
+const ClinicianPatientsScreen = ({ navigation }) => {
   // useIsFocused(); // Force refresh no longer works for some reason.
 
   const [ patients, setPatients ] = useState(null);
@@ -149,4 +149,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PatientsScreen;
+export default ClinicianPatientsScreen;

@@ -11,19 +11,19 @@ import {
   Text 
 } from 'react-native';
 
-import state from '../state';
 import globalStyles from '../globalStyles';
 import ActionButton from '../components/ActionButton';
+import state, { login } from '../state.mjs';
 
 const LoginScreen = ({ navigation }) => {
 
   const debugClinicianLogin = async () => {
-    await state.login('Jane doe', 'password');
-    navigation.navigate('Clinician Home');
+    await login('Jane doe', 'password');
+    navigation.navigate('ClinicianHome');
   };
 
   const debugPatientLogin = async () => {
-    await state.login('Mark Peschel', 'password');
+    await login('Mark Peschel', 'password');
     navigation.navigate('PatientHome');
   }
 
@@ -56,7 +56,10 @@ const LoginScreen = ({ navigation }) => {
 
   const debugButtons = [];
   if (state.demoIsDebug) {
-    debugButtons.push(<Pressable key={0} style={globalStyles.button} onPress={()=>navigation.navigate('PatientCamera', {imageKey: 'eyebrows-up'})}>
+    debugButtons.push(<Pressable key={0} style={globalStyles.button} onPress={async () => {
+      await login('Mark Peschel', 'password');
+      navigation.navigate('PatientCamera', {imageKey: 'eyebrows-up'});
+    }}>
       <Text style={{color: 'white'}}>Debug Camera</Text>
     </Pressable>);
     debugButtons.push(<Pressable key={1} style={globalStyles.button} onPress={debugClinicianLogin}>
@@ -75,8 +78,9 @@ const LoginScreen = ({ navigation }) => {
   const passwordInput = createRef();
 
   const handleLogin = () => {
+    login(username, password);
     if (username === 'Jane doe' && password === 'password') {
-      navigation.navigate('Clinician Home');
+      navigation.navigate('ClinicianHome');
     } else if (username === 'John doe' && password === 'password') {
       navigation.navigate('PatientHome');
     } else {

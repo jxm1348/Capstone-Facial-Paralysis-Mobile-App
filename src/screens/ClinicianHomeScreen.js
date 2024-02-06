@@ -5,6 +5,7 @@ import ClinicianNavBar from '../components/ClinicianNavBar';
 import { Button1 } from '../components/buttons';
 
 import globalStyles from '../globalStyles';
+import state from '../state.mjs';
 
 const ClinicianHomeScreen = ({ navigation, colors }) => {
   const isFocused = useIsFocused() // Force refresh
@@ -14,7 +15,7 @@ const ClinicianHomeScreen = ({ navigation, colors }) => {
         <View style={{
           flexGrow: 1,
         }}>
-          <Text style={globalStyles.h2}>Welcome, Jane Doe!</Text>
+          <Text style={globalStyles.h2}>Welcome, {state.username}!</Text>
           <View style={styles.spacerFull}></View>
           <View style={{
             alignItems: 'center',

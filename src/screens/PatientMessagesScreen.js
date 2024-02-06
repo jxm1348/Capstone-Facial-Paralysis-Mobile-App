@@ -57,7 +57,7 @@ const PatientMessagesScreen = ({ navigation, route }) => {
   return (
     <View style={{flexGrow: 1}}>
       <ScrollView style={{flexGrow: 1, flexBasis: 0, display: 'flex'}}>
-        <NewMessageBar toName={'Jane doe'} />
+        <NewMessageBar toName={state.clinician} />
         <PatientMessages {...{navigation, messages}}/>
       </ScrollView>
       <FlexNavigationBar buttons={buttons} />

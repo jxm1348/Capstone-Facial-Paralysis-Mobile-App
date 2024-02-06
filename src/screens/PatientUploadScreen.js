@@ -1,12 +1,16 @@
 import { View, ScrollView, Pressable, Text, StyleSheet, Image, } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { addDoc, collection } from 'firebase/firestore';
+
 import ActionButton from '../components/ActionButton';
 import NavigationBar from '../components/NavigationBar';
 
-import state, { dataURItoBlob, storage } from '../state.mjs';
+import { imageKeyOrder } from '../constants';
+import state, { dataURItoBlob, db, storage } from '../state.mjs';
 import globalStyles from '../globalStyles';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+
 
 const saveImages = async () => {
   const reportId = "12";
@@ -16,6 +20,7 @@ const saveImages = async () => {
       ref(storage, `images/${state.username}/${key}-${reportId}.png`),
       dataURItoBlob(uri)
     ).then(result => getDownloadURL(result.ref))
+    .then(URL => [key, URL])
   );
   const results = await Promise.all(uploadPromises);
   return results;
@@ -24,9 +29,6 @@ const saveImages = async () => {
 const PatientUploadScreen = () => {
   const navigation = useNavigation();
 
-  // Enforces a display order on the images.
-  const imageKeys = ['at-rest', 'eyebrows-up', 'eyes-closed', 'nose-wrinkle', 'big-smile', 'lips-puckered', 'lower-teeth-bared'];
-  
   const images = {
     'at-rest': require('../resources/face-f-at-rest.png'),
     'eyebrows-up': require('../resources/face-f-eyebrows-up.png'),
@@ -40,11 +42,19 @@ const PatientUploadScreen = () => {
   Object.assign(images, state.workingMessage.images);
 
   const upload = async () => {
+    console.log("Uploading images...");
     const saveURLs = await saveImages();
+    const images = Object.fromEntries(saveURLs);
+    const message = '';
     console.log(saveURLs);
+    console.log("Making message...");
+    await addDoc(collection(db, 'messages'), {
+      date: Date.now(), from: state.username, to: state.clinician, read: false, deepRead: false, message, images,
+    });
+    console.log("Upload complete");
   }
 
-  const thumbnails = imageKeys.map(key => (
+  const thumbnails = imageKeyOrder.map(key => (
     <Pressable
       key={key}
       style={styles.touchableItem}

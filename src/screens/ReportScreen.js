@@ -3,7 +3,8 @@ import { Text, View, Image, StyleSheet, Dimensions, ScrollView } from 'react-nat
 import { getDoc, doc, updateDoc } from 'firebase/firestore';
 
 import globalStyles from '../globalStyles';
-import state from '../state';
+import state from '../state.mjs';
+import { imageKeyOrder } from '../constants';
 
 function ReportSkeleton() {
     return <Text>Loading...</Text>;
@@ -19,8 +20,11 @@ function Report(message) {
     }
     
     const {width, height} = Dimensions.get('window');
+
+    const sourceIterator = message.images.map ? message.images :
+        imageKeyOrder.map(key => message.images[key]).filter(value => value);
     
-    const imageComponents = message.images.map(source => 
+    const imageComponents = sourceIterator.map(source => 
         <Image style={{width, height: width}} source={{uri: source}} key={source}/>
     );
 

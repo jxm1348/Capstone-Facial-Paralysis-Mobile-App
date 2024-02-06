@@ -6,12 +6,12 @@ import FetchUnreadBadge from "./FetchUnreadBadge";
 function ClinicianNavBar({navigation}) {
     return (
         <View style={styles.container}>
-            <Button title="Home" onPress={() => navigation.navigate("Clinician Home")}/>
+            <Button title="Home" onPress={() => navigation.navigate("ClinicianHome")}/>
             <View>
-                <Button title="Patients" onPress={() => navigation.navigate("Patients")} />
+                <Button title="Patients" onPress={() => navigation.navigate("ClinicianPatients")} />
                 <FetchUnreadBadge fetchValue={fetchUnreadCount} />
             </View>
-            <Button title="Options" onPress={() => navigation.navigate("Clinician Home")}/>
+            <Button title="Options" onPress={() => navigation.navigate("ClinicianHome")}/>
         </View>
     );
 }

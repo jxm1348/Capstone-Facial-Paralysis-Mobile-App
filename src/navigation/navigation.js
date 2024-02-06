@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from '../screens/LoginScreen';
 
 import ClinicianHomeScreen from '../screens/ClinicianHomeScreen';
-import PatientsScreen from '../screens/PatientsScreen';
+import ClinicianPatientsScreen from '../screens/ClinicianPatientsScreen';
 import ClinicianPatientScreen from '../screens/ClinicianPatientScreen';
 import ReportScreen from '../screens/ReportScreen';
 
@@ -23,8 +23,8 @@ export default function MainNavigator() {
         <Stack.Navigator>
             <Stack.Screen name="Login" component={LoginScreen}  />
             
-            <Stack.Screen name="Clinician Home" component={ClinicianHomeScreen} />
-            <Stack.Screen name="Patients" component={PatientsScreen} />
+            <Stack.Screen name="ClinicianHome" component={ClinicianHomeScreen} />
+            <Stack.Screen name="ClinicianPatients" component={ClinicianPatientsScreen} />
             <Stack.Screen name="ClinicianPatient" component={ClinicianPatientScreen} />
             <Stack.Screen name="Report" component={ReportScreen} />
             

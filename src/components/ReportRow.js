@@ -1,18 +1,24 @@
 import { StyleSheet, Text, View, Image } from 'react-native';
 
 import NewBadge from '../components/NewBadge';
+import { imageKeyOrder } from '../constants';
 
 function ReportTile({source}) {
     return <Image style={styles.tile} source={{uri: source}}/>;
 }
 
 function ReportRow({message}) {
+    const urlIterator = message.images.map ? message.images :
+        imageKeyOrder.map(key => message.images[key]).filter(result => result);
+
+    const imageTiles = urlIterator.map(source =>
+        <ReportTile key={source} source={source} />
+    );
+
     return (<View style={styles.container}>
         <NewBadge value={!message.deepRead} />
         <View style={{flexDirection: 'row', gap: 20}}>
-            {message.images.map(source =>
-                <ReportTile key={source} source={source} />
-            )}
+            {imageTiles}
         </View>
         <Text>{new Date(message.date).toString()}</Text>
         <Text style={{display: message.message === null ? 'none' : 'flex'}}>
