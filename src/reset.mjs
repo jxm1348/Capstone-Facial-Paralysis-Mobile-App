@@ -4,7 +4,8 @@ import {
     terminate,
 } from 'firebase/firestore';
 
-import { db } from './state.mjs';
+import { db, storage } from './state.mjs';
+import { deleteObject, list, ref } from 'firebase/storage';
 
 const placeholderThumbnail = 'https://mpeschel10.github.io/fa/test/face-f-at-rest.png';
 const placeholderImages = [
@@ -82,6 +83,26 @@ async function resetTable(name) {
     }
 }
 
-await Promise.all(Object.entries(tables).map(([name, entry]) => resetTable(name)));
+async function deleteDir(dirRef) {
+    let page = {nextPageToken: undefined};
+    do {
+        page = await list(dirRef, {maxResults: 100, pageToken: page.nextPageToken});
+        console.log("Deleting storage items: ", page.items.map(itemRef => itemRef._location.path_));
+        const promises = [
+            ...page.items.map(itemRef => deleteObject(itemRef)),
+            ...page.prefixes.map(prefixRef => deleteDir(prefixRef)),
+        ];
+        await Promise.all(promises);
+    } while (page.nextPageToken);
+}
+
+async function resetStorage() {
+    await deleteDir(ref(storage));
+}
+
+await Promise.all([
+    ...Object.keys(tables).map(name => resetTable(name)),
+    resetStorage(),
+]);
 // Closing the database connection is necessary so node.js doesn't hang after the reset function is done.
 terminate(db);
