@@ -10,6 +10,7 @@ import NavigationBar from '../components/NavigationBar';
 import { imageKeyOrder } from '../constants';
 import state, { dataURItoBlob, db, fetchUniqueInt, storage } from '../state.mjs';
 import globalStyles from '../globalStyles';
+import { useIsFocused } from '@react-navigation/native';
 
 
 const saveImages = async () => {
@@ -28,6 +29,7 @@ const saveImages = async () => {
 }
 
 const PatientUploadScreen = () => {
+  useIsFocused();
   const navigation = useNavigation();
 
   const images = {
