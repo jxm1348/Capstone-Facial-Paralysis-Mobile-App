@@ -10,7 +10,7 @@ function NewBadge({value}) {
         backgroundColor: '#ff0000',
         color: '#ffffff',
         display: value ? 'flex' : 'none'
-    }}>Unread</Text>);
+    }}>New</Text>);
 }
 
 export default NewBadge;

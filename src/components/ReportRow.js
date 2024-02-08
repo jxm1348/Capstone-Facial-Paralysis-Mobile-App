@@ -16,7 +16,7 @@ function ReportRow({message}) {
     );
 
     return (<View style={styles.container}>
-        <NewBadge value={!message.deepRead} />
+        <NewBadge value={message.new} />
         <View style={{flexDirection: 'row', gap: 20}}>
             {imageTiles}
         </View>

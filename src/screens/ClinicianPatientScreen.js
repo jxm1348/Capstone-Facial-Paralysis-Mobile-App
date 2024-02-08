@@ -32,15 +32,16 @@ const ClinicianPatientScreen = ({navigation, route}) => {
   const [ messages, setMessages ] = useState(undefined);
   
   // The purpose of newMessages is to highlight recent messages.
-  // We cannot use messages[n].read, since that is changed
-  //  as soon as this screen is displayed.
+  // We cannot use messages[n].read going forward, since that is changed
+  //  as soon as this screen is displayed, and when I implement live data
+  //  the badge would disappear immediately.
   // Therefore, newMessages has a manually-enforced lifetime
   //  that ends when the screen "loses focus" (someone navigates away).
   const [ newMessages, setNewMessages ] = useState({});
-  useEffect(() => {
-    if (!isFocused) setNewMessages({});
-    console.log("Reset new messages");
-  }, [isFocused]);
+  useEffect(() => { if (!isFocused) {
+    messages.forEach(message => message.new = false);
+    setNewMessages({});
+  }}, [isFocused]);
   
   useEffect(() => {
     getDoc(doc(db, 'users', id))
@@ -61,6 +62,10 @@ const ClinicianPatientScreen = ({navigation, route}) => {
         querySnapshot.docs.map(document => {
           const result = document.data();
           result.id = document.id;
+          
+          if (!result.read) {newMessages[document.id] = true;}
+          result.new = newMessages[document.id];
+          
           return result;
         })
       )}
