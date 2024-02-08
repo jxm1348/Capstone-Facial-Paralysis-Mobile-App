@@ -8,7 +8,7 @@ import {
 } from 'firebase/firestore';
 
 import globalStyles from '../globalStyles';
-import state, { db, setPatientRead } from '../state';
+import state, { db, setPatientRead } from '../state.mjs';
 
 import NewMessageBar from '../components/NewMessageBar';
 import ReportRow from '../components/ReportRow';
@@ -23,14 +23,24 @@ function compareDateDescending(m1, m2) {
 
 
 const ClinicianPatientScreen = ({navigation, route}) => {
-  useIsFocused();
+  const isFocused = useIsFocused();
 
   const { id, name } = route.params;
   const patientName = name;
 
   const [ patient, setPatient ] = useState(null);
   const [ messages, setMessages ] = useState(undefined);
-  console.log("messages is", messages);
+  
+  // The purpose of newMessages is to highlight recent messages.
+  // We cannot use messages[n].read, since that is changed
+  //  as soon as this screen is displayed.
+  // Therefore, newMessages has a manually-enforced lifetime
+  //  that ends when the screen "loses focus" (someone navigates away).
+  const [ newMessages, setNewMessages ] = useState({});
+  useEffect(() => {
+    if (!isFocused) setNewMessages({});
+    console.log("Reset new messages");
+  }, [isFocused]);
   
   useEffect(() => {
     getDoc(doc(db, 'users', id))
