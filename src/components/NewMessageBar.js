@@ -13,7 +13,6 @@ export default function NewMessageBar({toName}) {
         message: newMessageRef.current.value,
         images: [],
         read: false,
-        deepRead: false,
         from: state.username,
         to: toName,
         date: Date.now(),
