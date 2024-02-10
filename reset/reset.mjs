@@ -4,7 +4,7 @@ import {
     terminate,
 } from 'firebase/firestore';
 
-import { db, storage } from './state.mjs';
+import { db, storage } from '../src/state.mjs';
 import { deleteObject, list, ref } from 'firebase/storage';
 
 const placeholderThumbnail = 'https://mpeschel10.github.io/fa/test/face-f-at-rest.png';
