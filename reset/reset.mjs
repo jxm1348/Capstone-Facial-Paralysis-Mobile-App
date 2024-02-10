@@ -8,7 +8,7 @@ import {
 } from 'firebase/firestore';
 
 import { db, storage } from '../src/state.mjs';
-import { deleteObject, list, ref, uploadBytes } from 'firebase/storage';
+import { deleteObject, getMetadata, list, listAll, ref, uploadBytes } from 'firebase/storage';
 
 const placeholderThumbnail = 'https://mpeschel10.github.io/fa/test/face-f-at-rest.png';
 const placeholderImages = [
@@ -105,22 +105,61 @@ async function uploadPath(sourcePath, destPath) {
     return await uploadBytes(destPath, sourceBlob);
 }
 
+function direntToPath(dirent) {
+    return path.join(dirent.path, dirent.name);
+}
+
+function refToName(ref) {
+    const parts = ref._location.path_.split("/");
+    return parts[parts.length - 1];
+}
+
 async function syncDir(sourceDir, destDir) {
-    for (const entry of await readdir(sourceDir, {withFileTypes: true})) {
-        if (entry.isDirectory()) {
-            console.log('Recurring in dir', entry.name);
-            await syncDir(path.join(sourceDir, entry.name), ref(destDir, entry.name));
+    // listAll supposedly may cause problems if there are many files up there.
+    // Mot worth addressing yet.
+    const pathsDownHere = await readdir(sourceDir, {withFileTypes: true});
+    const pathsUpThere = await listAll(destDir);
+    const goodNames = Object.fromEntries(pathsDownHere.map(item => [item.name, true]));
+    const itemsUploaded = {};
+    
+    // Steps: 1. Delete all things from destDir not in sourceDir.
+    for (const itemUpThere of pathsUpThere.items) {
+        const nameUpThere = refToName(itemUpThere);
+        if (!goodNames[nameUpThere]) {
+            console.log('Delete file  ', nameUpThere);
+            await deleteObject(itemUpThere);
         } else {
-            const sourcePath = path.join(sourceDir, entry.name);
-            const destPath = ref(destDir, entry.name);
-            console.log('Uploading file', sourcePath, 'to', destPath._location.path_);
-            await uploadPath(sourcePath, destPath);
+            itemsUploaded[nameUpThere] = true;
         }
     }
+    
+    for (const prefixUpThere of pathsUpThere.prefixes) {
+        const nameUpThere = refToName(prefixUpThere);
+        if (!goodNames[nameUpThere]) {
+            console.log('Delete folder', nameUpThere);
+            await deleteDir(prefixUpThere);
+        }
+    }
+    
+    // 2. Upload all things in sourceDir not already in destDir.
+    for (const item of pathsDownHere) {
+        if (itemsUploaded[item.name]) {
+            console.log('Skip   file  ', item.name);
+            continue;
+        }
+        if (item.isDirectory()) {
+            console.log('Enter  folder', item.name);
+            await syncDir(direntToPath(item), ref(destDir, item.name));
+            continue;
+        }
+        console.log('Upload file  ', item.name);
+        await uploadPath(direntToPath(item), ref(destDir, item.name));
+    }
+    return;
 }
 
 async function resetStorage() {
-    await deleteDir(ref(storage));
+    // await deleteDir(ref(storage)); // Clean reset. Deletes all files to be reuploaded anew. Slow.
     await syncDir(path.join(process.cwd(), 'reset', 'mirror'), ref(storage));
 }
 
