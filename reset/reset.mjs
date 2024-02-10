@@ -1,4 +1,5 @@
 import { readFile, readdir } from 'node:fs/promises';
+import mimeTypes from 'mime-types';
 import path from 'node:path';
 
 import {
@@ -102,7 +103,8 @@ async function deleteDir(dirRef) {
 async function uploadPath(sourcePath, destPath) {
     const sourceContent = await readFile(sourcePath);
     const sourceBlob = new Blob([sourceContent]);
-    return await uploadBytes(destPath, sourceBlob);
+    const contentType = mimeTypes.lookup(sourcePath);
+    return await uploadBytes(destPath, sourceBlob, {contentType});
 }
 
 function direntToPath(dirent) {
