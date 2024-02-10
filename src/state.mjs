@@ -112,7 +112,7 @@ export const fetchUnreadCount = async () => {
 export const login = async (username, password) => {
     state.credentials = {username, password};
     state.username = username;
-    state.clinician = {'Mark Peschel': 'Jane doe'}[username];
+    state.clinician = {'Mark Peschel': 'Meredith Grey'}[username];
 }
 
 // This function is called in ClinicianPatientsScreen

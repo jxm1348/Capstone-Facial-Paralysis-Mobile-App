@@ -30,29 +30,38 @@ async function deleteCollection(collectionName) {
     await Promise.all(deletePromises);
 }
 
-const defaultUsers = [
-    {name:'Owen Wilson', thumbnail: placeholderThumbnail, latestMessage: null},
-    {name:'Mark Peschel', thumbnail: placeholderThumbnail, latestMessage: '2024-01-20'},
-    {name:'Gabriel Marx', thumbnail: placeholderThumbnail, latestMessage: '2024-01-06'},
-    {name:'John doe', thumbnail: placeholderThumbnail, latestMessage: '2024-01-19'},
-    {name:'Denzel W', thumbnail: placeholderThumbnail, latestMessage: null},
-    {name:'Ameila Earhart', thumbnail: placeholderThumbnail, latestMessage: null},
-    {name:'Brad Pitt', thumbnail: placeholderThumbnail, latestMessage: null},
-];
+const defaultUsers = {
+    'gRnnZGMDUOOThH8Jdbfu': {clinician: null, name:'Meredith Grey', thumbnail: placeholderThumbnail, latestMessage: null},
+    'mSz5ZmtDK6KmqxK7NN5Q': {clinician: null, name:'Cristina Yang', thumbnail: placeholderThumbnail, latestMessage: null},
+    'QSQIUuX0RHfOD2KStyks': {clinician: null, name:'Teddy Altman', thumbnail: placeholderThumbnail, latestMessage: null},
+    'K8bhUx2Hqv2LjfP4BsKy': {clinician: 'gRnnZGMDUOOThH8Jdbfu', name:'Mark Peschel', thumbnail: 'https://avatars.githubusercontent.com/u/111475917?v=4', latestMessage: '2024-01-20'},
+    '5NEvyWyAES1DVuuJ7BDZ': {clinician: 'mSz5ZmtDK6KmqxK7NN5Q', name:'jxm', thumbnail: 'https://avatars.githubusercontent.com/u/143039729?v=4', latestMessage: null},
+    'lSHYQROPdgk7kJTsZxJu': {clinician: 'gRnnZGMDUOOThH8Jdbfu', name:'Josh Carson', thumbnail: 'https://avatars.githubusercontent.com/u/18175844?v=4', latestMessage: '2024-01-19'},
+    'SMHTCPm51vgYphdkDVly': {clinician: 'gRnnZGMDUOOThH8Jdbfu', name:'Owen Wilson', thumbnail: placeholderThumbnail, latestMessage: null},
+    'mI0cChVwn0AzBN0AhJXv': {clinician: 'gRnnZGMDUOOThH8Jdbfu', name:'Robert Downey Junior', thumbnail: placeholderThumbnail, latestMessage: '2024-01-06'},
+    'wfDM8ya0ModdQEP3RIsm': {clinician: 'gRnnZGMDUOOThH8Jdbfu', name:'John doe', thumbnail: placeholderThumbnail, latestMessage: '2024-01-19'},
+    'IneBpCxH8S4F0CVSo2fU': {clinician: 'mSz5ZmtDK6KmqxK7NN5Q', name:'Denzel W', thumbnail: placeholderThumbnail, latestMessage: null},
+    'tKcqk4A4VRq9ag94vAoY': {clinician: null, name:'Ameila Earhart', thumbnail: placeholderThumbnail, latestMessage: null},
+    'lJ1kxTskAKmdwhqlSXJq': {clinician: null, name:'Brad Pitt', thumbnail: placeholderThumbnail, latestMessage: null},
+}
 
 const defaultMessages = [
-    {date: new Date('Jan 20, 2024').getTime(), from: 'Mark Peschel', to: 'Jane doe', read: false, message: '', images: placeholderImages},
-    {date: new Date('Jan 19, 2024').getTime(), from: 'Jane doe', to: 'Mark Peschel', read: true, message: 'How is the soreness we discussed doing?', images: []},
-    {date: new Date('Jan 15, 2024').getTime(), from: 'Mark Peschel', to: 'Jane doe', read: true, message: 'Test message without images.', images: []},
-    {date: new Date('Jan 15, 2024').getTime(), from: 'Mark Peschel', to: 'Fake user who does not eixst', read: false, message: 'Test message that should never be visible.', images: []},
-    {date: new Date('Jan 13, 2024').getTime(), from: 'Mark Peschel', to: 'Jane doe', read: true, message: '', images: placeholderImages},
-    {date:  new Date('Jan 6, 2024').getTime(), from: 'Mark Peschel', to: 'Jane doe', read: true, message: '', images: placeholderImages},
-    {date: new Date('Dec 30, 2023').getTime(), from: 'Mark Peschel', to: 'Jane doe', read: true, message: '', images: placeholderImages},
-    {date: new Date('Dec 23, 2023').getTime(), from: 'Mark Peschel', to: 'Jane doe', read: true, message: '', images: placeholderImages},
-    {date: new Date('Dec 16, 2023').getTime(), from: 'Mark Peschel', to: 'Jane doe', read: true, message: '', images: placeholderImages},
-    {date:  new Date('Jan 6, 2024').getTime(), from: 'Gabriel Marx', to: 'Jane doe', read: true, message: 'Hi.', images: placeholderImages},
-    {date: new Date('Jan 19, 2024, 3:38 pm').getTime(), read: false, from: 'John doe', to: 'Jane doe', message: 'Please inore my last message. Was a mosquito bite.', images: placeholderImages},
-    {date: new Date('Jan 19, 2024, 3:17 pm').getTime(), read: false, from: 'John doe', to: 'Jane doe', message: 'Strange swelling and itchy redness above my right eyebrow. Did you put in more botulin there last time? I hope it\s not an allergy. I just worry because I know allergies tend to get worse if every time you\'re exposed. That might juts be for bee stings, though.', images: placeholderImages},
+    {date: new Date('Jan 20, 2024').getTime(), from: 'Mark Peschel', to: 'Meredith Grey', read: false, message: '', images: placeholderImages},
+    {date: new Date('Jan 19, 2024').getTime(), from: 'Meredith Grey', to: 'Mark Peschel', read: true, message: 'How is the soreness we discussed doing?', images: []},
+    {date: new Date('Jan 15, 2024').getTime(), from: 'Mark Peschel', to: 'Meredith Grey', read: true, message: 'Test message without images.', images: []},
+    {date: new Date('Jan 15, 2024').getTime(), from: 'Mark Peschel', to: 'Fake user who does not exist', read: false, message: 'Test message that should not be visible to any doctor.', images: []},
+    {date: new Date('Jan 13, 2024').getTime(), from: 'Mark Peschel', to: 'Meredith Grey', read: true, message: '', images: placeholderImages},
+    {date:  new Date('Jan 6, 2024').getTime(), from: 'Mark Peschel', to: 'Meredith Grey', read: true, message: '', images: placeholderImages},
+    {date: new Date('Dec 30, 2023').getTime(), from: 'Mark Peschel', to: 'Meredith Grey', read: true, message: '', images: placeholderImages},
+    {date: new Date('Dec 23, 2023').getTime(), from: 'Mark Peschel', to: 'Meredith Grey', read: true, message: '', images: placeholderImages},
+    {date: new Date('Dec 16, 2023').getTime(), from: 'Mark Peschel', to: 'Meredith Grey', read: true, message: '', images: placeholderImages},
+    {date:  new Date('Jan 6, 2024').getTime(), from: 'Robert Downey Junior', to: 'Meredith Grey', read: true, message: 'Wow.', images: placeholderImages},
+    {date: new Date('Jan 19, 2024, 3:38 pm').getTime(), read: false, from: 'Josh Carson', to: 'Meredith Grey', message: 'And how are you, Mr. Wilson.',
+        images: placeholderImages
+    },
+    {date: new Date('Jan 19, 2024, 3:17 pm').getTime(), read: false, from: 'Josh Carson', to: 'Meredith Grey', message: 'Sometimes, when it\'s late at night and the stars are out, I like to take my shoes and socks off and go for a stroll. The pavement was cold against my feet at first. That passes with time. Our bodies have grown soft in our modern splendor, but they remember the old way of things with little prompting. I\'m not saying things aren\'t better now. Just different.',
+        images: placeholderImages
+    },
 ];
 
 const defaultGlobals = {
@@ -67,7 +76,7 @@ const tables = {
 
 // Deletes everything and then re-uploads a test dataset.
 // Valid collections at this time are:
-// users, messages
+// users, messages, globals
 async function resetTable(name) {
     const table = tables[name];
     console.debug(`Deleting collection ${name}.`);

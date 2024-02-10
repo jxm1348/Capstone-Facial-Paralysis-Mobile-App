@@ -18,7 +18,7 @@ import state, { login } from '../state.mjs';
 const LoginScreen = ({ navigation }) => {
 
   const debugClinicianLogin = async () => {
-    await login('Jane doe', 'password');
+    await login('Meredith Grey', 'password');
     navigation.navigate('ClinicianHome');
   };
 
@@ -79,7 +79,7 @@ const LoginScreen = ({ navigation }) => {
 
   const handleLogin = () => {
     login(username, password);
-    if (username === 'Jane doe' && password === 'password') {
+    if (username === 'Meredith Grey' && password === 'password') {
       navigation.navigate('ClinicianHome');
     } else if (username === 'John doe' && password === 'password') {
       navigation.navigate('PatientHome');
