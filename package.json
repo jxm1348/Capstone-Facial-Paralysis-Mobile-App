@@ -8,7 +8,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "reset": "node src/reset.mjs"
+    "reset": "node reset/reset.mjs"
   },
   "dependencies": {
     "@expo/webpack-config": "^19.0.0",
