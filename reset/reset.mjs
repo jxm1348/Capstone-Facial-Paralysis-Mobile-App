@@ -1,3 +1,6 @@
+import { readFile, readdir } from 'node:fs/promises';
+import path from 'node:path';
+
 import {
     deleteDoc, getDocs, addDoc, setDoc,
     collection, doc,
@@ -5,7 +8,7 @@ import {
 } from 'firebase/firestore';
 
 import { db, storage } from '../src/state.mjs';
-import { deleteObject, list, ref } from 'firebase/storage';
+import { deleteObject, list, ref, uploadBytes } from 'firebase/storage';
 
 const placeholderThumbnail = 'https://mpeschel10.github.io/fa/test/face-f-at-rest.png';
 const placeholderImages = [
@@ -96,13 +99,35 @@ async function deleteDir(dirRef) {
     } while (page.nextPageToken);
 }
 
+async function uploadPath(sourcePath, destPath) {
+    const sourceContent = await readFile(sourcePath);
+    const sourceBlob = new Blob([sourceContent]);
+    return await uploadBytes(destPath, sourceBlob);
+}
+
+async function syncDir(sourceDir, destDir) {
+    for (const entry of await readdir(sourceDir, {withFileTypes: true})) {
+        if (entry.isDirectory()) {
+            console.log('Recurring in dir', entry.name);
+            await syncDir(path.join(sourceDir, entry.name), ref(destDir, entry.name));
+        } else {
+            const sourcePath = path.join(sourceDir, entry.name);
+            const destPath = ref(destDir, entry.name);
+            console.log('Uploading file', sourcePath, 'to', destPath._location.path_);
+            await uploadPath(sourcePath, destPath);
+        }
+    }
+}
+
 async function resetStorage() {
     await deleteDir(ref(storage));
+    await syncDir(path.join(process.cwd(), 'reset', 'mirror'), ref(storage));
 }
 
 await Promise.all([
     ...Object.keys(tables).map(name => resetTable(name)),
     resetStorage(),
 ]);
+
 // Closing the database connection is necessary so node.js doesn't hang after the reset function is done.
 terminate(db);
