@@ -184,9 +184,38 @@ async function resetStorage() {
     await syncDir(path.join(process.cwd(), 'reset', 'mirror'), ref(storage));
 }
 
+async function rateLimit(ms) {
+    ms = ms ?? 600
+    await new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function deleteUsers() {
+    while (true) {
+        const { users } = await adminAuth.listUsers(1000);
+        if (users.length === 0) return;
+        console.log('Deleting users', users.map(user => user.email));
+        await adminAuth.deleteUsers(users.map(user => user.uid));
+        await rateLimit(1000);
+    }
+}
+
+async function resetUsers() {
+    await deleteUsers();
+    for (const [uid, user] of Object.entries(defaultUsers)) {
+        console.log('Creating user with uid', uid, 'display name', user.name);
+        await adminAuth.createUser({
+            uid,
+            email: user.email,
+            password: 'password',
+            displayName: user.name,
+        });
+    }
+}
+
 await Promise.all([
-    ...Object.keys(tables).map(name => resetTable(name)),
-    resetStorage(),
+    // ...Object.keys(tables).map(name => resetTable(name)),
+    // resetStorage(),
+    resetUsers(),
 ]);
 
 // Closing the database connection is necessary so node.js doesn't hang after the reset function is done.
