@@ -63,7 +63,6 @@ const state = {
 
     workingMessage: { images: {} },
 
-    username: undefined,
     clinician: undefined,
 };
 
@@ -93,7 +92,7 @@ export const fetchUnreadCount = async () => {
     const messagesSnapshot = await getDocs(query(
         collection(state.db, 'messages'),
         and(
-            where('to', '==', state.username),
+            where('to', '==', auth.currentUser.displayName),
             where('read', '==', false),
         )
     ));
@@ -101,7 +100,6 @@ export const fetchUnreadCount = async () => {
 }
 
 export const login = async (username, password) => {
-    state.username = username;
     state.clinician = {'Mark Peschel': 'Meredith Grey'}[username];
     const email = {'Mark Peschel': 'mpeschel@gmail.com', 'Meredith Grey': 'mgrey@gmail.com'}[username];
     await signInWithEmailAndPassword(auth, email, 'password');
@@ -111,7 +109,7 @@ export const login = async (username, password) => {
 // It returns a list of patients for the current user as well as the counts of their unread messages.
 export const getPatientsIdsUnread = async () => {
     const usersSnapshot = await getDocs(collection(db, 'users'));
-    const q = query(collection(db, 'messages'), where('to', '==', state.username));
+    const q = query(collection(db, 'messages'), where('to', '==', auth.currentUser.displayName));
     const messagesSnapshot = await getDocs(q);
     const userCounts = {};
     for (const message of messagesSnapshot.docs.map(d => d.data())) {
@@ -133,7 +131,7 @@ export const getPatientsIdsUnread = async () => {
 export const setPatientRead = async (patient) => {
     const q = query(
         collection(db, 'messages'),
-        and(where('from', '==', patient.name), where('to', '==', state.username)),
+        and(where('from', '==', patient.name), where('to', '==', auth.currentUser.displayName)),
     );
     
     const messages = await getDocs(q);

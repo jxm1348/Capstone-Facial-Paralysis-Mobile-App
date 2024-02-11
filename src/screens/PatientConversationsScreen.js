@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native
 import { getDocs, collection, query, where, or } from 'firebase/firestore';
 
 import NavigationBar from '../components/NavigationBar';
-import state, { db } from '../state';
+import { db, auth } from '../state';
 
 function ConversationsSkeleton() {
   return <Text>Loading...</Text>;
@@ -43,12 +43,12 @@ const PatientMessagesScreen = ({ navigation }) => {
   useEffect(() => {
     getDocs(query(
       collection(db, 'messages'),
-      or(where('from', '==', state.username), where('to', '==', state.username))
+      or(where('from', '==', auth.currentUser.displayName), where('to', '==', auth.currentUser.displayName))
     )).then(querySnapshot => {
       setContacts(Array.from(new Set(
         querySnapshot.docs.map(document => {
           const message = document.data();
-          return message.from !== state.username ? message.from : message.to;
+          return message.from !== auth.currentUser.displayName ? message.from : message.to;
         }
       ))))
     })

@@ -5,7 +5,7 @@ import { getDocs, collection, query, where, or, and } from 'firebase/firestore';
 import { FlexNavigationBar } from '../components/NavigationBar';
 import NewMessageBar from '../components/NewMessageBar';
 import ReportRow from '../components/ReportRow';
-import state, { db } from '../state';
+import state, { db, auth } from '../state';
 
 function PatientMessagesSkeleton() {
   return <View style={{flexGrow: 1}}><Text>Loading...</Text></View>;
@@ -32,8 +32,8 @@ function curryFetchMessages({withName, setMessages}) {
     getDocs(query(
       collection(db, 'messages'),
       or(
-        and(where('from', '==', state.username), where('to', '==', withName)),
-        and(where('from', '==', withName), where('to', '==', state.username)),
+        and(where('from', '==', auth.currentUser.displayName), where('to', '==', withName)),
+        and(where('from', '==', withName), where('to', '==', auth.currentUser.displayName)),
       )
     )).then(querySnapshot => {
       setMessages(querySnapshot.docs.map(document => {

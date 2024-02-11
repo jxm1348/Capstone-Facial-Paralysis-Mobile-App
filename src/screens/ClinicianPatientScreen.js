@@ -8,7 +8,7 @@ import {
 } from 'firebase/firestore';
 
 import globalStyles from '../globalStyles';
-import state, { db, setPatientRead } from '../state.mjs';
+import { db, auth, setPatientRead } from '../state.mjs';
 
 import NewMessageBar from '../components/NewMessageBar';
 import ReportRow from '../components/ReportRow';
@@ -54,8 +54,8 @@ const ClinicianPatientScreen = ({navigation, route}) => {
     getDocs(query(
       collection(db, 'messages'),
       or(
-        and(where('from', '==', name), where('to', '==', state.username),),
-        and(where('from', '==', state.username), where('to', '==', name),),
+        and(where('from', '==', name), where('to', '==', auth.currentUser.displayName),),
+        and(where('from', '==', auth.currentUser.displayName), where('to', '==', name),),
       )
     )).then(
       querySnapshot => {setMessages(
