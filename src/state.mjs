@@ -4,6 +4,7 @@
 
 import { initializeApp } from 'firebase/app';
 import { getStorage } from 'firebase/storage';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import {
     getFirestore,
     getDocs, updateDoc,
@@ -27,6 +28,7 @@ const firebaseConfig = {
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
+export const auth = getAuth(app);
 
 // Credit to "devnull69" of https://stackoverflow.com/users/1030974/devnull69
 // Via https://stackoverflow.com/a/12300351/6286797
@@ -56,22 +58,11 @@ export function getUnreadPatient(patient) {
 
 const state = {
     demoIsDebug: true,
-    patient:{
-        workingPhotoSet:[null, null, null, null, null, null, null, ],
-        photoSets:[
-            ['imageAddress', 'imageAddress', 'imageAddress', 'imageAddress', 'imageAddress', 'imageAddress', 'imageAddress', ],
-            ['imageAddress', 'imageAddress', 'imageAddress', 'imageAddress', 'imageAddress', 'imageAddress', 'imageAddress', ],
-            ['imageAddress', 'imageAddress', 'imageAddress', 'imageAddress', 'imageAddress', 'imageAddress', 'imageAddress', ],
-        ]
-    },
 
-    app, db, storage,
+    app, db, storage, auth,
 
     workingMessage: { images: {} },
 
-    loginCookie: ['cookieKey', 'cookieValue'],
-
-    credentials: {username: null, password: null},
     username: undefined,
     clinician: undefined,
 };
@@ -110,9 +101,10 @@ export const fetchUnreadCount = async () => {
 }
 
 export const login = async (username, password) => {
-    state.credentials = {username, password};
     state.username = username;
     state.clinician = {'Mark Peschel': 'Meredith Grey'}[username];
+    const email = {'Mark Peschel': 'mpeschel@gmail.com', 'Meredith Grey': 'mgrey@gmail.com'}[username];
+    await signInWithEmailAndPassword(auth, email, 'password');
 }
 
 // This function is called in ClinicianPatientsScreen
