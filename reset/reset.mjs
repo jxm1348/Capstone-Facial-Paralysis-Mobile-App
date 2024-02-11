@@ -1,15 +1,25 @@
 import { readFile, readdir } from 'node:fs/promises';
-import mimeTypes from 'mime-types';
 import path from 'node:path';
+
+import mimeTypes from 'mime-types';
 
 import {
     deleteDoc, getDocs, addDoc, setDoc,
     collection, doc,
     terminate,
 } from 'firebase/firestore';
+import { deleteObject, getMetadata, list, listAll, ref, uploadBytes } from 'firebase/storage';
 
 import { db, storage } from '../src/state.mjs';
-import { deleteObject, getMetadata, list, listAll, ref, uploadBytes } from 'firebase/storage';
+
+import firebaseAdmin from 'firebase-admin';
+
+const serviceAccountKey = JSON.parse(await readFile(path.join('secrets', 'facial-analytics-f8b9e-firebase-adminsdk-r38z0-23a93810da.json')));
+
+const adminApp = firebaseAdmin.initializeApp({
+  credential: firebaseAdmin.credential.cert(serviceAccountKey)
+});
+const adminAuth = firebaseAdmin.auth(adminApp);
 
 const placeholderThumbnail = 'https://mpeschel10.github.io/fa/test/face-f-at-rest.png';
 const placeholderImages = [
@@ -31,18 +41,18 @@ async function deleteCollection(collectionName) {
 }
 
 const defaultUsers = {
-    'gRnnZGMDUOOThH8Jdbfu': {clinician: null, name:'Meredith Grey', thumbnail: placeholderThumbnail, latestMessage: null},
-    'mSz5ZmtDK6KmqxK7NN5Q': {clinician: null, name:'Cristina Yang', thumbnail: placeholderThumbnail, latestMessage: null},
-    'QSQIUuX0RHfOD2KStyks': {clinician: null, name:'Teddy Altman', thumbnail: placeholderThumbnail, latestMessage: null},
-    'K8bhUx2Hqv2LjfP4BsKy': {clinician: 'gRnnZGMDUOOThH8Jdbfu', name:'Mark Peschel', thumbnail: 'https://avatars.githubusercontent.com/u/111475917?v=4', latestMessage: '2024-01-20'},
-    '5NEvyWyAES1DVuuJ7BDZ': {clinician: 'mSz5ZmtDK6KmqxK7NN5Q', name:'jxm', thumbnail: 'https://avatars.githubusercontent.com/u/143039729?v=4', latestMessage: null},
-    'lSHYQROPdgk7kJTsZxJu': {clinician: 'gRnnZGMDUOOThH8Jdbfu', name:'Josh Carson', thumbnail: 'https://avatars.githubusercontent.com/u/18175844?v=4', latestMessage: '2024-01-19'},
-    'SMHTCPm51vgYphdkDVly': {clinician: 'gRnnZGMDUOOThH8Jdbfu', name:'Owen Wilson', thumbnail: placeholderThumbnail, latestMessage: null},
-    'mI0cChVwn0AzBN0AhJXv': {clinician: 'gRnnZGMDUOOThH8Jdbfu', name:'Robert Downey Junior', thumbnail: placeholderThumbnail, latestMessage: '2024-01-06'},
-    'wfDM8ya0ModdQEP3RIsm': {clinician: 'gRnnZGMDUOOThH8Jdbfu', name:'John doe', thumbnail: placeholderThumbnail, latestMessage: '2024-01-19'},
-    'IneBpCxH8S4F0CVSo2fU': {clinician: 'mSz5ZmtDK6KmqxK7NN5Q', name:'Denzel W', thumbnail: placeholderThumbnail, latestMessage: null},
-    'tKcqk4A4VRq9ag94vAoY': {clinician: null, name:'Ameila Earhart', thumbnail: placeholderThumbnail, latestMessage: null},
-    'lJ1kxTskAKmdwhqlSXJq': {clinician: null, name:'Brad Pitt', thumbnail: placeholderThumbnail, latestMessage: null},
+    'gRnnZGMDUOOThH8Jdbfu': {clinician: null, name:'Meredith Grey', email: "mgrey@gmail.com", thumbnail: placeholderThumbnail, latestMessage: null},
+    'mSz5ZmtDK6KmqxK7NN5Q': {clinician: null, name:'Cristina Yang', email: "cyang@gmail.com", thumbnail: placeholderThumbnail, latestMessage: null},
+    'QSQIUuX0RHfOD2KStyks': {clinician: null, name:'Teddy Altman', email: "taltman@gmail.com", thumbnail: placeholderThumbnail, latestMessage: null},
+    'K8bhUx2Hqv2LjfP4BsKy': {clinician: 'gRnnZGMDUOOThH8Jdbfu', name:'Mark Peschel', email: "mpeschel@gmail.com", thumbnail: 'https://avatars.githubusercontent.com/u/111475917?v=4', latestMessage: '2024-01-20'},
+    '5NEvyWyAES1DVuuJ7BDZ': {clinician: 'mSz5ZmtDK6KmqxK7NN5Q', name:'jxm', email: "jxm@gmail.com", thumbnail: 'https://avatars.githubusercontent.com/u/143039729?v=4', latestMessage: null},
+    'lSHYQROPdgk7kJTsZxJu': {clinician: 'gRnnZGMDUOOThH8Jdbfu', name:'Josh Carson', email: "jcarson@gmail.com", thumbnail: 'https://avatars.githubusercontent.com/u/18175844?v=4', latestMessage: '2024-01-19'},
+    'SMHTCPm51vgYphdkDVly': {clinician: 'gRnnZGMDUOOThH8Jdbfu', name:'Owen Wilson', email: "owilson@gmail.com", thumbnail: placeholderThumbnail, latestMessage: null},
+    'mI0cChVwn0AzBN0AhJXv': {clinician: 'gRnnZGMDUOOThH8Jdbfu', name:'Robert Downey Junior', email: "rjunior@gmail.com", thumbnail: placeholderThumbnail, latestMessage: '2024-01-06'},
+    'wfDM8ya0ModdQEP3RIsm': {clinician: 'gRnnZGMDUOOThH8Jdbfu', name:'John doe', email: "jdoe@gmail.com", thumbnail: placeholderThumbnail, latestMessage: '2024-01-19'},
+    'IneBpCxH8S4F0CVSo2fU': {clinician: 'mSz5ZmtDK6KmqxK7NN5Q', name:'Denzel Washington', email: "dwashington@gmail.com", thumbnail: placeholderThumbnail, latestMessage: null},
+    'tKcqk4A4VRq9ag94vAoY': {clinician: null, name:'Ameila Earhart', email: "aearhart@gmail.com", thumbnail: placeholderThumbnail, latestMessage: null},
+    'lJ1kxTskAKmdwhqlSXJq': {clinician: null, name:'Brad Pitt', email: "bpitt@gmail.com", thumbnail: placeholderThumbnail, latestMessage: null},
 }
 
 const defaultMessages = [
