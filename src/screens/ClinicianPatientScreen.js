@@ -14,7 +14,7 @@ import NewMessageBar from '../components/NewMessageBar';
 import ReportRow from '../components/ReportRow';
 
 function PatientSkeleton() {
-    return (<Text>Loading...</Text>);
+  return (<Text>Loading...</Text>);
 }
 
 function compareDateDescending(m1, m2) {
@@ -79,7 +79,7 @@ const ClinicianPatientScreen = ({navigation, route}) => {
     messageComponents = messages
       .sort(compareDateDescending)
       .map((message, index) =>
-        (<Pressable key={message.id} onPress={() => navigation.navigate('Report', {name, id: message.id})}>
+        (<Pressable key={message.id} onPress={() => navigation.navigate('Report', {name, id: message.id})} nativeID={`pressable-message-${message.id}`}>
           <ReportRow {...{message}} />
         </Pressable>)
       );
@@ -93,7 +93,7 @@ const ClinicianPatientScreen = ({navigation, route}) => {
       <ScrollView style={{flexGrow: 1}}>
         <NewMessageBar toName={patientName} />
         <ScrollView style={{flexGrow: 1, marginBottom: 100}} vertical={true} horizontal={true}>
-          <View style={{gap: 6, paddingHorizontal: 40, paddingVertical: 10}}>
+          <View style={{gap: 6, paddingHorizontal: 40, paddingVertical: 10}} nativeID="view-messages">
             {messageComponents}
           </View>
         </ScrollView>

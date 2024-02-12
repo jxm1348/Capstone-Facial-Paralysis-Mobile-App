@@ -19,6 +19,7 @@ function PatientMessagesPressable({patient, navigation}) {
     <Pressable
       style={styles.patientContainer}
       onPress={() => navigation.navigate('ClinicianPatient', {id: patient.id, name})}
+      nativeID={`pressable-patient-${patient.id}`}
     >
     <View style={{flexGrow: 1, marginHorizontal: 25, flexShrink: 1}}>
       <Text style={{fontSize: 35}}>{name}</Text>
