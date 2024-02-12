@@ -62,7 +62,7 @@ const LoginScreen = ({ navigation }) => {
     }}>
       <Text style={{color: 'white'}}>Debug Camera</Text>
     </Pressable>);
-    debugButtons.push(<Pressable key={1} style={globalStyles.button} onPress={debugClinicianLogin}>
+    debugButtons.push(<Pressable key={1} style={globalStyles.button} onPress={debugClinicianLogin} nativeID="pressable-debug-clinician">
       <Text style={{color: 'white'}}>Debug log in as clinician</Text>
     </Pressable>);
     debugButtons.push(<Pressable key={2} style={globalStyles.button} onPress={debugPatientLogin}>

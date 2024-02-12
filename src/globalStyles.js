@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-const styles = StyleSheet.create({
+const globalStyles = StyleSheet.create({
     h1: {
         fontSize: 40,
         textAlign: 'center',
@@ -15,10 +15,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#2288f0',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 16,
+        padding: 12,
         borderRadius: 4,
         margin: 8,
+    }, buttonText: {
+        color: '#ffffff',
+        fontSize: 20,
     }
 });
 
-export default styles;
+export default globalStyles;

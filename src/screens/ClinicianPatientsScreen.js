@@ -115,7 +115,7 @@ const ClinicianPatientsScreen = ({ navigation }) => {
     <ScrollView style={{flexGrow: 1, }}>
       <View style={{marginHorizontal: 40, }}>
         
-      <Text style={globalStyles.h1}>Patients</Text>
+      <Text style={globalStyles.h1} nativeID='text-patients-header'>Patients</Text>
       <SearchSortBar onChangeText={setSearch} {...{searchAscending, setSearchAscending, sortBy, setSortBy}} />
       <View>{patientItems}</View>
       </View>
