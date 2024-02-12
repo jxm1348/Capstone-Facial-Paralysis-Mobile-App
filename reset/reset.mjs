@@ -10,9 +10,10 @@ import {
 } from 'firebase/firestore';
 import { deleteObject, getMetadata, list, listAll, ref, uploadBytes } from 'firebase/storage';
 
-import { db, storage } from '../src/state.mjs';
+import { auth, db, storage } from '../src/state.mjs';
 
 import firebaseAdmin from 'firebase-admin';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 const serviceAccountKey = JSON.parse(await readFile(path.join('secrets', 'facial-analytics-f8b9e-firebase-adminsdk-r38z0-23a93810da.json')));
 
@@ -212,10 +213,14 @@ async function resetUsers() {
     }
 }
 
+// Credentials are now required for modifying tables.
+// TODO: use service account or whatever for fixing tables instead.
+// await resetUsers();
+await signInWithEmailAndPassword(auth, 'mpeschel@gmail.com', 'password');
+
 await Promise.all([
-    // ...Object.keys(tables).map(name => resetTable(name)),
-    // resetStorage(),
-    resetUsers(),
+    ...Object.keys(tables).map(name => resetTable(name)),
+    resetStorage(),
 ]);
 
 // Closing the database connection is necessary so node.js doesn't hang after the reset function is done.
