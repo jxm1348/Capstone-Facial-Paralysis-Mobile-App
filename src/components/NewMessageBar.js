@@ -5,7 +5,7 @@ import { View, Text, Pressable, TextInput } from 'react-native';
 import { db, auth } from '../state.mjs';
 import globalStyles from '../globalStyles';
 
-export default function NewMessageBar({toName}) {
+export default function NewMessageBar({toUid}) {
     const newMessageRef = useRef();
   
     const sendMessage = () => {
@@ -13,8 +13,8 @@ export default function NewMessageBar({toName}) {
         message: newMessageRef.current.value,
         images: [],
         read: false,
-        from: auth.currentUser.displayName,
-        to: toName,
+        from: auth.currentUser.uid,
+        to: toUid,
         date: Date.now(),
       };
   

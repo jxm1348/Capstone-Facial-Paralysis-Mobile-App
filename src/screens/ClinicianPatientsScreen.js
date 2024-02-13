@@ -8,7 +8,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import {Picker} from '@react-native-picker/picker';
 import { useIsFocused } from '@react-navigation/native';
 
-import { getPatientsIdsUnread } from '../state';
+import { getPatientsIdsUnread } from '../state.mjs';
 import UnreadBadge from '../components/UnreadBadge';
 import globalStyles from '../globalStyles';
 import PatientsSkeleton from '../skeletons/PatientsSkeleton';

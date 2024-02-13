@@ -63,7 +63,7 @@ const state = {
 
     workingMessage: { images: {} },
 
-    clinician: undefined,
+    clinicianUid: undefined,
 };
 
 function getUnreadCountMessages(messages) {
@@ -92,7 +92,7 @@ export const fetchUnreadCount = async () => {
     const messagesSnapshot = await getDocs(query(
         collection(state.db, 'messages'),
         and(
-            where('to', '==', auth.currentUser.displayName),
+            where('to', '==', auth.currentUser.uid),
             where('read', '==', false),
         )
     ));
@@ -100,7 +100,7 @@ export const fetchUnreadCount = async () => {
 }
 
 export const login = async (username, password) => {
-    state.clinician = {'Mark Peschel': 'Meredith Grey'}[username];
+    state.clinicianUid= {'Mark Peschel': 'gRnnZGMDUOOThH8Jdbfu'}[username];
     const email = {'Mark Peschel': 'mpeschel@gmail.com', 'Meredith Grey': 'mgrey@gmail.com'}[username];
     await signInWithEmailAndPassword(auth, email, 'password');
 }
@@ -109,7 +109,7 @@ export const login = async (username, password) => {
 // It returns a list of patients for the current user as well as the counts of their unread messages.
 export const getPatientsIdsUnread = async () => {
     const usersSnapshot = await getDocs(collection(db, 'users'));
-    const q = query(collection(db, 'messages'), where('to', '==', auth.currentUser.displayName));
+    const q = query(collection(db, 'messages'), where('to', '==', auth.currentUser.uid));
     const messagesSnapshot = await getDocs(q);
     const userCounts = {};
     for (const message of messagesSnapshot.docs.map(d => d.data())) {
@@ -123,7 +123,7 @@ export const getPatientsIdsUnread = async () => {
     return usersSnapshot.docs.map(userDocument => {
         const user = userDocument.data();
         user.id = userDocument.id;
-        user.unread = userCounts[user.name] ?? 0;
+        user.unread = userCounts[userDocument.id] ?? 0;
         return user;
     });
 };
@@ -131,7 +131,7 @@ export const getPatientsIdsUnread = async () => {
 export const setPatientRead = async (patient) => {
     const q = query(
         collection(db, 'messages'),
-        and(where('from', '==', patient.name), where('to', '==', auth.currentUser.displayName)),
+        and(where('from', '==', patient.uid), where('to', '==', auth.currentUser.uid)),
     );
     
     const messages = await getDocs(q);

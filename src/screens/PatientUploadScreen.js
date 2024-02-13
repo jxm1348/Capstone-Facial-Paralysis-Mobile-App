@@ -52,7 +52,7 @@ const PatientUploadScreen = () => {
     console.log(saveURLs);
     console.log("Making message...");
     await addDoc(collection(db, 'messages'), {
-      date: Date.now(), from: auth.currentUser.displayName, to: state.clinician, read: false, message, images,
+      date: Date.now(), from: auth.currentUser.uid, to: state.clinicianUid, read: false, message, images,
     });
     console.log("Upload complete");
   }

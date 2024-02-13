@@ -57,20 +57,20 @@ const defaultUsers = {
 }
 
 const defaultMessages = [
-    {date: new Date('Jan 20, 2024').getTime(), from: 'Mark Peschel', to: 'Meredith Grey', read: false, message: '', images: placeholderImages},
-    {date: new Date('Jan 19, 2024').getTime(), from: 'Meredith Grey', to: 'Mark Peschel', read: true, message: 'How is the soreness we discussed doing?', images: []},
-    {date: new Date('Jan 15, 2024').getTime(), from: 'Mark Peschel', to: 'Meredith Grey', read: true, message: 'Test message without images.', images: []},
-    {date: new Date('Jan 15, 2024').getTime(), from: 'Mark Peschel', to: 'Fake user who does not exist', read: false, message: 'Test message that should not be visible to any doctor.', images: []},
-    {date: new Date('Jan 13, 2024').getTime(), from: 'Mark Peschel', to: 'Meredith Grey', read: true, message: '', images: placeholderImages},
-    {date:  new Date('Jan 6, 2024').getTime(), from: 'Mark Peschel', to: 'Meredith Grey', read: true, message: '', images: placeholderImages},
-    {date: new Date('Dec 30, 2023').getTime(), from: 'Mark Peschel', to: 'Meredith Grey', read: true, message: '', images: placeholderImages},
-    {date: new Date('Dec 23, 2023').getTime(), from: 'Mark Peschel', to: 'Meredith Grey', read: true, message: '', images: placeholderImages},
-    {date: new Date('Dec 16, 2023').getTime(), from: 'Mark Peschel', to: 'Meredith Grey', read: true, message: '', images: placeholderImages},
-    {date:  new Date('Jan 6, 2024').getTime(), from: 'Robert Downey Junior', to: 'Meredith Grey', read: true, message: 'Wow.', images: placeholderImages},
-    {date: new Date('Jan 19, 2024, 3:38 pm').getTime(), read: false, from: 'Josh Carson', to: 'Meredith Grey', message: 'And how are you, Mr. Wilson.',
+    {date: new Date('Jan 20, 2024').getTime(), from: 'K8bhUx2Hqv2LjfP4BsKy', to: 'gRnnZGMDUOOThH8Jdbfu', read: false, message: '', images: placeholderImages},
+    {date: new Date('Jan 19, 2024').getTime(), from: 'gRnnZGMDUOOThH8Jdbfu', to: 'K8bhUx2Hqv2LjfP4BsKy', read: true, message: 'How is the soreness we discussed doing?', images: []},
+    {date: new Date('Jan 15, 2024').getTime(), from: 'K8bhUx2Hqv2LjfP4BsKy', to: 'gRnnZGMDUOOThH8Jdbfu', read: true, message: 'Test message without images.', images: []},
+    {date: new Date('Jan 15, 2024').getTime(), from: 'K8bhUx2Hqv2LjfP4BsKy', to: 'Fake user who does not exist', read: false, message: 'Test message that should not be visible to any doctor.', images: []},
+    {date: new Date('Jan 13, 2024').getTime(), from: 'K8bhUx2Hqv2LjfP4BsKy', to: 'gRnnZGMDUOOThH8Jdbfu', read: true, message: '', images: placeholderImages},
+    {date:  new Date('Jan 6, 2024').getTime(), from: 'K8bhUx2Hqv2LjfP4BsKy', to: 'gRnnZGMDUOOThH8Jdbfu', read: true, message: '', images: placeholderImages},
+    {date: new Date('Dec 30, 2023').getTime(), from: 'K8bhUx2Hqv2LjfP4BsKy', to: 'gRnnZGMDUOOThH8Jdbfu', read: true, message: '', images: placeholderImages},
+    {date: new Date('Dec 23, 2023').getTime(), from: 'K8bhUx2Hqv2LjfP4BsKy', to: 'gRnnZGMDUOOThH8Jdbfu', read: true, message: '', images: placeholderImages},
+    {date: new Date('Dec 16, 2023').getTime(), from: 'K8bhUx2Hqv2LjfP4BsKy', to: 'gRnnZGMDUOOThH8Jdbfu', read: true, message: '', images: placeholderImages},
+    {date:  new Date('Jan 6, 2024').getTime(), from: 'mI0cChVwn0AzBN0AhJXv', to: 'gRnnZGMDUOOThH8Jdbfu', read: true, message: 'Wow.', images: placeholderImages},
+    {date: new Date('Jan 19, 2024, 3:38 pm').getTime(), read: false, from: 'lSHYQROPdgk7kJTsZxJu', to: 'gRnnZGMDUOOThH8Jdbfu', message: 'And how are you, Mr. Wilson.',
         images: placeholderImages
     },
-    {date: new Date('Jan 19, 2024, 3:17 pm').getTime(), read: false, from: 'Josh Carson', to: 'Meredith Grey', message: 'Sometimes, when it\'s late at night and the stars are out, I like to take my shoes and socks off and go for a stroll. The pavement was cold against my feet at first. That passes with time. Our bodies have grown soft in our modern splendor, but they remember the old way of things with little prompting. I\'m not saying things aren\'t better now. Just different.',
+    {date: new Date('Jan 19, 2024, 3:17 pm').getTime(), read: false, from: 'lSHYQROPdgk7kJTsZxJu', to: 'gRnnZGMDUOOThH8Jdbfu', message: 'Sometimes, when it\'s late at night and the stars are out, I like to take my shoes and socks off and go for a stroll. The pavement was cold against my feet when I started. That passes with time. Our bodies have grown soft in our modern splendor, but they remember the old way of things with a little prompting. I\'m not saying things aren\'t better now. But they are different.',
         images: placeholderImages
     },
 ];

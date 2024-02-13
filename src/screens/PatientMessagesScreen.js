@@ -27,13 +27,13 @@ function PatientMessages({navigation, messages}) {
   </View>);
 }
 
-function curryFetchMessages({withName, setMessages}) {
+function curryFetchMessages({withUid, setMessages}) {
   return () => {
     getDocs(query(
       collection(db, 'messages'),
       or(
-        and(where('from', '==', auth.currentUser.displayName), where('to', '==', withName)),
-        and(where('from', '==', withName), where('to', '==', auth.currentUser.displayName)),
+        and(where('from', '==', auth.currentUser.uid), where('to', '==', withUid)),
+        and(where('from', '==', withUid), where('to', '==', auth.currentUser.uid)),
       )
     )).then(querySnapshot => {
       setMessages(querySnapshot.docs.map(document => {
@@ -46,18 +46,18 @@ function curryFetchMessages({withName, setMessages}) {
 }
 
 const PatientMessagesScreen = ({ navigation, route }) => {
-  const { withName } = route.params;
+  const { withUid } = route.params;
   const buttons = [
     { title: 'Home', onPress: () => navigation.navigate('PatientHome') },
   ];
 
   const [ messages, setMessages ] = useState(null);
-  useEffect(curryFetchMessages({withName, setMessages}), []);
+  useEffect(curryFetchMessages({withUid, setMessages}), []);
 
   return (
     <View style={{flexGrow: 1}}>
       <ScrollView style={{flexGrow: 1, flexBasis: 0, display: 'flex'}}>
-        <NewMessageBar toName={state.clinician} />
+        <NewMessageBar toUid={state.clinicianUid} />
         <PatientMessages {...{navigation, messages}}/>
       </ScrollView>
       <FlexNavigationBar buttons={buttons} />

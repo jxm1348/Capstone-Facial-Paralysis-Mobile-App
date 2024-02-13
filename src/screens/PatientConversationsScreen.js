@@ -9,6 +9,9 @@ function ConversationsSkeleton() {
   return <Text>Loading...</Text>;
 }
 
+// As of 2024-02-12, this Component is not used anywhere or tested or anything.
+// You may be able to delete it for the sake of cleanliness,
+//  or just ignore it. --Mark
 function Conversations({navigation, contacts}) {
   if (!contacts) return <ConversationsSkeleton />;
   
@@ -34,7 +37,7 @@ function Conversations({navigation, contacts}) {
   );
 }
 
-const PatientMessagesScreen = ({ navigation }) => {
+const PatientConversationsScreen = ({ navigation }) => {
   const buttons = [
     { title: 'Home', onPress: () => navigation.navigate('PatientHome') },
   ];
@@ -43,12 +46,12 @@ const PatientMessagesScreen = ({ navigation }) => {
   useEffect(() => {
     getDocs(query(
       collection(db, 'messages'),
-      or(where('from', '==', auth.currentUser.displayName), where('to', '==', auth.currentUser.displayName))
+      or(where('from', '==', auth.currentUser.uid), where('to', '==', auth.currentUser.uid))
     )).then(querySnapshot => {
       setContacts(Array.from(new Set(
         querySnapshot.docs.map(document => {
           const message = document.data();
-          return message.from !== auth.currentUser.displayName ? message.from : message.to;
+          return message.from !== auth.currentUser.uid ? message.from : message.to;
         }
       ))))
     })
@@ -84,4 +87,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PatientMessagesScreen;
+export default PatientConversationsScreen;

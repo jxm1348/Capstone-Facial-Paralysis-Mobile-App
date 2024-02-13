@@ -26,7 +26,7 @@ const ClinicianPatientScreen = ({navigation, route}) => {
   const isFocused = useIsFocused();
 
   const { id, name } = route.params;
-  const patientName = name;
+  const patientUid = id;
 
   const [ patient, setPatient ] = useState(null);
   const [ messages, setMessages ] = useState(undefined);
@@ -44,18 +44,18 @@ const ClinicianPatientScreen = ({navigation, route}) => {
   }}, [isFocused]);
   
   useEffect(() => {
-    getDoc(doc(db, 'users', id))
+    getDoc(doc(db, 'users', patientUid))
     .then(document => {
       const result = document.data();
-      result.id = id;
+      result.uid = patientUid;
       setPatient(result);
     });
     
     getDocs(query(
       collection(db, 'messages'),
       or(
-        and(where('from', '==', name), where('to', '==', auth.currentUser.displayName),),
-        and(where('from', '==', auth.currentUser.displayName), where('to', '==', name),),
+        and(where('from', '==', patientUid), where('to', '==', auth.currentUser.uid),),
+        and(where('from', '==', auth.currentUser.uid), where('to', '==', patientUid),),
       )
     )).then(
       querySnapshot => {setMessages(
@@ -91,7 +91,7 @@ const ClinicianPatientScreen = ({navigation, route}) => {
     <View style={{flexGrow: 1}}>
       <Text style={globalStyles.h1}>{name}</Text>
       <ScrollView style={{flexGrow: 1}}>
-        <NewMessageBar toName={patientName} />
+        <NewMessageBar toUid={patientUid} />
         <ScrollView style={{flexGrow: 1, marginBottom: 100}} vertical={true} horizontal={true}>
           <View style={{gap: 6, paddingHorizontal: 40, paddingVertical: 10}} nativeID="view-messages">
             {messageComponents}
