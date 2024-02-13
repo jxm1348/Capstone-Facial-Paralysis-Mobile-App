@@ -7,19 +7,19 @@ const fetchEnter = () => new Promise(resolve => process.stdin.once('data', resol
 
 const SERVER_URL = 'http://127.0.0.1:19006';
 const debug = false;
-const headless = !debug;
+const headless = !debug && true;
 
-let driver = await new Builder().forBrowser("firefox").build();
+// This line is so I get autocomplete in vscode.
+let driver = 1 === 2 && (await new Builder().forBrowser('firefox').build());
+
 beforeAll(async () => {
-    // let driverPromise = new Builder().forBrowser("firefox");
-    // const options = new firefox.Options();
-    // console.log('options', options);
-    // console.log('options.headless', options.headless);
-    // if (headless) {
-    //     driverPromise = driverPromise
-    //         .setFirefoxOptions(options.headless().windowSize(screen));
-    // }
-    // driver = await driverPromise.build();
+    let driverPromise = new Builder().forBrowser('firefox');
+    if (headless) {
+        const options = new firefox.Options();
+        driverPromise = driverPromise
+            .setFirefoxOptions(options.addArguments('--headless').windowSize({width:640,height:480}));
+    }
+    driver = await driverPromise.build();
 });
 
 async function isMessageLike(e) { return (await e.getAttribute('id')).startsWith('pressable-message-'); }
