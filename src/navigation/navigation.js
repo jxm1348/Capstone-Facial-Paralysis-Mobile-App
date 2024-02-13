@@ -12,7 +12,6 @@ import PatientHomeScreen from '../screens/PatientHomeScreen';
 import PatientMessagesScreen from '../screens/PatientMessagesScreen';
 import PatientUploadScreen from '../screens/PatientUploadScreen';
 import PatientCameraScreen from '../screens/PatientCameraScreen';
-import PatientMessageScreen from '../screens/PatientMessageScreen';
 
 
 const Stack = createNativeStackNavigator();
