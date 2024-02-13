@@ -1,11 +1,10 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import {
   Image,
   StyleSheet, 
   TextInput, 
   View, 
   Alert,
-  Platform,
   Pressable,
   Text 
 } from 'react-native';
@@ -40,33 +39,6 @@ const LoginScreen = ({ navigation }) => {
   const debugPatientLogin = async () => {
     await login('mpeschel@gmail.com', 'password');
     navigation.navigate('PatientHome');
-  }
-
-  if (state.demoIsDebug && Platform.OS === 'web') {
-    useEffect(() => {
-      state.demoChord = false;
-    })
-
-    useEffect(() => {
-      window.addEventListener("keydown", (event) => {
-        if (event.key === 'k' && event.ctrlKey) {
-          state.demoChord = true;
-          event.preventDefault();
-        } else if (state.demoChord) {
-          if (event.key === 'Control') return;
-          
-          console.log("Chord", event.key);
-          if (event.key === 'w') {
-            navigation.navigate('Report', {name: "Mark Peschel", index: 0});
-            event.preventDefault();
-          }
-          
-          state.demoChord = false;
-        } else {
-          state.demoChord = false;
-        }
-      });
-    }, []);
   }
 
   const debugButtons = [];
