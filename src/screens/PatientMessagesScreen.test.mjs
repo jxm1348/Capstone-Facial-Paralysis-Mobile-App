@@ -30,7 +30,7 @@ describe('Patient Messages', () => {
         await driver.manage().setTimeouts({ implicit: 2000 });
 
         await driver.get(SERVER_URL);
-        await driver.findElement(By.id('text-input-username')).sendKeys('Mark Peschel');
+        await driver.findElement(By.id('text-input-email')).sendKeys('mpeschel@gmail.com');
         await driver.findElement(By.id('text-input-password')).sendKeys('password');
         await driver.findElement(By.id('pressable-login')).click();
         

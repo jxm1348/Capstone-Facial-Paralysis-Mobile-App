@@ -1,10 +1,9 @@
-import React, { useState, createRef, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   Image,
   StyleSheet, 
   TextInput, 
   View, 
-  Button, 
   Alert,
   Platform,
   Pressable,
@@ -12,27 +11,43 @@ import {
 } from 'react-native';
 
 import globalStyles from '../globalStyles';
-import ActionButton from '../components/ActionButton';
 import state, { login } from '../state.mjs';
 
 const LoginScreen = ({ navigation }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const emailInput = useRef();
+  const passwordInput = useRef();
+
+  const handleLogin = async () => {
+    await login(email, password);
+    if (email === 'mgrey@gmail.com' && password === 'password') {
+      navigation.navigate('ClinicianHome');
+    } else if ((email === 'jdoe@gmail.com' || email === 'mpeschel@gmail.com') && password === 'password') {
+      navigation.navigate('PatientHome');
+    } else {
+      console.log('Refusing to navigate to clinician or patient home since I don\'t know who', email, 'is, or password wrong.');
+      Alert.alert('Invalid credentials');
+    }
+  };
 
   const debugClinicianLogin = async () => {
-    await login('Meredith Grey', 'password');
+    await login('mgrey@gmail.com', 'password');
     navigation.navigate('ClinicianHome');
   };
 
   const debugPatientLogin = async () => {
-    await login('Mark Peschel', 'password');
+    await login('mpeschel@gmail.com', 'password');
     navigation.navigate('PatientHome');
   }
 
   if (state.demoIsDebug && Platform.OS === 'web') {
-    React.useEffect(() => {
+    useEffect(() => {
       state.demoChord = false;
     })
 
-    React.useEffect(() => {
+    useEffect(() => {
       window.addEventListener("keydown", (event) => {
         if (event.key === 'k' && event.ctrlKey) {
           state.demoChord = true;
@@ -57,7 +72,7 @@ const LoginScreen = ({ navigation }) => {
   const debugButtons = [];
   if (state.demoIsDebug) {
     debugButtons.push(<Pressable key={0} style={globalStyles.button} onPress={async () => {
-      await login('Mark Peschel', 'password');
+      await login('mpeschel@gmail.com', 'password');
       navigation.navigate('PatientCamera', {imageKey: 'eyebrows-up'});
     }}>
       <Text style={{color: 'white'}}>Debug Camera</Text>
@@ -70,40 +85,21 @@ const LoginScreen = ({ navigation }) => {
     </Pressable>);
   }
 
-
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-
-  const usernameInput = createRef();
-  const passwordInput = createRef();
-
-  const handleLogin = async () => {
-    await login(username, password);
-    if (username === 'Meredith Grey' && password === 'password') {
-      navigation.navigate('ClinicianHome');
-    } else if ((username === 'John doe' || username === 'Mark Peschel') && password === 'password') {
-      navigation.navigate('PatientHome');
-    } else {
-      console.log('Refusing to navigate to clinician or patient home since I don\'t know who', username, 'is, or password wrong.');
-      Alert.alert('Invalid credentials');
-    }
-  };
-
   return (
     <View style={styles.container}>
       <Image
         source={require('../resources/face-f-root.png')}
       />
       <TextInput
-        nativeID='text-input-username'
-        ref={usernameInput}
-        autoComplete='username'
+        nativeID='text-input-email'
+        ref={emailInput}
+        autoComplete='email'
         autoFocus={true}
         returnKeyType='next'
         style={styles.input}
-        placeholder="Username"
+        placeholder="email"
         onSubmitEditing={() => passwordInput.current?.focus()}
-        onChangeText={(text) => setUsername(text)}
+        onChangeText={(text) => setEmail(text)}
       />
       <TextInput
         nativeID='text-input-password'

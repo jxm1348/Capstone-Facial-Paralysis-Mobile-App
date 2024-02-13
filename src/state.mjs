@@ -99,10 +99,9 @@ export const fetchUnreadCount = async () => {
     return messagesSnapshot.docs.length;
 }
 
-export const login = async (username, password) => {
-    state.clinicianUid= {'Mark Peschel': 'gRnnZGMDUOOThH8Jdbfu'}[username];
-    const email = {'Mark Peschel': 'mpeschel@gmail.com', 'Meredith Grey': 'mgrey@gmail.com'}[username];
-    await signInWithEmailAndPassword(auth, email, 'password');
+export const login = async (email, password) => {
+    state.clinicianUid= {'mpeschel@gmail.com': 'gRnnZGMDUOOThH8Jdbfu'}[email];
+    await signInWithEmailAndPassword(auth, email, password);
 }
 
 // This function is called in ClinicianPatientsScreen
