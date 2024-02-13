@@ -32,7 +32,6 @@ export default function MainNavigator() {
             <Stack.Screen name="PatientUpload" component={PatientUploadScreen} />
             <Stack.Screen name="PatientMessages" component={PatientMessagesScreen} />
             <Stack.Screen name="PatientCamera" component={PatientCameraScreen} />
-            <Stack.Screen name="PatientMessage" component={PatientMessageScreen} />
         </Stack.Navigator>
     </NavigationContainer>
   );

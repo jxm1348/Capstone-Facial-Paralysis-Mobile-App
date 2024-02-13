@@ -3,6 +3,9 @@ import { View, Text, StyleSheet } from 'react-native';
 import NavigationBar from '../components/NavigationBar';
 import state from '../state.mjs';
 
+// As of 2024-02-12, this Component is not used anywhere or tested or anything.
+// You may be able to delete it for the sake of cleanliness,
+//  or just ignore it. --Mark
 const PatientMessageScreen = ({ route, navigation }) => {
   const buttons = [
     { title: 'Home', onPress: () => navigation.navigate('PatientHome') },
