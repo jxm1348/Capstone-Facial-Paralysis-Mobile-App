@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { addDoc, collection } from 'firebase/firestore';
 import { View, Text, Pressable, TextInput } from 'react-native';
 
@@ -7,8 +7,9 @@ import globalStyles from '../globalStyles';
 
 export default function NewMessageBar({toUid}) {
     const newMessageRef = useRef();
+    const [ newMessageSent, setNewMessageSent ] = useState(false);
   
-    const sendMessage = () => {
+    const sendMessage = async () => {
       const newMessage = {
         message: newMessageRef.current.value,
         images: [],
@@ -18,7 +19,8 @@ export default function NewMessageBar({toUid}) {
         date: Date.now(),
       };
   
-      addDoc(collection(db, 'messages'), newMessage);
+      await addDoc(collection(db, 'messages'), newMessage);
+      setNewMessageSent(true);
     };
   
     return (<View style={{flexDirection: 'row', marginHorizontal: 40, alignItems: 'center' }}>
@@ -35,8 +37,12 @@ export default function NewMessageBar({toUid}) {
       }}
       ref={newMessageRef}
       placeholder="New message..."
+      nativeID="text-input-new-message"
     />
-    <Pressable style={globalStyles.button} onPress={sendMessage}><Text>Send message</Text></Pressable>
+    { newMessageSent && <Text nativeID="text-new-message-sent">Sent</Text>}
+    <Pressable style={globalStyles.button} onPress={sendMessage} nativeID="pressable-new-message">
+      <Text style={globalStyles.buttonText}>Send message</Text>
+    </Pressable>
     </View>);
   }
   

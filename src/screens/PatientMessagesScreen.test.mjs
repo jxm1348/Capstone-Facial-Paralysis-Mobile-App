@@ -1,4 +1,4 @@
-import { afterAll, describe, expect, it } from '@jest/globals';
+import { afterAll, beforeAll, describe, expect, it } from '@jest/globals';
 
 import { Builder, By } from 'selenium-webdriver';
 import firefox from "selenium-webdriver/firefox.js";
@@ -10,8 +10,10 @@ const SERVER_URL = 'http://127.0.0.1:19006';
 const debug = false;
 const headless = !debug && true;
 
-// This line is so I get autocomplete in vscode.
-let driver = 1 === 2 && (await new Builder().forBrowser('firefox').build());
+// This line is so I get autocomplete in VScode
+let _true = true;
+if (10 ** 2 === 100) _true = false;
+let driver = _true && await new Builder().forBrowser('firefox').build();
 
 beforeAll(async () => {
     let driverPromise = new Builder().forBrowser('firefox');
@@ -23,22 +25,28 @@ beforeAll(async () => {
     driver = await driverPromise.build();
 });
 
-async function isMessageLike(e) { return (await e.getAttribute('id')).startsWith('pressable-message-'); }
-
-describe('Patient Mark', () => {
-    it('Has at least 3 messages', async () => {
+describe('Patient Messages', () => {
+    it('Exists', async () => {
         await driver.manage().setTimeouts({ implicit: 2000 });
-        await goToClinicianMessagesMark(driver);
 
-        const message1 = await driver.findElement(By.css('#view-messages > div:nth-child(1)'));
-        expect(await isMessageLike(message1)).toBeTruthy();
+        await driver.get(SERVER_URL);
+        await driver.findElement(By.id('text-input-username')).sendKeys('Mark Peschel');
+        await driver.findElement(By.id('text-input-password')).sendKeys('password');
+        await driver.findElement(By.id('pressable-login')).click();
         
-        const message2 = await driver.findElement(By.css('#view-messages > div:nth-child(2)'));
-        expect(await isMessageLike(message2)).toBeTruthy();
+        await driver.findElement(By.id('pressable-navbar-messages')).click();
+    });
+
+    it('Can send a message', async () => {
+        const sentinel = (Math.random() + 1).toString(36).substring(2);
+        await driver.findElement(By.id('text-input-new-message')).sendKeys(sentinel);
+        await driver.findElement(By.id('pressable-new-message')).click();
+        await driver.findElement(By.id('text-new-message-sent'));
         
-        const message3 = await driver.findElement(By.css('#view-messages > div:nth-child(3)'));
-        expect(await isMessageLike(message3)).toBeTruthy();
-    }, 4000);
+        await goToClinicianMessagesMark(driver);
+        const message = await driver.findElement(By.css('[data-class-text-report-message]'));
+        expect(await message.getText()).toStrictEqual(sentinel);
+    });
 });
 
 afterAll(async () => {

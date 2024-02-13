@@ -21,9 +21,11 @@ function ReportRow({message}) {
             {imageTiles}
         </View>
         <Text>{new Date(message.date).toString()}</Text>
-        <Text style={{display: message.message === null ? 'none' : 'flex'}}>
-            {message.message}
-        </Text>
+        {message.message !== null &&
+            <Text dataSet={{'class-text-report-message': '1'}}>
+                {message.message}
+            </Text>
+        }
     </View>);
 }
 

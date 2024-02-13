@@ -1,8 +1,8 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
 
-// Designed for use in a flexbox layout that grows to push the bar to the bottom.
-// Fixes a bug where ScrollView can't show entire content because position:absolute content
+// "FlexNavigationBar" as opposed to "NavigationBar" is meant for use in a flexbox layout,
+//  where the upper components grow to push the bar to the bottom.
+// This fixes a bug where ScrollView can't show entire content because position:absolute content
 //  is covering it up.
 export const FlexNavigationBar = ({ buttons, containerStyle }) => {
   containerStyle = Object.assign({
@@ -16,9 +16,9 @@ export const FlexNavigationBar = ({ buttons, containerStyle }) => {
   return (
     <View style={containerStyle}>
       {buttons.map((button, index) => (
-        <TouchableOpacity key={index} style={styles.button} onPress={button.onPress}>
+        <Pressable key={index} style={styles.button} onPress={button.onPress} nativeID={button.nativeID}>
           <Text style={styles.buttonText}>{button.title}</Text>
-        </TouchableOpacity>
+        </Pressable>
       ))}
     </View>
   );

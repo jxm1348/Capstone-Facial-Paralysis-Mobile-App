@@ -9,7 +9,7 @@ const PatientHomeScreen = ({ navigation }) => {
   const buttons = [
     { title: 'Sign Out', onPress: () => navigation.navigate('Login') },
     { title: 'Upload Images', onPress: () => navigation.navigate('PatientUpload') },
-    { title: 'Messages', onPress: () => navigation.navigate('PatientMessages', {withUid: state.clinicianUid}) }
+    { title: 'Messages', onPress: () => navigation.navigate('PatientMessages', {withUid: state.clinicianUid}), nativeID: 'pressable-navbar-messages' }
   ];
 
   return (

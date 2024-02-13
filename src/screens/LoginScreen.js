@@ -77,13 +77,14 @@ const LoginScreen = ({ navigation }) => {
   const usernameInput = createRef();
   const passwordInput = createRef();
 
-  const handleLogin = () => {
-    login(username, password);
+  const handleLogin = async () => {
+    await login(username, password);
     if (username === 'Meredith Grey' && password === 'password') {
       navigation.navigate('ClinicianHome');
-    } else if (username === 'John doe' && password === 'password') {
+    } else if ((username === 'John doe' || username === 'Mark Peschel') && password === 'password') {
       navigation.navigate('PatientHome');
     } else {
+      console.log('Refusing to navigate to clinician or patient home since I don\'t know who', username, 'is, or password wrong.');
       Alert.alert('Invalid credentials');
     }
   };
@@ -94,6 +95,7 @@ const LoginScreen = ({ navigation }) => {
         source={require('../resources/face-f-root.png')}
       />
       <TextInput
+        nativeID='text-input-username'
         ref={usernameInput}
         autoComplete='username'
         autoFocus={true}
@@ -104,6 +106,7 @@ const LoginScreen = ({ navigation }) => {
         onChangeText={(text) => setUsername(text)}
       />
       <TextInput
+        nativeID='text-input-password'
         ref={passwordInput}
         autoComplete='current-password'
         returnKeyType='go'
@@ -113,9 +116,9 @@ const LoginScreen = ({ navigation }) => {
         onSubmitEditing={handleLogin}
         onChangeText={(text) => setPassword(text)}
       />
-      <Button 
-        title="Login"
-        onPress={handleLogin} />
+      <Pressable onPress={handleLogin} nativeID='pressable-login' style={globalStyles.button}>
+        <Text style={globalStyles.buttonText}>Login</Text>
+      </Pressable>
       {debugButtons}
     </View>
   );
