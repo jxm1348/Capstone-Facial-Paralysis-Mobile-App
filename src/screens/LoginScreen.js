@@ -63,28 +63,28 @@ const LoginScreen = ({ navigation }) => {
         source={require('../resources/face-f-root.png')}
       />
       <TextInput
-        nativeID='text-input-email'
+        nativeID="text-input-email"
         ref={emailInput}
-        autoComplete='email'
+        autoComplete="email"
         autoFocus={true}
-        returnKeyType='next'
+        returnKeyType="next"
         style={styles.input}
-        placeholder="email"
+        placeholder="Email"
         onSubmitEditing={() => passwordInput.current?.focus()}
         onChangeText={(text) => setEmail(text)}
       />
       <TextInput
-        nativeID='text-input-password'
+        nativeID="text-input-password"
         ref={passwordInput}
-        autoComplete='current-password'
-        returnKeyType='go'
+        autoComplete="current-password"
+        returnKeyType="go"
         style={styles.input}
         placeholder="Password"
         secureTextEntry={true}
         onSubmitEditing={handleLogin}
         onChangeText={(text) => setPassword(text)}
       />
-      <Pressable onPress={handleLogin} nativeID='pressable-login' style={globalStyles.button}>
+      <Pressable onPress={handleLogin} nativeID="pressable-login" style={globalStyles.button}>
         <Text style={globalStyles.buttonText}>Login</Text>
       </Pressable>
       {debugButtons}
