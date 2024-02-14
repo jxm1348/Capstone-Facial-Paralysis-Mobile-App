@@ -31,13 +31,13 @@ const LoginScreen = ({ navigation }) => {
     }
   };
 
-  const debugClinicianLogin = async () => {
-    await login('mgrey@gmail.com', 'password');
+  const debugClinicianLogin = async (email) => {
+    await login(email, 'password');
     navigation.navigate('ClinicianHome');
   };
 
-  const debugPatientLogin = async () => {
-    await login('mpeschel@gmail.com', 'password');
+  const debugPatientLogin = async (email) => {
+    await login(email, 'password');
     navigation.navigate('PatientHome');
   }
 
@@ -49,19 +49,28 @@ const LoginScreen = ({ navigation }) => {
     }}>
       <Text style={{color: 'white'}}>Debug Camera</Text>
     </Pressable>);
-    debugButtons.push(<Pressable key={1} style={globalStyles.button} onPress={debugClinicianLogin} nativeID="pressable-debug-clinician">
-      <Text style={{color: 'white'}}>Debug log in as clinician</Text>
+    debugButtons.push(<Pressable key={1} style={globalStyles.button} onPress={() => debugClinicianLogin('mgrey@gmail.com')} nativeID="pressable-debug-clinician">
+      <Text style={{color: 'white'}}>Debug log in as Meredith Grey</Text>
     </Pressable>);
-    debugButtons.push(<Pressable key={2} style={globalStyles.button} onPress={debugPatientLogin}>
-      <Text style={{color: 'white'}}>Debug log in as patient</Text>
+    debugButtons.push(<Pressable key={1} style={globalStyles.button} onPress={() => debugClinicianLogin('taltman@gmail.com')} nativeID="pressable-debug-taltman">
+      <Text style={{color: 'white'}}>Debug log in as Teddy Altman</Text>
+    </Pressable>);
+    debugButtons.push(<Pressable key={1} style={globalStyles.button} onPress={() => debugClinicianLogin('cyang@gmail.com')} nativeID="pressable-debug-cyang">
+      <Text style={{color: 'white'}}>Debug log in as Cristina Yang</Text>
+    </Pressable>);
+    debugButtons.push(<Pressable key={2} style={globalStyles.button} onPress={() => debugPatientLogin('mpeschel@gmail.com')}>
+      <Text style={{color: 'white'}}>Debug log in as Mark Peschel</Text>
+    </Pressable>);
+    debugButtons.push(<Pressable key={2} style={globalStyles.button} onPress={() => debugPatientLogin('jcarson@gmail.com')}>
+      <Text style={{color: 'white'}}>Debug log in as Josh Carson</Text>
+    </Pressable>);
+    debugButtons.push(<Pressable key={2} style={globalStyles.button} onPress={() => debugPatientLogin('jxm@gmail.com')}>
+      <Text style={{color: 'white'}}>Debug log in as jxm</Text>
     </Pressable>);
   }
 
   return (
     <View style={styles.container}>
-      <Image
-        source={require('../resources/face-f-root.png')}
-      />
       <TextInput
         nativeID="text-input-email"
         ref={emailInput}
@@ -95,7 +104,7 @@ const LoginScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'safe center',
     alignItems: 'center',
   },
   input: {

@@ -100,7 +100,11 @@ export const fetchUnreadCount = async () => {
 }
 
 export const login = async (email, password) => {
-    state.clinicianUid= {'mpeschel@gmail.com': 'gRnnZGMDUOOThH8Jdbfu'}[email];
+    state.clinicianUid= {
+        'mpeschel@gmail.com': 'gRnnZGMDUOOThH8Jdbfu',
+        'jcarson@gmail.com': 'gRnnZGMDUOOThH8Jdbfu',
+        'jxm@gmail.com': 'mSz5ZmtDK6KmqxK7NN5Q',
+    }[email];
     await signInWithEmailAndPassword(auth, email, password);
 }
 
