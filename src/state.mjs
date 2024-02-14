@@ -9,7 +9,7 @@ import {
     getFirestore,
     getDocs, updateDoc,
     collection, query, doc,
-    and, where, runTransaction,
+    and, where, runTransaction, getDoc,
 } from 'firebase/firestore';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -100,12 +100,10 @@ export const fetchUnreadCount = async () => {
 }
 
 export const login = async (email, password) => {
-    state.clinicianUid= {
-        'mpeschel@gmail.com': 'gRnnZGMDUOOThH8Jdbfu',
-        'jcarson@gmail.com': 'gRnnZGMDUOOThH8Jdbfu',
-        'jxm@gmail.com': 'mSz5ZmtDK6KmqxK7NN5Q',
-    }[email];
     await signInWithEmailAndPassword(auth, email, password);
+    const userData = await getDoc(doc(db, 'users', auth.currentUser.uid))
+        .then(document => document.data());
+    state.clinicianUid = userData.clinicianUid;
 }
 
 // This function is called in ClinicianPatientsScreen

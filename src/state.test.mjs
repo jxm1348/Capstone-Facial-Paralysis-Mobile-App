@@ -7,7 +7,7 @@ import {
     getDoc,
 } from 'firebase/firestore';
 
-import state, { db, storage, fetchUniqueInt, auth } from './state.mjs';
+import state, { db, storage, fetchUniqueInt, auth, login } from './state.mjs';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
 
@@ -37,7 +37,7 @@ describe('Google Cloud Storage', () => {
     });
 });
 
-describe('State get sequential ID', () => {
+describe('fetchUniqueInt()', () => {
     it('Produces three distinct numbers', async () => {
         const ids = await Promise.all([fetchUniqueInt(), fetchUniqueInt(), fetchUniqueInt()]);
         expect(ids[0]).not.toBeUndefined();
@@ -49,6 +49,13 @@ describe('State get sequential ID', () => {
         expect(ids[0]).not.toStrictEqual(ids[2]);
     });
 });
+
+describe('Logging in', () => {
+    it('Sets clinician uid appropriately', async () => {
+        await login('mpeschel@gmail.com', 'password');
+        expect(state.clinicianUid).toStrictEqual('gRnnZGMDUOOThH8Jdbfu');
+    });
+})
 
 afterAll(() => {
     terminate(state.db);
