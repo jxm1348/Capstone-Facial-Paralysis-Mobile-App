@@ -20,7 +20,7 @@ beforeAll(async () => {
             .setFirefoxOptions(options.addArguments('--headless').windowSize({width:640,height:480}));
     }
     driver = await driverPromise.build();
-});
+}, 20 * 1000);
 
 describe('Clinician Patients', () => {
     it('Has a header', async () => {

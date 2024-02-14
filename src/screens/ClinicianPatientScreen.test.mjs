@@ -21,7 +21,7 @@ beforeAll(async () => {
             .setFirefoxOptions(options.addArguments('--headless').windowSize({width:640,height:480}));
     }
     driver = await driverPromise.build();
-});
+}, 20 * 1000);
 
 async function isMessageLike(e) { return (await e.getAttribute('id')).startsWith('pressable-message-'); }
 
