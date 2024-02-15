@@ -8,7 +8,7 @@ import {
 } from 'firebase/firestore';
 
 import globalStyles from '../globalStyles';
-import { db, auth, setPatientRead } from '../state.mjs';
+import { db, auth, setPatientRead } from '../state.js';
 
 import NewMessageBar from '../components/NewMessageBar';
 import ReportRow from '../components/ReportRow';

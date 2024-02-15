@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { addDoc, collection } from 'firebase/firestore';
 import { View, Text, Pressable, TextInput } from 'react-native';
 
-import { db, auth } from '../state.mjs';
+import { db, auth } from '../state.js';
 import globalStyles from '../globalStyles';
 
 export default function NewMessageBar({toUid}) {

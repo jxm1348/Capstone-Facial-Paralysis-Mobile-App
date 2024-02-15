@@ -5,7 +5,7 @@ import ClinicianNavBar from '../components/ClinicianNavBar';
 import { Button1 } from '../components/buttons';
 
 import globalStyles from '../globalStyles';
-import { auth } from '../state.mjs';
+import { auth } from '../state.js';
 
 const ClinicianHomeScreen = ({ navigation, colors }) => {
   const isFocused = useIsFocused() // Force refresh

@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 
 import globalStyles from '../globalStyles';
-import state, { login } from '../state.mjs';
+import state, { login } from '../state.js';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');

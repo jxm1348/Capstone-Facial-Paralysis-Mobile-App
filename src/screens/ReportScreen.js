@@ -3,7 +3,7 @@ import { Text, View, Image, StyleSheet, Dimensions, ScrollView } from 'react-nat
 import { getDoc, doc, updateDoc } from 'firebase/firestore';
 
 import globalStyles from '../globalStyles';
-import state from '../state.mjs';
+import state from '../state.js';
 import { imageKeyOrder } from '../constants';
 
 function ReportSkeleton() {

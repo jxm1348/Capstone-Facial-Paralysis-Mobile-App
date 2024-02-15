@@ -8,7 +8,7 @@ import ActionButton from '../components/ActionButton';
 import NavigationBar from '../components/NavigationBar';
 
 import { imageKeyOrder } from '../constants';
-import state, { auth, dataURItoBlob, db, fetchUniqueInt, storage } from '../state.mjs';
+import state, { auth, dataURItoBlob, db, fetchUniqueInt, storage } from '../state.js';
 import globalStyles from '../globalStyles';
 import { useIsFocused } from '@react-navigation/native';
 

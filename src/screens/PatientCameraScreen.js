@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Camera, CameraType } from 'expo-camera';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import state from '../state.mjs';
+import state from '../state.js';
 
 function CameraYes({imageKey}) {
   const navigation = useNavigation();

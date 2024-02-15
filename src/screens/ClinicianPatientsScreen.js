@@ -13,7 +13,7 @@ import { getDocs, query, collection, where } from 'firebase/firestore';
 import UnreadBadge from '../components/UnreadBadge';
 import globalStyles from '../globalStyles';
 import PatientsSkeleton from '../skeletons/PatientsSkeleton';
-import { auth, db } from '../state.mjs';
+import { auth, db } from '../state.js';
 
 function PatientMessagesPressable({patient}) {
   const navigation = useNavigation();

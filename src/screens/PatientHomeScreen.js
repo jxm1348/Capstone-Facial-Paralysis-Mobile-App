@@ -2,7 +2,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import ActionButton from '../components/ActionButton';
 import NavigationBar from '../components/NavigationBar';
 
-import state from '../state.mjs';
+import state from '../state.js';
 
 const PatientHomeScreen = ({ navigation }) => {
 
