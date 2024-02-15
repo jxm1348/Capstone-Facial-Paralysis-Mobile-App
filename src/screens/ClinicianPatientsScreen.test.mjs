@@ -6,7 +6,7 @@ import { goToClinicianPatients } from '../testlib.mjs';
 
 const fetchEnter = () => new Promise(resolve => process.stdin.once('data', resolve));
 
-const debug = true;
+const debug = false;
 const headless = !debug && true;
 
 // This line is so I get autocomplete in vscode.
