@@ -20,15 +20,25 @@ const LoginScreen = ({ navigation }) => {
   const passwordInput = useRef();
 
   const handleLogin = async () => {
-    await login(email, password);
-    if (email === 'mgrey@gmail.com' && password === 'password') {
-      navigation.navigate('ClinicianHome');
-    } else if ((email === 'jdoe@gmail.com' || email === 'mpeschel@gmail.com') && password === 'password') {
-      navigation.navigate('PatientHome');
-    } else {
+    const role = {
+      'mgrey@gmail.com':'clinician',
+      'taltman@gmail.com':'clinician',
+      'cyang@gmail.com':'clinician',
+
+      'mpeschel@gmail.com':'patient',
+      'jdoe@gmail.com':'patient',
+      'jxm@gmail.com':'patient',
+      'jcarson@gmail.com':'patient',
+    }[email];
+    
+    if (role === undefined || password !== 'password') {
       console.log('Refusing to navigate to clinician or patient home since I don\'t know who', email, 'is, or password wrong.');
       Alert.alert('Invalid credentials');
+      return;
     }
+    
+    await login(email, password);
+    navigation.navigate(role === 'clinician' ? 'ClinicianHome' : 'PatientHome');
   };
 
   const debugClinicianLogin = async (email) => {
@@ -52,19 +62,19 @@ const LoginScreen = ({ navigation }) => {
     debugButtons.push(<Pressable key={1} style={globalStyles.button} onPress={() => debugClinicianLogin('mgrey@gmail.com')} nativeID="pressable-debug-clinician">
       <Text style={{color: 'white'}}>Debug log in as Meredith Grey</Text>
     </Pressable>);
-    debugButtons.push(<Pressable key={1} style={globalStyles.button} onPress={() => debugClinicianLogin('taltman@gmail.com')} nativeID="pressable-debug-taltman">
+    debugButtons.push(<Pressable key={2} style={globalStyles.button} onPress={() => debugClinicianLogin('taltman@gmail.com')} nativeID="pressable-debug-taltman">
       <Text style={{color: 'white'}}>Debug log in as Teddy Altman</Text>
     </Pressable>);
-    debugButtons.push(<Pressable key={1} style={globalStyles.button} onPress={() => debugClinicianLogin('cyang@gmail.com')} nativeID="pressable-debug-cyang">
+    debugButtons.push(<Pressable key={3} style={globalStyles.button} onPress={() => debugClinicianLogin('cyang@gmail.com')} nativeID="pressable-debug-cyang">
       <Text style={{color: 'white'}}>Debug log in as Cristina Yang</Text>
     </Pressable>);
-    debugButtons.push(<Pressable key={2} style={globalStyles.button} onPress={() => debugPatientLogin('mpeschel@gmail.com')}>
+    debugButtons.push(<Pressable key={4} style={globalStyles.button} onPress={() => debugPatientLogin('mpeschel@gmail.com')}>
       <Text style={{color: 'white'}}>Debug log in as Mark Peschel</Text>
     </Pressable>);
-    debugButtons.push(<Pressable key={2} style={globalStyles.button} onPress={() => debugPatientLogin('jcarson@gmail.com')}>
+    debugButtons.push(<Pressable key={5} style={globalStyles.button} onPress={() => debugPatientLogin('jcarson@gmail.com')}>
       <Text style={{color: 'white'}}>Debug log in as Josh Carson</Text>
     </Pressable>);
-    debugButtons.push(<Pressable key={2} style={globalStyles.button} onPress={() => debugPatientLogin('jxm@gmail.com')}>
+    debugButtons.push(<Pressable key={6} style={globalStyles.button} onPress={() => debugPatientLogin('jxm@gmail.com')}>
       <Text style={{color: 'white'}}>Debug log in as jxm</Text>
     </Pressable>);
   }

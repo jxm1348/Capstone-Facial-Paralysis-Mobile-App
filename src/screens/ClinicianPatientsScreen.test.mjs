@@ -2,11 +2,11 @@ import { afterAll, beforeAll, describe, expect, it } from '@jest/globals';
 
 import { Builder, By } from 'selenium-webdriver';
 import firefox from "selenium-webdriver/firefox.js";
+import { goToClinicianPatients } from '../testlib.mjs';
 
 const fetchEnter = () => new Promise(resolve => process.stdin.once('data', resolve));
 
-const SERVER_URL = 'http://127.0.0.1:19006';
-const debug = false;
+const debug = true;
 const headless = !debug && true;
 
 // This line is so I get autocomplete in vscode.
@@ -20,18 +20,31 @@ beforeAll(async () => {
             .setFirefoxOptions(options.addArguments('--headless').windowSize({width:640,height:480}));
     }
     driver = await driverPromise.build();
+    await driver.manage().setTimeouts({ implicit: 2000 });
 }, 20 * 1000);
+
+
 
 describe('Clinician Patients', () => {
     it('Has a header', async () => {
-        await driver.manage().setTimeouts({ implicit: 2000 });
-
-        await driver.get(SERVER_URL);
-        await driver.findElement(By.id('pressable-debug-clinician')).click();
-        await driver.findElement(By.id('pressable-navbar-patients')).click();
+        await goToClinicianPatients(driver, 'mgrey@gmail.com');
         const headerElement = await driver.findElement(By.id('text-patients-header'));
         expect(await headerElement.getText()).toStrictEqual('Patients');
     });
+
+    it('Shows only appropriate patients', async () => {
+        // Terry Altman has no patients
+        await goToClinicianPatients(driver, 'taltman@gmail.com');
+        const altmanPatients = await driver.findElements(By.css('#view-patients > div'));
+        expect(altmanPatients.length).toStrictEqual(0);
+
+        // Cristina Yang has two patients
+        await goToClinicianPatients(driver, 'cyang@gmail.com');
+        const yangPatients = await driver.findElements(By.css('#view-patients > div'));
+        expect(yangPatients.length).toStrictEqual(2);
+        await driver.findElement(By.id('pressable-patient-5NEvyWyAES1DVuuJ7BDZ')); // jxm
+        await driver.findElement(By.id('pressable-patient-IneBpCxH8S4F0CVSo2fU')); // Denzel Washington
+    }, 15 * 1000)
 });
 
 afterAll(async () => {

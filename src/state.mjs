@@ -106,29 +106,6 @@ export const login = async (email, password) => {
     state.clinicianUid = userData.clinicianUid;
 }
 
-// This function is called in ClinicianPatientsScreen
-// It returns a list of patients for the current user as well as the counts of their unread messages.
-export const getPatientsIdsUnread = async () => {
-    const usersSnapshot = await getDocs(collection(db, 'users'));
-    const q = query(collection(db, 'messages'), where('to', '==', auth.currentUser.uid));
-    const messagesSnapshot = await getDocs(q);
-    const userCounts = {};
-    for (const message of messagesSnapshot.docs.map(d => d.data())) {
-        if (message.read) continue;
-        if (userCounts[message.from] === undefined)
-            userCounts[message.from] = 0;
-        userCounts[message.from]++;
-    }
-    
-
-    return usersSnapshot.docs.map(userDocument => {
-        const user = userDocument.data();
-        user.id = userDocument.id;
-        user.unread = userCounts[userDocument.id] ?? 0;
-        return user;
-    });
-};
-
 export const setPatientRead = async (patient) => {
     const q = query(
         collection(db, 'messages'),

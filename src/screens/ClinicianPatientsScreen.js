@@ -5,15 +5,18 @@ import {
   StyleSheet,
 } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import {Picker} from '@react-native-picker/picker';
-import { useIsFocused } from '@react-navigation/native';
+import { Picker } from '@react-native-picker/picker';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 
-import { getPatientsIdsUnread } from '../state.mjs';
+import { getDocs, query, collection, where } from 'firebase/firestore';
+
 import UnreadBadge from '../components/UnreadBadge';
 import globalStyles from '../globalStyles';
 import PatientsSkeleton from '../skeletons/PatientsSkeleton';
+import { auth, db } from '../state.mjs';
 
-function PatientMessagesPressable({patient, navigation}) {
+function PatientMessagesPressable({patient}) {
+  const navigation = useNavigation();
   const { name } = patient;
   return (
     <Pressable
@@ -86,7 +89,45 @@ function SearchSortBar({onChangeText, searchAscending, setSearchAscending, sortB
   </View>)
 }
 
-const ClinicianPatientsScreen = ({ navigation }) => {
+function PatientsView({patients, search, searchAscending, sortBy}) {
+  if (patients === null) return <PatientsSkeleton />;
+  const patientItems = patients
+    .slice()
+    .filter(patient => patient.name.toLowerCase().indexOf(search) >= 0)
+    .sort(getSort(sortBy, searchAscending))
+    .map(patient =>
+      <PatientMessagesPressable key={patient.name} patient={patient} />
+    );
+  return <View id="view-patients">{patientItems}</View>;
+}
+
+// This function returns a list of patients for the current user as well as the counts of their unread messages.
+const getPatientsIdsUnread = async () => {
+  const usersSnapshot = await getDocs(query(
+    collection(db, 'users'),
+    where('clinicianUid', '==', auth.currentUser.uid)
+  ));
+  
+  const q = query(collection(db, 'messages'), where('to', '==', auth.currentUser.uid));
+  const messagesSnapshot = await getDocs(q);
+  const userCounts = {};
+  for (const message of messagesSnapshot.docs.map(d => d.data())) {
+      if (message.read) continue;
+      if (userCounts[message.from] === undefined)
+          userCounts[message.from] = 0;
+      userCounts[message.from]++;
+  }
+  
+
+  return usersSnapshot.docs.map(userDocument => {
+      const user = userDocument.data();
+      user.id = userDocument.id;
+      user.unread = userCounts[userDocument.id] ?? 0;
+      return user;
+  });
+};
+
+const ClinicianPatientsScreen = () => {
   // useIsFocused(); // Force refresh no longer works for some reason.
 
   const [ patients, setPatients ] = useState(null);
@@ -94,19 +135,8 @@ const ClinicianPatientsScreen = ({ navigation }) => {
 
   const [ searchAscending, setSearchAscending ] = useState(true);
   const [ sortBy, setSortBy ] = useState("date");
+  const patientsViewProps = { patients, search, searchAscending, sortBy };
 
-  let patientItems;
-  if (patients === null) {
-    patientItems = (<PatientsSkeleton />);
-  } else {
-    patientItems = patients
-    .slice()
-    .filter(patient => patient.name.toLowerCase().indexOf(search) >= 0)
-    .sort(getSort(sortBy, searchAscending))
-    .map(patient =>
-      <PatientMessagesPressable key={patient.name} patient={patient} navigation={navigation}/>
-    );
-  }
 
   useEffect(() => {
     getPatientsIdsUnread().then(setPatients);
@@ -118,7 +148,7 @@ const ClinicianPatientsScreen = ({ navigation }) => {
         
       <Text style={globalStyles.h1} nativeID='text-patients-header'>Patients</Text>
       <SearchSortBar onChangeText={setSearch} {...{searchAscending, setSearchAscending, sortBy, setSortBy}} />
-      <View>{patientItems}</View>
+      <PatientsView {...patientsViewProps} />
       </View>
     </ScrollView>
   );
