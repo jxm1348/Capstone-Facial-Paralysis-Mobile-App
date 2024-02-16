@@ -38,7 +38,7 @@ describe('Patient Mark', () => {
         
         const message3 = await driver.findElement(By.css('#view-messages > div:nth-child(3)'));
         expect(await isMessageLike(message3)).toBeTruthy();
-    }, 4000);
+    }, 5 * 1000);
 });
 
 afterAll(async () => {

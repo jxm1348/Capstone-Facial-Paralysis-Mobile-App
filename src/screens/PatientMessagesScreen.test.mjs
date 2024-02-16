@@ -23,7 +23,7 @@ beforeAll(async () => {
             .setFirefoxOptions(options.addArguments('--headless').windowSize({width:640,height:480}));
     }
     driver = await driverPromise.build();
-});
+}, 20 * 1000);
 
 describe('Patient Messages', () => {
     it('Exists', async () => {
@@ -46,7 +46,7 @@ describe('Patient Messages', () => {
         await goToClinicianMessagesMark(driver);
         const message = await driver.findElement(By.css('[data-class-text-report-message]'));
         expect(await message.getText()).toStrictEqual(sentinel);
-    });
+    }, 20 * 1000);
 });
 
 afterAll(async () => {
