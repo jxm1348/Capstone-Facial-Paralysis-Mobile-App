@@ -1,3 +1,22 @@
+import { initializeApp } from 'firebase/app';
+import { getStorage } from 'firebase/storage';
+import { getAuth } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
+
+const firebaseConfig = {
+  apiKey: 'AIzaSyA0cVD15lMtM9qYAedfKVvzDYQ6t0WizJs',
+  authDomain: 'facial-analytics-f8b9e.firebaseapp.com',
+  projectId: 'facial-analytics-f8b9e',
+  storageBucket: 'facial-analytics-f8b9e.appspot.com',
+  messagingSenderId: '1087200042336',
+  appId: '1:1087200042336:web:c0c22a9037cd8b92f41205',
+};
+
+export const app = initializeApp(firebaseConfig);
+export const db = getFirestore(app);
+export const storage = getStorage(app);
+export const auth = getAuth(app);
+
 import { readFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
 
@@ -8,9 +27,7 @@ import {
     collection, doc,
     terminate,
 } from 'firebase/firestore';
-import { deleteObject, getMetadata, list, listAll, ref, uploadBytes } from 'firebase/storage';
-
-import { auth, db, storage } from '../src/state.mjs';
+import { deleteObject, list, listAll, ref, uploadBytes } from 'firebase/storage';
 
 import firebaseAdmin from 'firebase-admin';
 import { signInWithEmailAndPassword } from 'firebase/auth';
