@@ -23,21 +23,25 @@ beforeAll(async () => {
     driver = await driverPromise.build();
 }, 20 * 1000);
 
-async function isMessageLike(e) { return (await e.getAttribute('id')).startsWith('pressable-message-'); }
-
 describe('Patient Mark', () => {
+    async function getMessageId(n) {
+        const message = await driver.findElement(By.css(`#view-messages > div:nth-child(${n})`));
+        return await message.getAttribute('id');
+    }
+    // async function isMessageLike(e) { return (await e.getAttribute('id')).startsWith('pressable-message-'); }
+    
     it('Has at least 3 messages', async () => {
         await driver.manage().setTimeouts({ implicit: 2000 });
         await goToClinicianMessagesMark(driver);
 
-        const message1 = await driver.findElement(By.css('#view-messages > div:nth-child(1)'));
-        expect(await isMessageLike(message1)).toBeTruthy();
+        const id1 = await getMessageId(1);
+        expect(id1).toMatch(/^pressable-message-/);
         
-        const message2 = await driver.findElement(By.css('#view-messages > div:nth-child(2)'));
-        expect(await isMessageLike(message2)).toBeTruthy();
+        const id2 = await getMessageId(2);
+        expect(id2).toMatch(/^pressable-message-/);
         
-        const message3 = await driver.findElement(By.css('#view-messages > div:nth-child(3)'));
-        expect(await isMessageLike(message3)).toBeTruthy();
+        const id3 = await getMessageId(3);
+        expect(id3).toMatch(/^pressable-message-/);
     }, 5 * 1000);
 });
 
