@@ -32,7 +32,7 @@ export const auth = getAuth(app);
 
 // Credit to "devnull69" of https://stackoverflow.com/users/1030974/devnull69
 // Via https://stackoverflow.com/a/12300351/6286797
-export function dataURItoBlob(dataURI) {
+function dataURIToBlob(dataURI) {
   // convert base64 to raw binary data held in a string
   // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
   const byteString = atob(dataURI.split(',')[1]);
@@ -48,6 +48,37 @@ export function dataURItoBlob(dataURI) {
   return new Blob([ab], {type: mimeString});
 }
 
+// Credit to "Fiston Emmanuel" of https://stackoverflow.com/users/12431576/fiston-emmanuel
+// Via https://stackoverflow.com/a/75421175/6286797
+const addressURIToBlob = async (uri) => {
+    console.log("Launching new XMLHttpRequest to resolve uri", uri);
+    const blob = await new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.onload = function () {
+        console.log("Resolving on", xhr.response);
+        resolve(xhr.response);
+      };
+      xhr.onerror = function (e) {
+        reject(new TypeError("Network request failed"));
+      };
+      xhr.responseType = "blob";
+      xhr.open("GET", uri, true);
+      xhr.send(null);
+      console.log("xhr sent");
+    });
+  
+    return blob;
+};
+
+export async function URIToBlob(URI) {
+    console.log("Considering URI that starts with", URI.slice(0, 60));
+    if (URI.startsWith("data")) {
+        return dataURIToBlob(URI);
+    } else {
+        return await addressURIToBlob(URI);
+    }
+}
+  
 export function getUnreadPatient(patient) {
     let total = 0;
     for (const key in patient.messages) {

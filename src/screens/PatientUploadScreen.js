@@ -5,10 +5,9 @@ import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { addDoc, collection } from 'firebase/firestore';
 
 import ActionButton from '../components/ActionButton';
-import NavigationBar from '../components/NavigationBar';
 
 import { imageKeyOrder } from '../constants';
-import state, { auth, dataURItoBlob, db, fetchUniqueInt, storage } from '../state.js';
+import state, { URIToBlob, auth, db, fetchUniqueInt, storage } from '../state.js';
 import globalStyles from '../globalStyles';
 import { useIsFocused } from '@react-navigation/native';
 
@@ -17,13 +16,15 @@ const saveImages = async () => {
   console.log("Getting unique id...");
   const reportId = await fetchUniqueInt();
   const keyUriPairs = Object.entries(state.workingMessage.images);
-  const uploadPromises = keyUriPairs.map(([key, uri]) =>
-    uploadBytes(
+  const uploadPromises = keyUriPairs.map(async ([key, uri]) => {
+    const uriBlob = await URIToBlob(uri);
+    const uploadResult = await uploadBytes(
       ref(storage, `images/${auth.currentUser.displayName}/${key}-${reportId}.png`),
-      dataURItoBlob(uri)
-    ).then(result => getDownloadURL(result.ref))
-    .then(URL => [key, URL])
-  );
+      uriBlob
+    );
+    const downloadURL = await getDownloadURL(uploadResult.ref);
+    return [key, downloadURL];
+  });
   const results = await Promise.all(uploadPromises);
   return results;
 }
