@@ -16,8 +16,8 @@ const saveImages = async () => {
   console.log("Getting unique id...");
   const reportId = await fetchUniqueInt();
   const keyUriPairs = Object.entries(state.workingMessage.images);
-  const uploadPromises = keyUriPairs.map(async ([key, uri]) => {
-    const uriBlob = await URIToBlob(uri);
+  const uploadPromises = keyUriPairs.map(async ([key, uriWrapper]) => {
+    const uriBlob = await URIToBlob(uriWrapper.uri);
     const uploadResult = await uploadBytes(
       ref(storage, `images/${auth.currentUser.displayName}/${key}-${reportId}.png`),
       uriBlob

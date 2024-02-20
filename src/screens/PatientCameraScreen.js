@@ -11,7 +11,7 @@ function CameraYes({imageKey}) {
   async function takePicture() {
     if(cameraRef.current){
       let photo = await cameraRef.current.takePictureAsync();
-      state.workingMessage.images[imageKey] = photo.uri;
+      state.workingMessage.images[imageKey] = {uri: photo.uri};
       navigation.navigate("PatientUpload");
     }
   }
