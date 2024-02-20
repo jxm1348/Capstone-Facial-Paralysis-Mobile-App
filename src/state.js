@@ -2,17 +2,17 @@
 // Try uncommenting the following line, maybe?
 // import firebase from '@react-native-firebase/app';
 
-import { initializeApp } from 'firebase/app';
+import { initializeApp, getApp } from 'firebase/app';
 import { getStorage } from 'firebase/storage';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, initializeAuth, getReactNativePersistence } from 'firebase/auth';
 import {
     getFirestore,
     getDocs, updateDoc,
     collection, query, doc,
     and, where, runTransaction, getDoc,
 } from 'firebase/firestore';
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
+import { Platform } from 'react-native';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -24,11 +24,21 @@ const firebaseConfig = {
   appId: '1:1087200042336:web:c0c22a9037cd8b92f41205',
 };
 
-// Initialize Firebase
-export const app = initializeApp(firebaseConfig);
+function getOrInit(getter, initter) {
+    try {
+        return getter();
+    } catch (error) {
+        return initter();
+    }
+}
+export const app = getOrInit(getApp, () => initializeApp(firebaseConfig));
 export const db = getFirestore(app);
 export const storage = getStorage(app);
-export const auth = getAuth(app);
+export const auth = getOrInit(getAuth, () =>
+    initializeAuth(app, Platform.OS === 'web' ? {} : {
+        persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+    })
+);
 
 // Credit to "devnull69" of https://stackoverflow.com/users/1030974/devnull69
 // Via https://stackoverflow.com/a/12300351/6286797
