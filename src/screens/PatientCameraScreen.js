@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Camera, CameraType } from 'expo-camera';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigation } from '@react-navigation/native';
@@ -16,19 +16,29 @@ function CameraYes({imageKey}) {
     }
   }
 
+  const { height, width } = Dimensions.get('window');
+  const windowHeight = height;
+  const windowWidth = width;
+
+  const maskMarginTop = windowHeight * (2 / (2 + 8 + 2));
+  const maskHeight = windowHeight * 0.55;
+  const maskWidth = windowWidth * 0.55;
+
   return (<Camera
     type={CameraType.front}
     style={styles.camera}
     ref={cameraRef}
   >
+    <View style={{flexGrow: 1}}></View>{/* Top margin */}
     <View style={{
-      width: "55vh", height:"70vh", borderRadius: "50%", border: "5px solid white",
-      marginBottom: 30
+      width: maskWidth, flexGrow: 25, borderRadius: maskWidth / 2, borderWidth: 5, borderColor: '#fff',
     }}></View>
+    <View style={{flexGrow: 1}}></View>{/* Gap between mask and button */}
     <Pressable style={{
-      width: 100, height:100, borderRadius: 50, backgroundColor: '#041E42', border:"5px solid white",
-      marginBottom: 30
+      width: 100, flexBasis: 100, flexGrow: 0, flexShrink: 0,
+      borderRadius: 50, backgroundColor: '#041E42', borderWidth: 5, borderColor: '#fff',
     }} onPress={() => takePicture()}></Pressable>
+    <View style={{flexGrow: 1}}></View>{/* Bottom margin */}
   </Camera>);
 }
 
