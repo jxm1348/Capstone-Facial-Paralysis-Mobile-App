@@ -3,6 +3,7 @@ import {
   View, ScrollView,
   Text, Image, Pressable, TextInput,
   StyleSheet,
+  Dimensions,
 } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Picker } from '@react-native-picker/picker';
@@ -65,15 +66,19 @@ function getSort(sortBy, sortAscending) {
 }
 
 function SearchSortBar({onChangeText, searchAscending, setSearchAscending, sortBy, setSortBy}) {
-  return (<View style={{flexDirection: 'row'}}>
+  return (<View style={{flexDirection: Dimensions.get('window').width > 500 ? 'row' : 'column'}}>
+
     <TextInput
       style={styles.inputSearch}
       placeholder="Search"
       onChangeText={(text) => onChangeText(text.toLowerCase())}
     />
+
+    <View style={{flexDirection: 'row'}}>
+
     <View style={{height: 40, justifyContent: 'center'}}><Text>Sort by </Text></View>
     <Picker
-      style={{height: 40}}
+      style={{height: 40, flexShrink: 0, flexGrow: 1, flexBasis: 158, backgroundColor: '#dddddd'}}
       selectedValue={sortBy}
       onValueChange={(itemValue, itemIndex) =>
         setSortBy(itemValue)
@@ -82,13 +87,14 @@ function SearchSortBar({onChangeText, searchAscending, setSearchAscending, sortB
       <Picker.Item label="Last Message" value="date" />
       <Picker.Item label="Name" value="name" />
     </Picker>
-    <Pressable style={{justifyContent: 'center', marginLeft: 20, height: 40}} onPress={() => {setSearchAscending(!searchAscending)}}>
+    <Pressable style={{justifyContent: 'center', paddingLeft: 20, paddingRight: 20, height: 40}} onPress={() => {setSearchAscending(!searchAscending)}}>
       <Ionicons
         name={searchAscending ? 'arrow-up-outline' : 'arrow-down-outline'}
         size={32}
         color="green"
       />
     </Pressable>
+    </View>
   </View>)
 }
 
