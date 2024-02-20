@@ -2,7 +2,7 @@
 // Try uncommenting the following line, maybe?
 // import firebase from '@react-native-firebase/app';
 
-import { initializeApp, getApp } from 'firebase/app';
+import { initializeApp, getApp, getApps } from 'firebase/app';
 import { getStorage } from 'firebase/storage';
 import { getAuth, signInWithEmailAndPassword, initializeAuth, getReactNativePersistence } from 'firebase/auth';
 import {
@@ -12,7 +12,7 @@ import {
     and, where, runTransaction, getDoc,
 } from 'firebase/firestore';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
-import { Platform } from 'react-native';
+import authConfig from './stateAuthConfig';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -24,21 +24,11 @@ const firebaseConfig = {
   appId: '1:1087200042336:web:c0c22a9037cd8b92f41205',
 };
 
-function getOrInit(getter, initter) {
-    try {
-        return getter();
-    } catch (error) {
-        return initter();
-    }
-}
-export const app = getOrInit(getApp, () => initializeApp(firebaseConfig));
+const uninitialized = getApps().length === 0;
+export const app = uninitialized ? initializeApp(firebaseConfig) : getApp();
 export const db = getFirestore(app);
 export const storage = getStorage(app);
-export const auth = getOrInit(getAuth, () =>
-    initializeAuth(app, Platform.OS === 'web' ? {} : {
-        persistence: getReactNativePersistence(ReactNativeAsyncStorage)
-    })
-);
+export const auth = uninitialized ?  initializeAuth(app, authConfig) : getAuth();
 
 // Credit to "devnull69" of https://stackoverflow.com/users/1030974/devnull69
 // Via https://stackoverflow.com/a/12300351/6286797
