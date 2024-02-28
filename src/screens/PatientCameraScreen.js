@@ -26,7 +26,13 @@ function CameraYes({imageKey}) {
 
   return (<Camera
     type={CameraType.front}
-    style={styles.camera}
+    style={{
+      flex: 1,
+      width:"100%",
+      height:"90%",
+      alignItems: 'center',
+      justifyContent: 'end',
+    }}
     ref={cameraRef}
   >
     <View style={{flexGrow: 1}}></View>{/* Top margin */}
@@ -62,27 +68,37 @@ function CameraMaybe({imageKey}) {
 
 const PatientUploadScreen = ({ route }) => {
   const { imageKey } = route.params;
+  const [ layout, setLayout ] = useState({width: 3, height: 4});
+
+  const vh = layout.height, vw = layout.width;
+  const tall = vh / 4 >= vw / 3;
+
+  const previewHeight = tall ? vw / 3 * 4 : vh;
+  const previewWidth = tall ? vw : vh / 4 * 3;
+  
+  const containerStyle = {
+    flex: 1,
+    flexDirection: tall ? 'column' : 'row',
+    backgroundColor: '#f0f',
+    alignItems: 'center',
+    justifyContent: 'start',
+  };
+
   return (
-    <View style={styles.container}>
-      <CameraMaybe imageKey={imageKey} />
+    <View style={containerStyle} onLayout={event => {
+      setLayout(event.nativeEvent.layout);
+    }}>
+      <View style={{
+        flexGrow: 0,
+        flexShrink: 0,
+        width: previewWidth,
+        height: previewHeight,
+      }}>
+        <CameraMaybe imageKey={imageKey} />
+
+      </View>
     </View>
   );  
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  camera: {
-    flex: 1,
-    width:"100%",
-    height:"90%",
-    alignItems: 'center',
-    justifyContent: 'end',
-  }
-});
 
 export default PatientUploadScreen;
