@@ -1,30 +1,25 @@
-import { Dimensions, Pressable, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { Camera, CameraType } from 'expo-camera';
 import { useState, useEffect, useRef } from 'react';
 import state from '../state.js';
 
-function CameraYes({cameraRef}) {
-  
-  const { height, width } = Dimensions.get('window');
-  const windowHeight = height;
-  const windowWidth = width;
+const ratio = [4, 3];
 
-  const maskWidth = windowWidth * 0.55;
-
+function CameraYes({cameraRef, previewWidth}) {
   return (<Camera
     type={CameraType.front}
     style={{
       flex: 1,
       width:"100%",
-      height:"90%",
+      height:"100%",
       alignItems: 'center',
-      justifyContent: 'end',
     }}
     ref={cameraRef}
   >
     <View style={{flexGrow: 1}}></View>{/* Top margin */}
     <View style={{
-      width: maskWidth, flexGrow: 25, borderRadius: maskWidth / 2, borderWidth: 5, borderColor: '#fff',
+      flexGrow: 25, width: previewWidth * 0.70,
+      borderRadius: previewWidth * 0.35, borderWidth: 5, borderColor: '#fff',
     }}></View>
     <View style={{flexGrow: 1}}></View>{/* Gap between mask and button */}
   </Camera>);
@@ -49,20 +44,22 @@ function CameraMaybe(props) {
 }
 
 const PatientUploadScreen = ({ route, navigation }) => {
+  const [ ah, aw ] = ratio;
+
   const { imageKey } = route.params;
-  const [ layout, setLayout ] = useState({width: 3, height: 4});
+  const [ layout, setLayout ] = useState({width: aw, height: ah});
   const cameraRef = useRef(undefined);
 
   const vh = layout.height, vw = layout.width;
-  const tall = vh / 4 >= vw / 3;
+  const tall = vh / ah >= vw / aw;
 
-  const previewHeight = tall ? vw / 3 * 4 : vh;
-  const previewWidth = tall ? vw : vh / 4 * 3;
+  const previewHeight = tall ? vw / aw * ah : vh;
+  const previewWidth = tall ? vw : vh / ah * aw;
   
   const containerStyle = {
     flex: 1,
     flexDirection: tall ? 'column' : 'row',
-    backgroundColor: '#f0f',
+    backgroundColor: '#222',
     alignItems: 'center',
     justifyContent: 'start',
   };
@@ -85,7 +82,7 @@ const PatientUploadScreen = ({ route, navigation }) => {
         width: previewWidth,
         height: previewHeight,
       }}>
-        <CameraMaybe cameraRef={cameraRef} />
+        <CameraMaybe cameraRef={cameraRef} previewWidth={previewWidth} />
       </View>
       <Pressable style={{
         width: 100, height: 100, borderRadius: 50,
