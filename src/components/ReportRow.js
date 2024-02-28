@@ -7,18 +7,26 @@ function ReportTile({source}) {
     return <Image style={styles.tile} source={{uri: source}}/>;
 }
 
-function ReportRow({message}) {
-    const urlIterator = message.images.map ? message.images :
+function getReportTiles(message) {
+    if (message.messageVersion === undefined) {
+        const urlIterator = message.images.map ? message.images :
         imageKeyOrder.map(key => message.images[key]).filter(result => result);
 
-    const imageTiles = urlIterator.map(source =>
-        <ReportTile key={source} source={source} />
-    );
+        return urlIterator.map(source =>
+            <ReportTile key={source} source={source} />
+        );
+    } else {
+        return <Text>New style message tiles</Text>;
+    }
+}
+
+function ReportRow({message}) {
+    const reportTiles = getReportTiles(message);
 
     return (<View style={styles.container}>
         <NewBadge value={message.new} />
         <View style={{flexDirection: 'row', gap: 20}}>
-            {imageTiles}
+            {reportTiles}
         </View>
         <Text>{new Date(message.date).toString()}</Text>
         {message.message !== null &&

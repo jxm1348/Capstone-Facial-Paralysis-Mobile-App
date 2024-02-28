@@ -76,14 +76,15 @@ const defaultUsers = {
 const defaultMessages = [
     // Begin conversation between Meredith Grey and Mark Peschel
     {date: new Date('Jan 20, 2024').getTime(), from: 'K8bhUx2Hqv2LjfP4BsKy', to: 'gRnnZGMDUOOThH8Jdbfu', read: false, message: '',
+        messageVersion: 3,
         images: {
-            'at-rest': 'https://firebasestorage.googleapis.com/v0/b/facial-analytics-f8b9e.appspot.com/o/images%2FMark%20Peschel%2Fat-rest-1.jpg?alt=media&token=c9ed41db-6e2f-4e2f-9f05-4cdfd5170da9',
-            'eyebrows-up': 'https://firebasestorage.googleapis.com/v0/b/facial-analytics-f8b9e.appspot.com/o/images%2FMark%20Peschel%2Feyebrows-up-1.jpg?alt=media&token=25635b83-323c-4599-8a6c-b212b56604fe',
-            'eyes-closed': 'https://firebasestorage.googleapis.com/v0/b/facial-analytics-f8b9e.appspot.com/o/images%2FMark%20Peschel%2Feyes-closed-1.jpg?alt=media&token=a03f1528-2e30-4d8e-9b6e-b6b4872b1f76',
-            'nose-wrinkle': 'https://firebasestorage.googleapis.com/v0/b/facial-analytics-f8b9e.appspot.com/o/images%2FMark%20Peschel%2Fnose-wrinkle-1.jpg?alt=media&token=152e4724-4bd0-4128-bd7d-4a86329e4f52',
-            'big-smile': 'https://firebasestorage.googleapis.com/v0/b/facial-analytics-f8b9e.appspot.com/o/images%2FMark%20Peschel%2Fbig-smile-1.jpg?alt=media&token=65e5a179-4b1d-454e-afef-5b8d9fd9923f',
-            'lips-puckered': 'https://firebasestorage.googleapis.com/v0/b/facial-analytics-f8b9e.appspot.com/o/images%2FMark%20Peschel%2Flips-puckered-1.jpg?alt=media&token=1420e538-4f0c-403a-b8df-587a755b9d40',
-            'lower-teeth-bared': 'https://firebasestorage.googleapis.com/v0/b/facial-analytics-f8b9e.appspot.com/o/images%2FMark%20Peschel%2Flower-teeth-bared-1.jpg?alt=media&token=576dbd7b-504b-43d6-bd5b-6654c425661e',
+            'at-rest': 'at-rest-1.jpg',
+            'eyebrows-up': 'eyebrows-up-1.jpg',
+            'eyes-closed': 'eyes-closed-1.jpg',
+            'nose-wrinkle': 'nose-wrinkle-1.jpg',
+            'big-smile': 'big-smile-1.jpg',
+            'lips-puckered': 'lips-puckered-1.jpg',
+            'lower-teeth-bared': 'lower-teeth-bared-1.jpg',
         },
     },
     {date: new Date('Jan 19, 2024').getTime(), from: 'gRnnZGMDUOOThH8Jdbfu', to: 'K8bhUx2Hqv2LjfP4BsKy', read: true, message: 'How is the soreness we discussed doing?', images: []},
@@ -253,6 +254,7 @@ async function syncDir(sourceDir, destDir) {
         const nameUpThere = refToName(prefixUpThere);
         if (!goodNames[nameUpThere]) {
             console.log('Delete folder', nameUpThere);
+            process.exit();
             await deleteDir(prefixUpThere);
         }
     }
