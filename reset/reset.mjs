@@ -249,8 +249,8 @@ async function syncDir(sourceDir, destDir) {
     for (const itemUpThere of pathsUpThere.items) {
         const nameUpThere = refToName(itemUpThere);
         if (!goodNames[nameUpThere]) {
-            console.log('Delete file  ', nameUpThere);
-            await deleteObject(itemUpThere);
+            console.log('Delete file  (Temporary skip)', nameUpThere);
+            // await deleteObject(itemUpThere);
         } else {
             itemsUploaded[nameUpThere] = true;
         }
@@ -259,9 +259,8 @@ async function syncDir(sourceDir, destDir) {
     for (const prefixUpThere of pathsUpThere.prefixes) {
         const nameUpThere = refToName(prefixUpThere);
         if (!goodNames[nameUpThere] && nameUpThere !== 'thumbnails') {
-            console.log('Delete folder', nameUpThere);
-            process.exit();
-            await deleteDir(prefixUpThere);
+            console.log('Delete folder(Temporary skip)', nameUpThere);
+            // await deleteDir(prefixUpThere);
         }
     }
     
