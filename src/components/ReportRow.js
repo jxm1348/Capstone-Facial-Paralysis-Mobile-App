@@ -16,15 +16,13 @@ function ReportTile3({uid, imageName}) {
     const [ uri, setUri ] = useState(undefined);
 
     useEffect(() => {(async () => {
-        const userDocument = await getDoc(doc(db, 'users', uid));
-        const displayName = userDocument.data().name;
         const imageExtension = imageName.split('.').pop();
         const imagePrefix = imageName.slice(0, imageName.length - imageExtension.length - 1);
-        const thumbnailRef = ref(storage, `images/${displayName}/thumbnails/${imagePrefix}_90x120.${imageExtension}`);
+        const thumbnailRef = ref(storage, `images/${uid}/thumbnails/${imagePrefix}_90x120.${imageExtension}`);
         setUri(await getDownloadURL(thumbnailRef));
     })();}, []);
     
-    if (uid === undefined) {
+    if (uri === undefined) {
         return <Text>Loading image...</Text>;
     } else {
         return <Image style={styles.tile} source={{uri}}/>;
