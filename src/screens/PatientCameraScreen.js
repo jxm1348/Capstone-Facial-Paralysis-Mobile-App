@@ -1,27 +1,14 @@
-import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, Pressable, Text, View } from 'react-native';
 import { Camera, CameraType } from 'expo-camera';
 import { useState, useEffect, useRef } from 'react';
-import { useNavigation } from '@react-navigation/native';
 import state from '../state.js';
 
-function CameraYes({imageKey}) {
-  const navigation = useNavigation();
-  const cameraRef = useRef(null);
-
-  async function takePicture() {
-    if(cameraRef.current){
-      let photo = await cameraRef.current.takePictureAsync();
-      state.workingMessage.images[imageKey] = {uri: photo.uri};
-      navigation.navigate("PatientUpload");
-    }
-  }
-
+function CameraYes({cameraRef}) {
+  
   const { height, width } = Dimensions.get('window');
   const windowHeight = height;
   const windowWidth = width;
 
-  const maskMarginTop = windowHeight * (2 / (2 + 8 + 2));
-  const maskHeight = windowHeight * 0.55;
   const maskWidth = windowWidth * 0.55;
 
   return (<Camera
@@ -40,15 +27,10 @@ function CameraYes({imageKey}) {
       width: maskWidth, flexGrow: 25, borderRadius: maskWidth / 2, borderWidth: 5, borderColor: '#fff',
     }}></View>
     <View style={{flexGrow: 1}}></View>{/* Gap between mask and button */}
-    <Pressable style={{
-      width: 100, flexBasis: 100, flexGrow: 0, flexShrink: 0,
-      borderRadius: 50, backgroundColor: '#041E42', borderWidth: 5, borderColor: '#fff',
-    }} onPress={() => takePicture()}></Pressable>
-    <View style={{flexGrow: 1}}></View>{/* Bottom margin */}
   </Camera>);
 }
 
-function CameraMaybe({imageKey}) {
+function CameraMaybe(props) {
   const [permissionsRequest, setPermissionsRequest] = useState(null);
   useEffect(() => {
       Camera.requestCameraPermissionsAsync()
@@ -58,7 +40,7 @@ function CameraMaybe({imageKey}) {
   if (permissionsRequest === null) {
     return <Text>Awaiting camera permissions.</Text>;
   } else if (permissionsRequest.status === "granted") {
-    return <CameraYes imageKey={imageKey} />;
+    return <CameraYes {...props} />;
   } else if (permissionsRequest.status === "denied") {
     return <Text>This app cannot take your picture without camera permissions.</Text>;
   } else {
@@ -66,9 +48,10 @@ function CameraMaybe({imageKey}) {
   }
 }
 
-const PatientUploadScreen = ({ route }) => {
+const PatientUploadScreen = ({ route, navigation }) => {
   const { imageKey } = route.params;
   const [ layout, setLayout ] = useState({width: 3, height: 4});
+  const cameraRef = useRef(undefined);
 
   const vh = layout.height, vw = layout.width;
   const tall = vh / 4 >= vw / 3;
@@ -84,6 +67,14 @@ const PatientUploadScreen = ({ route }) => {
     justifyContent: 'start',
   };
 
+  async function takePicture() {
+    if(cameraRef.current) {
+      let photo = await cameraRef.current.takePictureAsync();
+      state.workingMessage.images[imageKey] = {uri: photo.uri};
+      navigation.navigate("PatientUpload");
+    }
+  }
+  
   return (
     <View style={containerStyle} onLayout={event => {
       setLayout(event.nativeEvent.layout);
@@ -94,9 +85,14 @@ const PatientUploadScreen = ({ route }) => {
         width: previewWidth,
         height: previewHeight,
       }}>
-        <CameraMaybe imageKey={imageKey} />
-
+        <CameraMaybe cameraRef={cameraRef} />
       </View>
+      <Pressable style={{
+        width: 100, height: 100, borderRadius: 50,
+        backgroundColor: '#041E42', borderWidth: 5, borderColor: '#fff',
+        position: 'absolute', right: tall ? undefined : 10, bottom: tall ? 10 : undefined,
+      }} onPress={() => takePicture()}></Pressable>
+
     </View>
   );  
 };
