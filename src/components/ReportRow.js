@@ -2,9 +2,33 @@ import { StyleSheet, Text, View, Image } from 'react-native';
 
 import NewBadge from '../components/NewBadge';
 import { imageKeyOrder } from '../constants';
+import { useEffect, useState } from 'react';
+
+import { getDoc, doc } from 'firebase/firestore';
+import { ref, getDownloadURL } from 'firebase/storage';
+import { db, storage } from '../state';
 
 function ReportTile({source}) {
     return <Image style={styles.tile} source={{uri: source}}/>;
+}
+
+function ReportTile3({uid, imageName}) {
+    const [ uri, setUri ] = useState(undefined);
+
+    useEffect(() => {(async () => {
+        const userDocument = await getDoc(doc(db, 'users', uid));
+        const displayName = userDocument.data().name;
+        const imageExtension = imageName.split('.').pop();
+        const imagePrefix = imageName.slice(0, imageName.length - imageExtension.length - 1);
+        const thumbnailRef = ref(storage, `images/${displayName}/thumbnails/${imagePrefix}_90x120.${imageExtension}`);
+        setUri(await getDownloadURL(thumbnailRef));
+    })();}, []);
+    
+    if (uid === undefined) {
+        return <Text>Loading image...</Text>;
+    } else {
+        return <Image style={styles.tile} source={{uri}}/>;
+    }
 }
 
 function getReportTiles(message) {
@@ -16,7 +40,10 @@ function getReportTiles(message) {
             <ReportTile key={source} source={source} />
         );
     } else {
-        return <Text>New style message tiles</Text>;
+        return imageKeyOrder
+            .map(key => message.images[key])
+            .filter(result => result)
+            .map(imageName => <ReportTile3 uid={message.from} imageName={imageName}/>);
     }
 }
 
@@ -44,10 +71,10 @@ const styles = StyleSheet.create({
         borderColor: '#2060dd',
         borderWidth: 2,
         borderRadius: 5,
-        width: 100 * 7 + 20 * 6 + 25, // Hardcoded badness.
+        width: 90 * 7 + 20 * 6 + 25, // Hardcoded badness.
       }, tile: {
-        width: 100,
-        height: 100,
+        width: 90,
+        height: 120,
     }
 });
 
