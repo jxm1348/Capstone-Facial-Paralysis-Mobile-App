@@ -12,7 +12,8 @@ export default function NewMessageBar({toUid}) {
     const sendMessage = async () => {
       const newMessage = {
         message: newMessageRef.current.value,
-        images: [],
+        messageVersion: 3,
+        images: {},
         read: false,
         from: auth.currentUser.uid,
         to: toUid,
