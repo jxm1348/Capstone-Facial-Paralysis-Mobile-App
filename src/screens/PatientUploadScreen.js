@@ -11,19 +11,29 @@ import state, { URIToBlob, auth, db, fetchUniqueInt, storage } from '../state.js
 import globalStyles from '../globalStyles';
 import { useIsFocused } from '@react-navigation/native';
 
+function URIToExtension(uri) {
+  if (uri.startsWith('data:image/png;') || uri.endsWith('.png')) {
+    return 'png';
+  } else if (uri.startsWith('data:image/jpg;') || uri.endsWith('.jpg')) {
+    return 'jpg';
+  } else {
+    return uri.split('.').pop();
+  }
+}
 
 const saveImages = async () => {
   console.log("Getting unique id...");
   const reportId = await fetchUniqueInt();
   const keyUriPairs = Object.entries(state.workingMessage.images);
   const uploadPromises = keyUriPairs.map(async ([key, uriWrapper]) => {
+    const imageExtension = URIToExtension(uriWrapper.uri);
+    const imageName = `${key}-${reportId}.${imageExtension}`;
     const uriBlob = await URIToBlob(uriWrapper.uri);
-    const uploadResult = await uploadBytes(
-      ref(storage, `images/${auth.currentUser.displayName}/${key}-${reportId}.png`),
+    await uploadBytes(
+      ref(storage, `images/${auth.currentUser.uid}/${imageName}`),
       uriBlob
     );
-    const downloadURL = await getDownloadURL(uploadResult.ref);
-    return [key, downloadURL];
+    return [key, imageName];
   });
   const results = await Promise.all(uploadPromises);
   return results;
@@ -49,11 +59,15 @@ const PatientUploadScreen = () => {
     console.log("Uploading images...");
     const saveURLs = await saveImages();
     const images = Object.fromEntries(saveURLs);
-    const message = '';
     console.log(saveURLs);
     console.log("Making message...");
     await addDoc(collection(db, 'messages'), {
-      date: Date.now(), from: auth.currentUser.uid, to: state.clinicianUid, read: false, message, images,
+      date: Date.now(),
+      from: auth.currentUser.uid, to: state.clinicianUid,
+      read: false,
+      message: '',
+      messageVersion: 3,
+      images,
     });
     console.log("Upload complete");
   }
