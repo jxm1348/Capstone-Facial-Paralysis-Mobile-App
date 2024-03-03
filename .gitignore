@@ -8,6 +8,11 @@ node_modules/
 dist/
 web-build/
 
+# Native code generated with npx expo prebuild
+# (Note that you need a second step to actually build the app e.g. sh android/gradlew)
+android
+ios
+
 # Native
 *.orig.*
 *.jks
