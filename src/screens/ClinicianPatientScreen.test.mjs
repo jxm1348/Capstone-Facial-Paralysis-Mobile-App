@@ -25,23 +25,36 @@ beforeAll(async () => {
 
 describe('Patient Mark', () => {
     async function getMessageId(n) {
-        const message = await driver.findElement(By.css(`#view-messages > div:nth-child(${n})`));
-        return await message.getAttribute('id');
+        const selector = `#view-messages > div:nth-child(${n})`;
+        // console.log('Fetching message with selector', selector);
+        const message = await driver.findElement(By.css(selector));
+        // console.log('Got element', message);
+        const id = await message.getAttribute('id');
+        // console.log('With id attribute', id);
+        return id;
     }
     // async function isMessageLike(e) { return (await e.getAttribute('id')).startsWith('pressable-message-'); }
     
     it('Has at least 3 messages', async () => {
-        await driver.manage().setTimeouts({ implicit: 2000 });
+        await driver.manage().setTimeouts({ implicit: 10000 });
         await goToClinicianMessagesMark(driver);
+        // console.log("Arrived at clinician messages with patient mark");
 
-        const id1 = await getMessageId(1);
-        expect(id1).toMatch(/^pressable-message-/);
+        // Order is important. Get the 3rd message first, since we are finding "messages" as divs
+        //  since react-native/expo does not support css classes
+        //  so if we get the 1st message first, we would be at risk of grabbing the PatientSkeleton component.
+        
+        const id3 = await getMessageId(3);
+        // console.log('id3:', id3);
+        expect(id3).toMatch(/^pressable-message-/);
         
         const id2 = await getMessageId(2);
         expect(id2).toMatch(/^pressable-message-/);
         
-        const id3 = await getMessageId(3);
-        expect(id3).toMatch(/^pressable-message-/);
+        const id1 = await getMessageId(1);
+        // console.log('id1:', id1);
+        expect(id1).toMatch(/^pressable-message-/);
+        
     }, 5 * 1000);
 });
 

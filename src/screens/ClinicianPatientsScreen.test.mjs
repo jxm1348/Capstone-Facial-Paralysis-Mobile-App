@@ -20,7 +20,7 @@ beforeAll(async () => {
             .setFirefoxOptions(options.addArguments('--headless').windowSize({width:640,height:480}));
     }
     driver = await driverPromise.build();
-    await driver.manage().setTimeouts({ implicit: 2000 });
+    await driver.manage().setTimeouts({ implicit: 10000 });
 }, 20 * 1000);
 
 

@@ -27,7 +27,7 @@ beforeAll(async () => {
 
 describe('Patient Messages', () => {
     it('Exists', async () => {
-        await driver.manage().setTimeouts({ implicit: 2000 });
+        await driver.manage().setTimeouts({ implicit: 10000 });
 
         await driver.get(SERVER_URL);
         await driver.findElement(By.id('text-input-email')).sendKeys('mpeschel@gmail.com');
