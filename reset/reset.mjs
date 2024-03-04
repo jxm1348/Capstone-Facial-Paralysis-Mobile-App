@@ -1,5 +1,4 @@
 import { initializeApp } from 'firebase/app';
-import { getStorage } from 'firebase/storage';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
@@ -14,7 +13,6 @@ const firebaseConfig = {
 
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
-export const storage = getStorage(app);
 export const auth = getAuth(app);
 
 import { readFile, readdir, stat } from 'node:fs/promises';
@@ -27,11 +25,10 @@ import {
     collection, doc,
     terminate,
 } from 'firebase/firestore';
-import { deleteObject, list, listAll, ref, uploadBytes } from 'firebase/storage';
 
 import firebaseAdmin from 'firebase-admin';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import * as firebaseAdminStorage from 'firebase-admin/storage';
+import { getStorage } from 'firebase-admin/storage';
 
 const serviceAccountKey = JSON.parse(await readFile(path.join('secrets', 'facial-analytics-f8b9e-firebase-adminsdk-r38z0-23a93810da.json')));
 
@@ -39,7 +36,7 @@ const adminApp = firebaseAdmin.initializeApp({
   credential: firebaseAdmin.credential.cert(serviceAccountKey)
 });
 const adminAuth = firebaseAdmin.auth(adminApp);
-const adminStorage = firebaseAdminStorage.getStorage(adminApp);
+const adminStorage = getStorage(adminApp);
 
 const placeholderThumbnail = 'https://mpeschel10.github.io/fa/test/face-f-at-rest.png';
 const placeholderImages = [
@@ -252,13 +249,6 @@ async function getPaths(dir) {
         }
     }
     return paths;
-}
-
-async function uploadPath(sourcePath, destPath) {
-    const sourceContent = await readFile(sourcePath);
-    const sourceBlob = new Blob([sourceContent]);
-    const contentType = mimeTypes.lookup(sourcePath);
-    return await uploadBytes(destPath, sourceBlob, {contentType});
 }
 
 async function resetStorage() {
