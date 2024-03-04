@@ -17,7 +17,7 @@ export const db = getFirestore(app);
 export const storage = getStorage(app);
 export const auth = getAuth(app);
 
-import { readFile, readdir } from 'node:fs/promises';
+import { readFile, readdir, stat } from 'node:fs/promises';
 import path from 'node:path';
 
 import mimeTypes from 'mime-types';
@@ -31,6 +31,7 @@ import { deleteObject, list, listAll, ref, uploadBytes } from 'firebase/storage'
 
 import firebaseAdmin from 'firebase-admin';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import * as firebaseAdminStorage from 'firebase-admin/storage';
 
 const serviceAccountKey = JSON.parse(await readFile(path.join('secrets', 'facial-analytics-f8b9e-firebase-adminsdk-r38z0-23a93810da.json')));
 
@@ -38,6 +39,7 @@ const adminApp = firebaseAdmin.initializeApp({
   credential: firebaseAdmin.credential.cert(serviceAccountKey)
 });
 const adminAuth = firebaseAdmin.auth(adminApp);
+const adminStorage = firebaseAdminStorage.getStorage(adminApp);
 
 const placeholderThumbnail = 'https://mpeschel10.github.io/fa/test/face-f-at-rest.png';
 const placeholderImages = [
@@ -208,84 +210,6 @@ async function resetTable(name) {
     }
 }
 
-async function deleteDir(dirRef) {
-    let page = {nextPageToken: undefined};
-    do {
-        page = await list(dirRef, {maxResults: 100, pageToken: page.nextPageToken});
-        console.log("Deleting storage items: ", page.items.map(itemRef => itemRef._location.path_));
-        const promises = [
-            ...page.items.map(itemRef => deleteObject(itemRef)),
-            ...page.prefixes.map(prefixRef => deleteDir(prefixRef)),
-        ];
-        await Promise.all(promises);
-    } while (page.nextPageToken);
-}
-
-async function uploadPath(sourcePath, destPath) {
-    const sourceContent = await readFile(sourcePath);
-    const sourceBlob = new Blob([sourceContent]);
-    const contentType = mimeTypes.lookup(sourcePath);
-    return await uploadBytes(destPath, sourceBlob, {contentType});
-}
-
-function direntToPath(dirent) {
-    return path.join(dirent.path, dirent.name);
-}
-
-function refToName(ref) {
-    const parts = ref._location.path_.split("/");
-    return parts[parts.length - 1];
-}
-
-async function syncDir(sourceDir, destDir) {
-    // listAll supposedly may cause problems if there are many files up there.
-    // Mot worth addressing yet.
-    const pathsDownHere = await readdir(sourceDir, {withFileTypes: true});
-    const pathsUpThere = await listAll(destDir);
-    const goodNames = Object.fromEntries(pathsDownHere.map(item => [item.name, true]));
-    const itemsUploaded = {};
-    
-    // Steps: 1. Delete all things from destDir not in sourceDir.
-    for (const itemUpThere of pathsUpThere.items) {
-        const nameUpThere = refToName(itemUpThere);
-        if (!goodNames[nameUpThere]) {
-            console.log('Delete file  (Temporary skip)', nameUpThere);
-            // await deleteObject(itemUpThere);
-        } else {
-            itemsUploaded[nameUpThere] = true;
-        }
-    }
-    
-    for (const prefixUpThere of pathsUpThere.prefixes) {
-        const nameUpThere = refToName(prefixUpThere);
-        if (!goodNames[nameUpThere] && nameUpThere !== 'thumbnails') {
-            console.log('Delete folder(Temporary skip)', nameUpThere);
-            // await deleteDir(prefixUpThere);
-        }
-    }
-    
-    // 2. Upload all things in sourceDir not already in destDir.
-    for (const item of pathsDownHere) {
-        if (itemsUploaded[item.name]) {
-            console.log('Skip   file  ', item.name);
-            continue;
-        }
-        if (item.isDirectory()) {
-            console.log('Enter  folder', item.name);
-            await syncDir(direntToPath(item), ref(destDir, item.name));
-            continue;
-        }
-        console.log('Upload file  ', item.name);
-        await uploadPath(direntToPath(item), ref(destDir, item.name));
-    }
-    return;
-}
-
-async function resetStorage() {
-    // await deleteDir(ref(storage)); // Clean reset. Deletes all files to be reuploaded anew. Slow.
-    await syncDir(path.join(process.cwd(), 'reset', 'mirror'), ref(storage));
-}
-
 async function rateLimit(ms) {
     ms = ms ?? 600
     await new Promise(resolve => setTimeout(resolve, ms));
@@ -314,15 +238,85 @@ async function resetUsers() {
     }
 }
 
+// Copyright 2020 Google LLC
+// via https://github.com/googleapis/nodejs-storage/blob/main/samples/listFiles.js
+async function getPaths(dir) {
+    const paths = [];
+    for (const relativePath of await readdir(dir)) {
+        const fullPath = path.join(dir, relativePath);
+        const stats = await stat(fullPath);
+        if (stats.isDirectory()) {
+            paths.push(...await getPaths(fullPath))
+        } else if (stats.isFile()) {
+            paths.push(fullPath);
+        }
+    }
+    return paths;
+}
+
+async function uploadPath(sourcePath, destPath) {
+    const sourceContent = await readFile(sourcePath);
+    const sourceBlob = new Blob([sourceContent]);
+    const contentType = mimeTypes.lookup(sourcePath);
+    return await uploadBytes(destPath, sourceBlob, {contentType});
+}
+
+async function resetStorage() {
+    // await deleteDir(ref(storage)); // Clean reset. Deletes all files to be reuploaded anew. Slow.
+    
+    const localRoot = path.join(process.cwd(), 'reset', 'mirror');
+    const remoteRoot = adminStorage.bucket('facial-analytics-f8b9e.appspot.com');
+
+    const localPathsArray = await getPaths(localRoot);
+    const localPaths = Object.fromEntries(localPathsArray.map(p => [
+        path.relative(localRoot, p), true
+    ]));
+    
+    const [remoteFilesArray] = await remoteRoot.getFiles();
+    const remotePaths = Object.fromEntries(remoteFilesArray.map(f => [f.name, true]));
+    
+    for (const remotePath in remotePaths) {
+        if (localPaths[remotePath]) continue;
+        
+        if (remotePath.includes('thumbnails')) {
+            // console.log('Considering remote thumbnail', remotePath);
+            const parsedRemotePath = path.parse(remotePath);
+            const originalImageName = parsedRemotePath.name.split('_')[0] + parsedRemotePath.ext;
+            
+            const up = path.dirname;
+            const remoteOriginalImagePath = path.join(up(up(remotePath)), originalImageName);
+            // console.log('Expected source is', remoteOriginalImagePath);
+            if (localPaths[remoteOriginalImagePath]) continue;
+            // console.log('Expected source does not exist');
+        }
+        
+        console.log('Deleting', remotePath);
+        await remoteRoot.file(remotePath).delete();
+    }
+
+    for (const localPath in localPaths) {
+        if (!remotePaths[localPath]) {
+            console.log('Uploading', localPath);
+            await remoteRoot.upload(
+                path.join(localRoot, localPath), {destination:localPath}
+            );
+        }
+    }
+}
+
 // Credentials are now required for modifying tables.
 // TODO: use service account or whatever for fixing tables instead.
 // await resetUsers();
-await signInWithEmailAndPassword(auth, 'mpeschel@gmail.com', 'password');
+// await signInWithEmailAndPassword(auth, 'mpeschel@gmail.com', 'password');
 
 await Promise.all([
-    ...Object.keys(tables).map(name => resetTable(name)),
+    // ...Object.keys(tables).map(name => resetTable(name)),
     resetStorage(),
+    // resetUsers(),
 ]);
 
 // Closing the database connection is necessary so node.js doesn't hang after the reset function is done.
 terminate(db);
+
+
+
