@@ -92,8 +92,14 @@ const state = {
 
     app, db, storage, auth,
 
+    // This variable is used to pass images from the PatientCameraScreen to the PatientUploadScreen.
     workingMessage: { images: {} },
 
+    // These variables are set during login.
+    // They do not update dynamically, so there may be issues if the user is logged in and then their clinicianUid changes.
+    // idTokenResult.claims.roles is an array of strings.
+    // If roles.includes('a'), user is admin. 'c' for clinician, 'p' for patient.
+    idTokenResult: undefined,
     clinicianUid: undefined,
 };
 
@@ -131,9 +137,12 @@ export const fetchUnreadCount = async () => {
 }
 
 export const login = async (email, password) => {
-    await signInWithEmailAndPassword(auth, email, password);
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const idTokenResult = await userCredential.user.getIdTokenResult();
     const userData = await getDoc(doc(db, 'users', auth.currentUser.uid))
         .then(document => document.data());
+    
+    state.idTokenResult = idTokenResult;
     state.clinicianUid = userData.clinicianUid;
 }
 

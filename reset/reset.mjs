@@ -57,20 +57,28 @@ async function deleteCollection(collectionName) {
     await Promise.all(deletePromises);
 }
 
+// User permissions are handled with Discord-style roles.
+// A user has a list of roles, where each role is a string.
+// 'a' for admin, 'c' for clinician, 'p' for patient.
+// Roles show up in the firebase/firestore database because that was convenient for me,
+//  but actual authentication is handled by "custom claims",
+//  which are handled by firebase/auth, down in the resetUsers() function.
 const defaultUsers = {
-    'gRnnZGMDUOOThH8Jdbfu': {clinicianUid: null, name:'Meredith Grey', email: "mgrey@gmail.com", thumbnail: placeholderThumbnail, latestMessage: null},
-    'mSz5ZmtDK6KmqxK7NN5Q': {clinicianUid: null, name:'Cristina Yang', email: "cyang@gmail.com", thumbnail: placeholderThumbnail, latestMessage: null},
-    'QSQIUuX0RHfOD2KStyks': {clinicianUid: null, name:'Teddy Altman', email: "taltman@gmail.com", thumbnail: placeholderThumbnail, latestMessage: null},
-    'K8bhUx2Hqv2LjfP4BsKy': {clinicianUid: 'gRnnZGMDUOOThH8Jdbfu', name:'Mark Peschel', email: "mpeschel@gmail.com", thumbnail: 'https://avatars.githubusercontent.com/u/111475917?v=4', latestMessage: '2024-01-20'},
-    '5NEvyWyAES1DVuuJ7BDZ': {clinicianUid: 'mSz5ZmtDK6KmqxK7NN5Q', name:'jxm', email: "jxm@gmail.com", thumbnail: 'https://avatars.githubusercontent.com/u/143039729?v=4', latestMessage: '2024-02-14'},
-    'lSHYQROPdgk7kJTsZxJu': {clinicianUid: 'gRnnZGMDUOOThH8Jdbfu', name:'Josh Carson', email: "jcarson@gmail.com", thumbnail: 'https://avatars.githubusercontent.com/u/18175844?v=4', latestMessage: '2024-01-19'},
-    'SMHTCPm51vgYphdkDVly': {clinicianUid: 'gRnnZGMDUOOThH8Jdbfu', name:'Owen Wilson', email: "owilson@gmail.com", thumbnail: placeholderThumbnail, latestMessage: null},
-    'mI0cChVwn0AzBN0AhJXv': {clinicianUid: 'gRnnZGMDUOOThH8Jdbfu', name:'Robert Downey Junior', email: "rjunior@gmail.com", thumbnail: placeholderThumbnail, latestMessage: '2024-01-06'},
-    'wfDM8ya0ModdQEP3RIsm': {clinicianUid: 'gRnnZGMDUOOThH8Jdbfu', name:'John doe', email: "jdoe@gmail.com", thumbnail: placeholderThumbnail, latestMessage: '2024-01-19'},
-    'IneBpCxH8S4F0CVSo2fU': {clinicianUid: 'mSz5ZmtDK6KmqxK7NN5Q', name:'Denzel Washington', email: "dwashington@gmail.com", thumbnail: placeholderThumbnail, latestMessage: null},
-    'tKcqk4A4VRq9ag94vAoY': {clinicianUid: null, name:'Ameila Earhart', email: "aearhart@gmail.com", thumbnail: placeholderThumbnail, latestMessage: null},
-    'lJ1kxTskAKmdwhqlSXJq': {clinicianUid: null, name:'Brad Pitt', email: "bpitt@gmail.com", thumbnail: placeholderThumbnail, latestMessage: null},
+    'gRnnZGMDUOOThH8Jdbfu': {roles: ['a', 'c'], clinicianUid: null, name:'Meredith Grey', email: "mgrey@gmail.com", thumbnail: placeholderThumbnail, latestMessage: null},
+    'mSz5ZmtDK6KmqxK7NN5Q': {roles: ['c'], clinicianUid: null, name:'Cristina Yang', email: "cyang@gmail.com", thumbnail: placeholderThumbnail, latestMessage: null},
+    'QSQIUuX0RHfOD2KStyks': {roles: ['c'], clinicianUid: null, name:'Teddy Altman', email: "taltman@gmail.com", thumbnail: placeholderThumbnail, latestMessage: null},
+    'K8bhUx2Hqv2LjfP4BsKy': {roles: ['p'], clinicianUid: 'gRnnZGMDUOOThH8Jdbfu', name:'Mark Peschel', email: "mpeschel@gmail.com", thumbnail: 'https://avatars.githubusercontent.com/u/111475917?v=4', latestMessage: '2024-01-20'},
+    '5NEvyWyAES1DVuuJ7BDZ': {roles: ['p'], clinicianUid: 'mSz5ZmtDK6KmqxK7NN5Q', name:'jxm', email: "jxm@gmail.com", thumbnail: 'https://avatars.githubusercontent.com/u/143039729?v=4', latestMessage: '2024-02-14'},
+    'lSHYQROPdgk7kJTsZxJu': {roles: ['p'], clinicianUid: 'gRnnZGMDUOOThH8Jdbfu', name:'Josh Carson', email: "jcarson@gmail.com", thumbnail: 'https://avatars.githubusercontent.com/u/18175844?v=4', latestMessage: '2024-01-19'},
+    'SMHTCPm51vgYphdkDVly': {roles: ['p'], clinicianUid: 'gRnnZGMDUOOThH8Jdbfu', name:'Owen Wilson', email: "owilson@gmail.com", thumbnail: placeholderThumbnail, latestMessage: null},
+    'mI0cChVwn0AzBN0AhJXv': {roles: ['p'], clinicianUid: 'gRnnZGMDUOOThH8Jdbfu', name:'Robert Downey Junior', email: "rjunior@gmail.com", thumbnail: placeholderThumbnail, latestMessage: '2024-01-06'},
+    'wfDM8ya0ModdQEP3RIsm': {roles: ['p'], clinicianUid: 'gRnnZGMDUOOThH8Jdbfu', name:'John doe', email: "jdoe@gmail.com", thumbnail: placeholderThumbnail, latestMessage: '2024-01-19'},
+    'IneBpCxH8S4F0CVSo2fU': {roles: ['p'], clinicianUid: 'mSz5ZmtDK6KmqxK7NN5Q', name:'Denzel Washington', email: "dwashington@gmail.com", thumbnail: placeholderThumbnail, latestMessage: null},
+    'tKcqk4A4VRq9ag94vAoY': {roles: ['p'], clinicianUid: null, name:'Ameila Earhart', email: "aearhart@gmail.com", thumbnail: placeholderThumbnail, latestMessage: null},
+    'lJ1kxTskAKmdwhqlSXJq': {roles: ['p'], clinicianUid: null, name:'Brad Pitt', email: "bpitt@gmail.com", thumbnail: placeholderThumbnail, latestMessage: null},
 }
+
+const customClaimFields = ['roles']; // in resetUsers, customClaimFields is a list of the fields from defaultUsers to get added as "custom claims".
 
 const defaultMessages = [
     // Begin conversation between Meredith Grey and Mark Peschel
@@ -225,13 +233,22 @@ async function deleteUsers() {
 async function resetUsers() {
     await deleteUsers();
     for (const [uid, user] of Object.entries(defaultUsers)) {
-        console.log('Creating user with uid', uid, 'display name', user.name);
+        const customClaim = Object.fromEntries(
+            customClaimFields
+                .map(fieldName => [fieldName, user[fieldName]])
+                .filter(([key, value]) => value !== undefined)
+        );
+        
+        console.log('Creating user with uid', uid, 'display name', user.name, 'with claim', customClaim);
         await adminAuth.createUser({
             uid,
             email: user.email,
             password: 'password',
             displayName: user.name,
         });
+        
+        // https://firebase.google.com/docs/auth/admin/custom-claims
+        await adminAuth.setCustomUserClaims(uid, customClaim);
     }
 }
 
@@ -296,11 +313,10 @@ async function resetStorage() {
 
 // Credentials are now required for modifying tables.
 // TODO: use service account or whatever for fixing tables instead.
-// await resetUsers();
-// await signInWithEmailAndPassword(auth, 'mpeschel@gmail.com', 'password');
+await signInWithEmailAndPassword(auth, 'mpeschel@gmail.com', 'password');
 
 await Promise.all([
-    // ...Object.keys(tables).map(name => resetTable(name)),
+    ...Object.keys(tables).map(name => resetTable(name)),
     resetStorage(),
     // resetUsers(),
 ]);

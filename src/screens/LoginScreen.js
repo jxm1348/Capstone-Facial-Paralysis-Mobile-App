@@ -20,24 +20,14 @@ const LoginScreen = ({ navigation }) => {
   const passwordInput = useRef();
 
   const handleLogin = async () => {
-    const role = {
-      'mgrey@gmail.com':'clinician',
-      'taltman@gmail.com':'clinician',
-      'cyang@gmail.com':'clinician',
-
-      'mpeschel@gmail.com':'patient',
-      'jdoe@gmail.com':'patient',
-      'jxm@gmail.com':'patient',
-      'jcarson@gmail.com':'patient',
-    }[email];
-    
-    if (role === undefined || password !== 'password') {
-      console.log('Refusing to navigate to clinician or patient home since I don\'t know who', email, 'is, or password wrong.');
+    if (password !== 'password') {
+      console.log('Refusing to navigate to clinician or patient home since password wrong.');
       Alert.alert('Invalid credentials');
       return;
     }
     
     await login(email, password);
+    const role = state.idTokenResult.claims.roles.includes('c') ? 'clinician' : 'patient';
     navigation.navigate(role === 'clinician' ? 'ClinicianHome' : 'PatientHome');
   };
 
