@@ -12,6 +12,7 @@ function ClinicianNavBar({navigation}) {
                 <FetchUnreadBadge fetchValue={fetchUnreadCount} />
             </View>
             <Button title="Options" onPress={() => navigation.navigate("ClinicianHome")}/>
+            <Button title="Edit/Add Accounnts" onPress={() => navigation.navigate("ClinicianEdit")}/>
         </View>
     );
 }

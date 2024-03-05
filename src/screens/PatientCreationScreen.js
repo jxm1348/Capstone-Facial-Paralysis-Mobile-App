@@ -1,0 +1,73 @@
+import React, { useState } from 'react';
+import { View, TextInput, Button, Picker } from 'react-native';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
+import ImagePicker from 'react-native-image-picker';
+
+const PatientCreationScreen = ({ navigation }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [userType, setUserType] = useState('Patient');
+  const [profilePicture, setProfilePicture] = useState(null);
+
+  const handleCreation = async () => {
+    try {
+      const userCredential = await auth().createUserWithEmailAndPassword(email, password);
+
+      const userData = {
+        userId: userCredential.user.uid,
+        email,
+        name: null,
+        latestMessage: null,
+        thumbnail: null,
+        profilePicture: profilePicture ? profilePicture.uri : null, // Pass profile picture URI if available
+      };
+
+      await firestore().collection('users').doc(userCredential.user.uid).set(userData);
+
+      console.log('Account created successfully!');
+    } catch (error) {
+      console.error('Error creating account: ', error);
+    }
+  };
+
+  const handleChooseImage = () => {
+    ImagePicker.showImagePicker({ title: 'Select Profile Picture' }, response => {
+      if (response.uri) {
+        setProfilePicture(response);
+      }
+    });
+  };
+
+  return (
+    <View>
+      <TextInput
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
+      />
+      <TextInput
+        placeholder="Password"
+        secureTextEntry
+        value={password}
+        onChangeText={setPassword}
+      />
+      <Picker
+        selectedValue={userType}
+        onValueChange={(itemValue) => setUserType(itemValue)}>
+        <Picker.Item label="Patient" value="Patient" />
+        <Picker.Item label="Clinician" value="Clinician" />
+      </Picker>
+      <Button
+        title="Choose Profile Picture"
+        onPress={handleChooseImage}
+      />
+      <Button
+        title="Create Account"
+        onPress={handleCreation}
+      />
+    </View>
+  );
+};
+
+export default PatientCreationScreen;
