@@ -8,7 +8,7 @@ import ActionButton from '../components/ActionButton';
 import NavigationBar from '../components/NavigationBar';
 
 import { imageKeyOrder } from '../constants';
-import state, { dataURItoBlob, db, fetchUniqueInt, storage } from '../state.mjs';
+import state, { auth, dataURItoBlob, db, fetchUniqueInt, storage } from '../state.mjs';
 import globalStyles from '../globalStyles';
 import { useIsFocused } from '@react-navigation/native';
 
@@ -19,7 +19,7 @@ const saveImages = async () => {
   const keyUriPairs = Object.entries(state.workingMessage.images);
   const uploadPromises = keyUriPairs.map(([key, uri]) =>
     uploadBytes(
-      ref(storage, `images/${state.username}/${key}-${reportId}.png`),
+      ref(storage, `images/${auth.currentUser.displayName}/${key}-${reportId}.png`),
       dataURItoBlob(uri)
     ).then(result => getDownloadURL(result.ref))
     .then(URL => [key, URL])
@@ -52,7 +52,7 @@ const PatientUploadScreen = () => {
     console.log(saveURLs);
     console.log("Making message...");
     await addDoc(collection(db, 'messages'), {
-      date: Date.now(), from: state.username, to: state.clinician, read: false, deepRead: false, message, images,
+      date: Date.now(), from: auth.currentUser.uid, to: state.clinicianUid, read: false, message, images,
     });
     console.log("Upload complete");
   }

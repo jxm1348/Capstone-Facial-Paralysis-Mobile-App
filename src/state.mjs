@@ -4,6 +4,7 @@
 
 import { initializeApp } from 'firebase/app';
 import { getStorage } from 'firebase/storage';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import {
     getFirestore,
     getDocs, updateDoc,
@@ -27,6 +28,7 @@ const firebaseConfig = {
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
+export const auth = getAuth(app);
 
 // Credit to "devnull69" of https://stackoverflow.com/users/1030974/devnull69
 // Via https://stackoverflow.com/a/12300351/6286797
@@ -56,24 +58,12 @@ export function getUnreadPatient(patient) {
 
 const state = {
     demoIsDebug: true,
-    patient:{
-        workingPhotoSet:[null, null, null, null, null, null, null, ],
-        photoSets:[
-            ['imageAddress', 'imageAddress', 'imageAddress', 'imageAddress', 'imageAddress', 'imageAddress', 'imageAddress', ],
-            ['imageAddress', 'imageAddress', 'imageAddress', 'imageAddress', 'imageAddress', 'imageAddress', 'imageAddress', ],
-            ['imageAddress', 'imageAddress', 'imageAddress', 'imageAddress', 'imageAddress', 'imageAddress', 'imageAddress', ],
-        ]
-    },
 
-    app, db, storage,
+    app, db, storage, auth,
 
     workingMessage: { images: {} },
 
-    loginCookie: ['cookieKey', 'cookieValue'],
-
-    credentials: {username: null, password: null},
-    username: undefined,
-    clinician: undefined,
+    clinicianUid: undefined,
 };
 
 function getUnreadCountMessages(messages) {
@@ -102,7 +92,7 @@ export const fetchUnreadCount = async () => {
     const messagesSnapshot = await getDocs(query(
         collection(state.db, 'messages'),
         and(
-            where('to', '==', state.username),
+            where('to', '==', auth.currentUser.uid),
             where('read', '==', false),
         )
     ));
@@ -110,16 +100,16 @@ export const fetchUnreadCount = async () => {
 }
 
 export const login = async (username, password) => {
-    state.credentials = {username, password};
-    state.username = username;
-    state.clinician = {'Mark Peschel': 'Jane doe'}[username];
+    state.clinicianUid= {'Mark Peschel': 'gRnnZGMDUOOThH8Jdbfu'}[username];
+    const email = {'Mark Peschel': 'mpeschel@gmail.com', 'Meredith Grey': 'mgrey@gmail.com'}[username];
+    await signInWithEmailAndPassword(auth, email, 'password');
 }
 
 // This function is called in ClinicianPatientsScreen
 // It returns a list of patients for the current user as well as the counts of their unread messages.
 export const getPatientsIdsUnread = async () => {
     const usersSnapshot = await getDocs(collection(db, 'users'));
-    const q = query(collection(db, 'messages'), where('to', '==', state.username));
+    const q = query(collection(db, 'messages'), where('to', '==', auth.currentUser.uid));
     const messagesSnapshot = await getDocs(q);
     const userCounts = {};
     for (const message of messagesSnapshot.docs.map(d => d.data())) {
@@ -133,7 +123,7 @@ export const getPatientsIdsUnread = async () => {
     return usersSnapshot.docs.map(userDocument => {
         const user = userDocument.data();
         user.id = userDocument.id;
-        user.unread = userCounts[user.name] ?? 0;
+        user.unread = userCounts[userDocument.id] ?? 0;
         return user;
     });
 };
@@ -141,7 +131,7 @@ export const getPatientsIdsUnread = async () => {
 export const setPatientRead = async (patient) => {
     const q = query(
         collection(db, 'messages'),
-        and(where('from', '==', patient.name), where('to', '==', state.username)),
+        and(where('from', '==', patient.uid), where('to', '==', auth.currentUser.uid)),
     );
     
     const messages = await getDocs(q);

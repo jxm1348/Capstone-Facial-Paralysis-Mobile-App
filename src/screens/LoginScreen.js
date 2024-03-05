@@ -18,7 +18,7 @@ import state, { login } from '../state.mjs';
 const LoginScreen = ({ navigation }) => {
 
   const debugClinicianLogin = async () => {
-    await login('Jane doe', 'password');
+    await login('Meredith Grey', 'password');
     navigation.navigate('ClinicianHome');
   };
 
@@ -62,7 +62,7 @@ const LoginScreen = ({ navigation }) => {
     }}>
       <Text style={{color: 'white'}}>Debug Camera</Text>
     </Pressable>);
-    debugButtons.push(<Pressable key={1} style={globalStyles.button} onPress={debugClinicianLogin}>
+    debugButtons.push(<Pressable key={1} style={globalStyles.button} onPress={debugClinicianLogin} nativeID="pressable-debug-clinician">
       <Text style={{color: 'white'}}>Debug log in as clinician</Text>
     </Pressable>);
     debugButtons.push(<Pressable key={2} style={globalStyles.button} onPress={debugPatientLogin}>
@@ -79,7 +79,7 @@ const LoginScreen = ({ navigation }) => {
 
   const handleLogin = () => {
     login(username, password);
-    if (username === 'Jane doe' && password === 'password') {
+    if (username === 'Meredith Grey' && password === 'password') {
       navigation.navigate('ClinicianHome');
     } else if (username === 'John doe' && password === 'password') {
       navigation.navigate('PatientHome');

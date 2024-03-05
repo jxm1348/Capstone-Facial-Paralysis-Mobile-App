@@ -4,41 +4,19 @@ import {
     addDoc, getDocs, deleteDoc, getCountFromServer,
     collection, doc,
     terminate,
+    getDoc,
 } from 'firebase/firestore';
 
-import state, { db, storage, fetchUniqueInt } from './state.mjs';
+import state, { db, storage, fetchUniqueInt, auth } from './state.mjs';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
 
-describe('Firebase', () => {
-    const testDoc = {name: 'fewljwkfeewflkjfds'};
-    it('Is sane', () => {
-        expect(true).toStrictEqual(true);
-    });
-
-    it('Can save a document to the test collection', async () => {
-        await addDoc(collection(db, 'test'), testDoc);
-        expect(
-            (await getCountFromServer(collection(db, 'test'))).data().count
-        ).toBeGreaterThan(0);
-    });
-
-    it('Can read a saved document', async () => {
-        const querySnapshot = await getDocs(collection(db, 'test'));
-        querySnapshot.forEach(document => expect(document.data()).toStrictEqual(testDoc));
-        // You can also use document.id for stuff
-    });
-
-    it('Can delete all docs in the test collection', async () => {
-        const querySnapshot = await getDocs(collection(db, 'test'));
-        const promises = querySnapshot.docs.map(document => deleteDoc(
-            doc(db, 'test', document.id)
-        ));
-        await Promise.all(promises);
-
-        expect(
-            (await getCountFromServer(collection(db, 'test')))
-                .data().count
-        ).toStrictEqual(0);
+describe('Firestore security', () => {
+    it('Allows requests to collection users iff logged in', async () => {
+        const denyResponse = await getDoc(doc(db, 'users', 'K8bhUx2Hqv2LjfP4BsKy')).catch(error => error);
+        expect(denyResponse.code).toStrictEqual('permission-denied');
+        await signInWithEmailAndPassword(auth, 'mpeschel@gmail.com', 'password');
+        await getDoc(doc(db, 'users', 'K8bhUx2Hqv2LjfP4BsKy'));
     });
 });
 
@@ -57,7 +35,7 @@ describe('Google Cloud Storage', () => {
         // Note: You cannot download using fetch or getBlob due to CORS.
         // Image display should still work, though.
     });
-})
+});
 
 describe('State get sequential ID', () => {
     it('Produces three distinct numbers', async () => {
@@ -70,7 +48,7 @@ describe('State get sequential ID', () => {
         expect(ids[1]).not.toStrictEqual(ids[2]);
         expect(ids[0]).not.toStrictEqual(ids[2]);
     });
-})
+});
 
 afterAll(() => {
     terminate(state.db);

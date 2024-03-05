@@ -8,7 +8,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "reset": "node src/reset.mjs"
+    "reset": "node reset/reset.mjs"
   },
   "dependencies": {
     "@expo/webpack-config": "^19.0.0",
@@ -35,7 +35,10 @@
     "react-native-web": "~0.19.6"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0"
+    "@babel/core": "^7.20.0",
+    "firebase-admin": "^12.0.0",
+    "mime-types": "^2.1.35",
+    "selenium-webdriver": "^4.17.0"
   },
   "private": true
 }

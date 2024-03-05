@@ -3,12 +3,15 @@ import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native
 import { getDocs, collection, query, where, or } from 'firebase/firestore';
 
 import NavigationBar from '../components/NavigationBar';
-import state, { db } from '../state';
+import { db, auth } from '../state';
 
 function ConversationsSkeleton() {
   return <Text>Loading...</Text>;
 }
 
+// As of 2024-02-12, this Component is not used anywhere or tested or anything.
+// You may be able to delete it for the sake of cleanliness,
+//  or just ignore it. --Mark
 function Conversations({navigation, contacts}) {
   if (!contacts) return <ConversationsSkeleton />;
   
@@ -34,7 +37,7 @@ function Conversations({navigation, contacts}) {
   );
 }
 
-const PatientMessagesScreen = ({ navigation }) => {
+const PatientConversationsScreen = ({ navigation }) => {
   const buttons = [
     { title: 'Home', onPress: () => navigation.navigate('PatientHome') },
   ];
@@ -43,12 +46,12 @@ const PatientMessagesScreen = ({ navigation }) => {
   useEffect(() => {
     getDocs(query(
       collection(db, 'messages'),
-      or(where('from', '==', state.username), where('to', '==', state.username))
+      or(where('from', '==', auth.currentUser.uid), where('to', '==', auth.currentUser.uid))
     )).then(querySnapshot => {
       setContacts(Array.from(new Set(
         querySnapshot.docs.map(document => {
           const message = document.data();
-          return message.from !== state.username ? message.from : message.to;
+          return message.from !== auth.currentUser.uid ? message.from : message.to;
         }
       ))))
     })
@@ -84,4 +87,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PatientMessagesScreen;
+export default PatientConversationsScreen;

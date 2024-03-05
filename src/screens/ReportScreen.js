@@ -13,9 +13,9 @@ function ReportSkeleton() {
 function Report(message) {
     if (!message) return <ReportSkeleton />;
 
-    if (!message.deepRead) {
-        updateDoc(doc(state.db, 'messages', message.id), {deepRead:true}).then(result => {
-            console.log("Set deepRead on message", message.id);
+    if (!message.read) {
+        updateDoc(doc(state.db, 'messages', message.id), {read:true}).then(result => {
+            console.log("Set read on message", message.id);
         });
     }
     

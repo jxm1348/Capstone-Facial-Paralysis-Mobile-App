@@ -1,16 +1,18 @@
-import { View, Button, StyleSheet } from "react-native";
+import { View, Button, StyleSheet, Pressable, Text } from "react-native";
 
 import { fetchUnreadCount } from "../state";
 import FetchUnreadBadge from "./FetchUnreadBadge";
+
+import globalStyles from '../globalStyles';
 
 function ClinicianNavBar({navigation}) {
     return (
         <View style={styles.container}>
             <Button title="Home" onPress={() => navigation.navigate("ClinicianHome")}/>
-            <View>
-                <Button title="Patients" onPress={() => navigation.navigate("ClinicianPatients")} />
+            <Pressable style={globalStyles.button} onPress={() => navigation.navigate("ClinicianPatients")} nativeID="pressable-navbar-patients">
+                <Text style={globalStyles.buttonText}>Patients</Text>
                 <FetchUnreadBadge fetchValue={fetchUnreadCount} />
-            </View>
+            </Pressable>
             <Button title="Options" onPress={() => navigation.navigate("ClinicianHome")}/>
             <Button title="Edit/Add Accounnts" onPress={() => navigation.navigate("ClinicianEdit")}/>
         </View>

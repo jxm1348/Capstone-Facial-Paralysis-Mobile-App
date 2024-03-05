@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import NavigationBar from '../components/NavigationBar';
+import state from '../state.mjs';
 
 const PatientMessageScreen = ({ route, navigation }) => {
   const buttons = [
     { title: 'Home', onPress: () => navigation.navigate('PatientHome') },
-    { title: 'Go Back', onPress: () => navigation.navigate('PatientMessages') },
+    { title: 'Go Back', onPress: () => navigation.navigate('PatientMessages', {withUid: state.clinicianUid}) },
   ];
 
   const { message } = route.params;

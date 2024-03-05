@@ -8,7 +8,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import {Picker} from '@react-native-picker/picker';
 import { useIsFocused } from '@react-navigation/native';
 
-import { getPatientsIdsUnread } from '../state';
+import { getPatientsIdsUnread } from '../state.mjs';
 import UnreadBadge from '../components/UnreadBadge';
 import globalStyles from '../globalStyles';
 import PatientsSkeleton from '../skeletons/PatientsSkeleton';
@@ -19,6 +19,7 @@ function PatientMessagesPressable({patient, navigation}) {
     <Pressable
       style={styles.patientContainer}
       onPress={() => navigation.navigate('ClinicianPatient', {id: patient.id, name})}
+      nativeID={`pressable-patient-${patient.id}`}
     >
     <View style={{flexGrow: 1, marginHorizontal: 25, flexShrink: 1}}>
       <Text style={{fontSize: 35}}>{name}</Text>
@@ -115,7 +116,7 @@ const ClinicianPatientsScreen = ({ navigation }) => {
     <ScrollView style={{flexGrow: 1, }}>
       <View style={{marginHorizontal: 40, }}>
         
-      <Text style={globalStyles.h1}>Patients</Text>
+      <Text style={globalStyles.h1} nativeID='text-patients-header'>Patients</Text>
       <SearchSortBar onChangeText={setSearch} {...{searchAscending, setSearchAscending, sortBy, setSortBy}} />
       <View>{patientItems}</View>
       </View>
