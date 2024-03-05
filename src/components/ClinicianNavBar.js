@@ -9,7 +9,7 @@ function ClinicianNavBar({navigation}) {
     return (
         <View style={styles.container}>
             <Button title="Home" onPress={() => navigation.navigate("ClinicianHome")}/>
-            <Pressable style={globalStyles.button} onPress={() => navigation.navigate("ClinicianPatients")} nativeID="pressable-navbar-patients">
+            <Pressable style={globalStyles.button} onPress={() => navigation.navigate("ClinicianPatients")} id="pressable-navbar-patients">
                 <Text style={globalStyles.buttonText}>Patients</Text>
                 <FetchUnreadBadge fetchValue={fetchUnreadCount} />
             </Pressable>

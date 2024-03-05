@@ -16,7 +16,7 @@ export const FlexNavigationBar = ({ buttons, containerStyle }) => {
   return (
     <View style={containerStyle}>
       {buttons.map((button, index) => (
-        <Pressable key={index} style={styles.button} onPress={button.onPress} nativeID={button.nativeID}>
+        <Pressable key={index} style={styles.button} onPress={button.onPress} id={button.id || button.nativeID}>
           <Text style={styles.buttonText}>{button.title}</Text>
         </Pressable>
       ))}

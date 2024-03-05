@@ -1,4 +1,3 @@
-import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import ClinicianNavBar from '../components/ClinicianNavBar';
@@ -15,13 +14,10 @@ const ClinicianHomeScreen = ({ navigation, colors }) => {
         <View style={{
           flexGrow: 1,
         }}>
-          <Text style={globalStyles.h2}>Welcome, {auth.currentUser.displayName}!</Text>
+          <Text style={globalStyles.h2} id="text-header-welcome">Welcome, {auth.currentUser.displayName}!</Text>
           <View style={styles.spacerFull}></View>
-          <View style={{
-            alignItems: 'center',
-            
-          }}>
-          <Button1 title="Sign Out" onPress={() => navigation.navigate('Login')}></Button1>
+          <View style={{alignItems: 'center',}}>
+            <Button1 title="Sign Out" onPress={() => navigation.navigate('Login')}></Button1>
           </View>
         </View>
         <ClinicianNavBar {...{navigation, colors}}/>
