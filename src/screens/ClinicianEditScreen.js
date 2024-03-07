@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Pressable, View, Text, Image, StyleSheet } from 'react-native';
 import { collection, getDocs, } from 'firebase/firestore';
 import { db } from '../state';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 function PatientEditPressable({patient, handleEdit}) {
   return (<Pressable
@@ -65,6 +66,16 @@ const AccountListScreen = ({ navigation }) => {
   };
 
   return (<View style={{marginHorizontal: 40}}>
+    <Pressable style={{
+      justifyContent: 'center',
+      alignSelf: 'flex-end',
+    }} onPress={() => {navigation.navigate('PatientCreation')}}>
+      <Ionicons
+        name={"add-circle-outline"}
+        size={128}
+        color="#2060dd"
+      />
+    </Pressable>
     {accounts.map(patient => (
       <PatientEditPressable patient={patient} handleEdit={handleEdit} key={patient.uid} />
     ))}
