@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Button } from 'react-native';
-import firestore from '@react-native-firebase/firestore';
+import { collection, } from 'firebase/firestore';
+import { db } from '../state';
 
 const AccountListScreen = ({ navigation }) => {
   const [accounts, setAccounts] = useState([]);
 
-  useEffect(() => {
-    const unsubscribe = firestore().collection('users').onSnapshot(querySnapshot => {
-      const data = querySnapshot.docs.map(doc => doc.data());
-      setAccounts(data);
-    });
+  // useEffect(() => {
+  //   collection(db, 'users')
+  //   const unsubscribe = firestore().collection('users').onSnapshot(querySnapshot => {
+  //     const data = querySnapshot.docs.map(doc => doc.data());
+  //     setAccounts(data);
+  //   });
 
-    return () => unsubscribe();
-  }, []);
+  //   return () => unsubscribe();
+  // }, []);
 
   const handleEdit = (userId) => {
     navigation.navigate('EditAccount', { userId });

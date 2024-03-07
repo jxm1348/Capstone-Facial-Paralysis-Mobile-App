@@ -1,8 +1,12 @@
+import { doc, setDoc } from 'firebase/firestore';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 import React, { useState } from 'react';
 import { View, TextInput, Button, Picker } from 'react-native';
-import firestore from '@react-native-firebase/firestore';
-import auth from '@react-native-firebase/auth';
-import ImagePicker from 'react-native-image-picker';
+// import firestore from '@react-native-firebase/firestore';
+// import auth from '@react-native-firebase/auth';
+import { Picker as ImagePicker } from '@react-native-picker/picker';
+
+import { auth, db } from '../state';
 
 const PatientCreationScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -12,7 +16,7 @@ const PatientCreationScreen = ({ navigation }) => {
 
   const handleCreation = async () => {
     try {
-      const userCredential = await auth().createUserWithEmailAndPassword(email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
       const userData = {
         userId: userCredential.user.uid,
@@ -23,7 +27,8 @@ const PatientCreationScreen = ({ navigation }) => {
         profilePicture: profilePicture ? profilePicture.uri : null, // Pass profile picture URI if available
       };
 
-      await firestore().collection('users').doc(userCredential.user.uid).set(userData);
+      
+      await setDoc(doc(db, 'users', userCredential.user.uid), userData);
 
       console.log('Account created successfully!');
     } catch (error) {
