@@ -8,7 +8,6 @@ function PatientEditPressable({patient, handleEdit}) {
     style={styles.patientContainer}
     onPress={() => handleEdit(patient.uid)}
     nativeID={`pressable-patient-${patient.uid}`}
-    key={patient.uid}
   >
   <View
     key={patient.uid}
@@ -67,7 +66,7 @@ const AccountListScreen = ({ navigation }) => {
 
   return (<View style={{marginHorizontal: 40}}>
     {accounts.map(patient => (
-      <PatientEditPressable patient={patient} handleEdit={handleEdit} />
+      <PatientEditPressable patient={patient} handleEdit={handleEdit} key={patient.uid} />
     ))}
   </View>);
 };
