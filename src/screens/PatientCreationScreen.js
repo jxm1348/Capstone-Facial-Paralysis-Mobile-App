@@ -1,8 +1,9 @@
 import { doc, setDoc } from 'firebase/firestore';
 import { createUserWithEmailAndPassword, signOut } from 'firebase/auth';
 import { useState } from 'react';
-import { Image, View, TextInput, Picker, Pressable, Text } from 'react-native';
+import { Image, View, TextInput, Pressable, Text } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import { Picker } from '@react-native-picker/picker';
 
 import { auth, db, accountCreationHackAuth } from '../state';
 import globalStyles from '../globalStyles';
