@@ -1,2 +1,2 @@
-import authInit from 'stateAuthInit.android';
+import authInit from 'stateAuthConfig.android';
 export default authInit;
