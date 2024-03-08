@@ -4,14 +4,13 @@
 
 import { initializeApp, getApp, getApps } from 'firebase/app';
 import { getStorage } from 'firebase/storage';
-import { getAuth, signInWithEmailAndPassword, initializeAuth, getReactNativePersistence } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, initializeAuth, } from 'firebase/auth';
 import {
     getFirestore,
     getDocs, updateDoc,
     collection, query, doc,
     and, where, runTransaction, getDoc,
 } from 'firebase/firestore';
-import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import authConfig from './stateAuthConfig';
 
 // Your web app's Firebase configuration

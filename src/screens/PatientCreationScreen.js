@@ -21,7 +21,7 @@ const PatientCreationScreen = ({navigation}) => {
     const userData = {
       email,
       name,
-      clinician: userType === 'Patient' ? auth.currentUser.uid : null,
+      clinicianUid: userType === 'Patient' ? auth.currentUser.uid : null,
       latestMessage: null,
       thumbnail: profilePicture ? profilePicture.uri : null, // Pass profile picture URI if available
     };
