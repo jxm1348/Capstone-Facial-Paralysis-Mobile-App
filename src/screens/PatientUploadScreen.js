@@ -93,17 +93,18 @@ const PatientUploadScreen = ({navigation}) => {
     navigation.navigate('PatientMessages', {withUid: state.clinicianUid});
   }
 
-  const thumbnails = imageKeyOrder.map(key => (
-    <Pressable
-        key={key}
-        style={styles.touchableItem}
-        underlayColor="#ddd"
-        onPress={() => navigation.navigate('PatientCamera', {imageKey: key})}
-      >
-        <Image source={images[key]} style={styles.itemImage} />
-        <Text style={styles.itemText}>{key}</Text>
-      </Pressable>
-  ));
+  const thumbnails = imageKeyOrder.map(key => {
+    const imageText = key.split('-').join(' ');
+    return (<Pressable
+      key={key}
+      style={styles.touchableItem}
+      underlayColor="#ddd"
+      onPress={() => navigation.navigate('PatientCamera', {imageKey: key})}
+    >
+      <Image source={images[key]} style={styles.itemImage} />
+      <Text style={[styles.itemText, {textTransform: 'capitalize'}]}>{imageText}</Text>
+    </Pressable>);
+  });
 
   return (
     <View style={{ flex: 1 }}>
@@ -166,7 +167,7 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   itemText: {
-    fontSize: 18,
+    fontSize: 16,
     marginTop: 5,
   },
 });
