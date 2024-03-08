@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Pressable, View, Text, Image, StyleSheet } from 'react-native';
-import { collection, getDocs, } from 'firebase/firestore';
+import { collection, onSnapshot, } from 'firebase/firestore';
 import { db } from '../state';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
@@ -39,9 +39,8 @@ const AccountListScreen = ({ navigation }) => {
   const [accounts, setAccounts] = useState([]);
 
   useEffect(() => {
-      async function f() {
-        const userDocuments = await getDocs(collection(db, 'users'));
-        const users = userDocuments
+      const unsubscribe = onSnapshot(collection(db, 'users'), querySnapshot => {
+        const users = querySnapshot
           .docs
           .map(document => {
             const d = document.data()
@@ -49,17 +48,10 @@ const AccountListScreen = ({ navigation }) => {
             return d;
           });
         setAccounts(users);
-      }
-      f();
+      });
+      return () => unsubscribe();
   }, []);
 
-    // const unsubscribe = firestore().collection('users').onSnapshot(querySnapshot => {
-    //   const data = querySnapshot.docs.map(doc => doc.data());
-    //   setAccounts(data);
-    // });
-
-    // return () => unsubscribe();
-  // }, []);
 
   const handleEdit = (uid) => {
     navigation.navigate('AccountEdit', { uid });
