@@ -3,7 +3,6 @@ import { View, ScrollView, Pressable, Text, StyleSheet, Image, } from 'react-nat
 import { ref, uploadBytes } from 'firebase/storage';
 import { addDoc, collection } from 'firebase/firestore';
 
-import ActionButton from '../components/ActionButton';
 import { Bar as ProgressBar } from 'react-native-progress';
 
 
@@ -24,6 +23,9 @@ function URIToExtension(uri) {
 }
 
 let awfulHackyResolutionCount = 0;
+const aspectRatio = [4, 3]; // height x width
+const tileHeight = 200;
+const tileWidth = tileHeight / aspectRatio[0] * aspectRatio[1];
 
 const saveImages = async (updateUploadProgress) => {
   console.log("Getting unique id...");
@@ -52,7 +54,8 @@ const PatientUploadScreen = ({navigation}) => {
   }, []);
 
   const [ uploadProgress, setUploadProgress ] = useState(undefined);
-
+  const [ buttonGridLayout, setButtonGridLayout ] = useState(undefined);
+  
   const images = {
     'at-rest': require('../resources/face-f-at-rest.png'),
     'eyebrows-up': require('../resources/face-f-eyebrows-up.png'),
@@ -66,10 +69,8 @@ const PatientUploadScreen = ({navigation}) => {
   Object.assign(images, state.workingMessage.images);
   function updateUploadProgress() {
     const uploadCount = Object.entries(state.workingMessage.images).length + 1;
-    console.log(awfulHackyResolutionCount, "/", uploadCount);
     setUploadProgress(awfulHackyResolutionCount / uploadCount);
   }
-
 
   const upload = async () => {
     console.log("Uploading images...");
@@ -94,14 +95,14 @@ const PatientUploadScreen = ({navigation}) => {
 
   const thumbnails = imageKeyOrder.map(key => (
     <Pressable
-      key={key}
-      style={styles.touchableItem}
-      underlayColor="#ddd"
-      onPress={() => navigation.navigate('PatientCamera', {imageKey: key})}
-    >
-      <Image source={images[key]} style={styles.itemImage} />
-      <Text style={styles.itemText}>{key}</Text>
-    </Pressable>
+        key={key}
+        style={styles.touchableItem}
+        underlayColor="#ddd"
+        onPress={() => navigation.navigate('PatientCamera', {imageKey: key})}
+      >
+        <Image source={images[key]} style={styles.itemImage} />
+        <Text style={styles.itemText}>{key}</Text>
+      </Pressable>
   ));
 
   return (
@@ -112,42 +113,56 @@ const PatientUploadScreen = ({navigation}) => {
           justifyContent: 'center',
           flexGrow: 1,
           padding: 6,
+          gap: 6,
         }}
         horizontal={false}
       >
-        {thumbnails}
+        <View style={{
+          flexWrap: 'wrap',
+          flexDirection: 'row',
+          gap: 6,
+          justifyContent: 'center',
+        }}
+        onLayout={event => setButtonGridLayout(event.nativeEvent.layout)}
+        >
+          {thumbnails}
+          <Pressable style={[
+            globalStyles.button,
+            {width:tileWidth, height:tileWidth, padding:0, margin:0, alignSelf: 'center'}
+          ]} onPress={upload}>
+            <Text style={globalStyles.buttonText}>Upload</Text>
+          </Pressable>
+
+        </View>
         <View style={{
           height: 20,
+          width: '100%',
+          alignItems: 'center',
         }}>
           { uploadProgress !== undefined ?
-            <ProgressBar progress={uploadProgress} style={{flexGrow: 1}} height={20} width={300}/> :
+            <ProgressBar progress={uploadProgress} height={20} width={
+              buttonGridLayout && buttonGridLayout.width
+            } /> :
             undefined
           }
         </View>
-        <Pressable style={globalStyles.button} onPress={upload}>
-          <Text style={globalStyles.buttonText}>Upload</Text>
-        </Pressable>
       </ScrollView>
-      <ActionButton title="Go Back" onPress={() => navigation.goBack()} />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   touchableItem: {
-    width: 200,
-    height: 200,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
     borderColor: '#ddd',
-    marginVertical: 10,
     borderRadius: 5,
     overflow: 'hidden',
   },
   itemImage: {
-    width: '100%',
-    height: '100%',
+    width: tileWidth,
+    height: tileHeight,
     resizeMode: 'cover',
   },
   itemText: {
