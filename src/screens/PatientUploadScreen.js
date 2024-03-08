@@ -118,6 +118,14 @@ const PatientUploadScreen = ({navigation}) => {
         }}
         horizontal={false}
       >
+        <View>
+            <Text style={[globalStyles.h2, {textAlign: 'left'}]}>For good pictures:</Text>
+            <Text>Tuck your hair back so your bangs don't cover your face.</Text>
+            <Text>Take your glasses off.</Text>
+            <Text>Make sure your neck is visible.</Text>
+            <Text>Be in a well-lit space, facing the light. Natural light is best.</Text>
+            <Text>Sit up straight. Don't lean forwards or back.</Text>
+        </View>
         <View style={{
           flexWrap: 'wrap',
           flexDirection: 'row',
