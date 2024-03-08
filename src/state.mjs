@@ -30,6 +30,20 @@ export const db = getFirestore(app);
 export const storage = getStorage(app);
 export const auth = getAuth(app);
 
+// Create a second "App" and Auth to replace deprecated functionality.
+// In Firebase, registration is either open for anyone, or you must do it through the admin sdk.
+// It is not intended for the web/mobile client to be used by one user (say, a clinician)
+//  to create the account of another user (say, a patient).
+// One side effect is that the normal way of creating an account "createUserWithEmailAndPassword"
+//  will overwrite the current login. So our clinician creates an patient account and is immediately
+//  logged out and becomes the patient instead.
+// To patch that bug, we create a second App instance which will be used to create the patient account.
+// The main app will still be the clinician, and this second App is only used for creating accounts,
+//  so it doesn't matter if its login gets overwritten.
+// TODO: Do cloud functions with admin sdk to implement custom security rules for account creation/editing.
+const accountCreationHackApp = initializeApp(firebaseConfig, 'spare');
+export const accountCreationHackAuth = getAuth(accountCreationHackApp);
+
 // Credit to "devnull69" of https://stackoverflow.com/users/1030974/devnull69
 // Via https://stackoverflow.com/a/12300351/6286797
 export function dataURItoBlob(dataURI) {

@@ -1,51 +1,61 @@
 import { doc, setDoc } from 'firebase/firestore';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import React, { useState } from 'react';
-import { View, TextInput, Button, Picker } from 'react-native';
-// import firestore from '@react-native-firebase/firestore';
-// import auth from '@react-native-firebase/auth';
-import { Picker as ImagePicker } from '@react-native-picker/picker';
+import { createUserWithEmailAndPassword, signOut } from 'firebase/auth';
+import { useState } from 'react';
+import { Image, View, TextInput, Picker, Pressable, Text } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 
-import { auth, db } from '../state';
+import { auth, db, accountCreationHackAuth } from '../state';
+import globalStyles from '../globalStyles';
 
-const PatientCreationScreen = ({ navigation }) => {
+const PatientCreationScreen = ({navigation}) => {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [userType, setUserType] = useState('Patient');
   const [profilePicture, setProfilePicture] = useState(null);
 
   const handleCreation = async () => {
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const userCredential = await createUserWithEmailAndPassword(accountCreationHackAuth, email, password);
+    signOut(accountCreationHackAuth);
 
-      const userData = {
-        userId: userCredential.user.uid,
-        email,
-        name: null,
-        latestMessage: null,
-        thumbnail: null,
-        profilePicture: profilePicture ? profilePicture.uri : null, // Pass profile picture URI if available
-      };
+    const userData = {
+      email,
+      name,
+      clinician: userType === 'Patient' ? auth.currentUser.uid : null,
+      latestMessage: null,
+      thumbnail: profilePicture ? profilePicture.uri : null, // Pass profile picture URI if available
+    };
 
-      
-      await setDoc(doc(db, 'users', userCredential.user.uid), userData);
+    await setDoc(doc(db, 'users', userCredential.user.uid), userData);
+    navigation.navigate('ClinicianEdit');
+  };
 
-      console.log('Account created successfully!');
-    } catch (error) {
-      console.error('Error creating account: ', error);
+  const handleChooseImage = async () => {
+    const response = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    })
+    console.log(response);
+    if (!response.canceled) {
+      setProfilePicture(response.assets[0]);
     }
   };
 
-  const handleChooseImage = () => {
-    ImagePicker.showImagePicker({ title: 'Select Profile Picture' }, response => {
-      if (response.uri) {
-        setProfilePicture(response);
-      }
-    });
-  };
-
   return (
-    <View>
+    <View
+      style={{
+        gap: 6,
+        margin: 6,
+      }}
+    >
+      <TextInput
+        placeholder="Name"
+        value={name}
+        onChangeText={setName}
+        autoFocus={true}
+      />
       <TextInput
         placeholder="Email"
         value={email}
@@ -63,14 +73,16 @@ const PatientCreationScreen = ({ navigation }) => {
         <Picker.Item label="Patient" value="Patient" />
         <Picker.Item label="Clinician" value="Clinician" />
       </Picker>
-      <Button
-        title="Choose Profile Picture"
-        onPress={handleChooseImage}
-      />
-      <Button
-        title="Create Account"
-        onPress={handleCreation}
-      />
+      <Pressable style={globalStyles.button} onPress={handleChooseImage}>
+        <Text style={globalStyles.buttonText}>Choose Profile Picture</Text>
+      </Pressable>
+      {profilePicture && <Image 
+          source={{uri: profilePicture.uri}}
+          style={{width:90, height:90, alignSelf: 'center'}}
+      />}
+      <Pressable style={globalStyles.button} onPress={handleCreation}>
+        <Text style={globalStyles.buttonText}>Create Account</Text>
+      </Pressable>
     </View>
   );
 };
