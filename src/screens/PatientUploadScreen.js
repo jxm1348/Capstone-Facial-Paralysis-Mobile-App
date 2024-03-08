@@ -89,7 +89,7 @@ const PatientUploadScreen = ({navigation}) => {
     console.log("Upload complete");
     setUploadProgress(1);
     await new Promise(resolve => setTimeout(resolve, 700)); // Wait a moment so people can see the progress bar fill up.
-    // navigation.navigate('PatientMessages', {withUid: state.clinicianUid});
+    navigation.navigate('PatientMessages', {withUid: state.clinicianUid});
   }
 
   const thumbnails = imageKeyOrder.map(key => (
