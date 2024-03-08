@@ -1,15 +1,17 @@
 import { View, ScrollView, Pressable, Text, StyleSheet, Image, } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { ref, uploadBytes } from 'firebase/storage';
 import { addDoc, collection } from 'firebase/firestore';
 
 import ActionButton from '../components/ActionButton';
+import { Bar as ProgressBar } from 'react-native-progress';
+
 
 import { imageKeyOrder } from '../constants';
 import state, { URIToBlob, auth, db, fetchUniqueInt, storage } from '../state.js';
 import globalStyles from '../globalStyles';
 import { useIsFocused } from '@react-navigation/native';
+import { useEffect, useState } from 'react';
 
 function URIToExtension(uri) {
   if (uri.startsWith('data:image/png;') || uri.endsWith('.png')) {
@@ -21,7 +23,9 @@ function URIToExtension(uri) {
   }
 }
 
-const saveImages = async () => {
+let awfulHackyResolutionCount = 0;
+
+const saveImages = async (updateUploadProgress) => {
   console.log("Getting unique id...");
   const reportId = await fetchUniqueInt();
   const keyUriPairs = Object.entries(state.workingMessage.images);
@@ -33,15 +37,21 @@ const saveImages = async () => {
       ref(storage, `images/${auth.currentUser.uid}/${imageName}`),
       uriBlob
     );
+    awfulHackyResolutionCount += 1;
+    updateUploadProgress();
     return [key, imageName];
   });
   const results = await Promise.all(uploadPromises);
   return results;
 }
 
-const PatientUploadScreen = () => {
+const PatientUploadScreen = ({navigation}) => {
   useIsFocused();
-  const navigation = useNavigation();
+  useEffect(() => {
+    awfulHackyResolutionCount = 0;
+  }, []);
+
+  const [ uploadProgress, setUploadProgress ] = useState(undefined);
 
   const images = {
     'at-rest': require('../resources/face-f-at-rest.png'),
@@ -54,10 +64,17 @@ const PatientUploadScreen = () => {
   };
 
   Object.assign(images, state.workingMessage.images);
+  function updateUploadProgress() {
+    const uploadCount = Object.entries(state.workingMessage.images).length + 1;
+    console.log(awfulHackyResolutionCount, "/", uploadCount);
+    setUploadProgress(awfulHackyResolutionCount / uploadCount);
+  }
+
 
   const upload = async () => {
     console.log("Uploading images...");
-    const saveURLs = await saveImages();
+    setUploadProgress(0); // Show progress bar
+    const saveURLs = await saveImages(updateUploadProgress);
     const images = Object.fromEntries(saveURLs);
     console.log(saveURLs);
     console.log("Making message...");
@@ -70,6 +87,9 @@ const PatientUploadScreen = () => {
       images,
     });
     console.log("Upload complete");
+    setUploadProgress(1);
+    await new Promise(resolve => setTimeout(resolve, 700)); // Wait a moment so people can see the progress bar fill up.
+    // navigation.navigate('PatientMessages', {withUid: state.clinicianUid});
   }
 
   const thumbnails = imageKeyOrder.map(key => (
@@ -87,11 +107,26 @@ const PatientUploadScreen = () => {
   return (
     <View style={{ flex: 1 }}>
       <ScrollView
-        contentContainerStyle={styles.scrollViewContainer}
+        contentContainerStyle={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexGrow: 1,
+          padding: 6,
+        }}
         horizontal={false}
       >
         {thumbnails}
-        <Pressable style={globalStyles.button} onPress={upload}><Text>Upload</Text></Pressable>
+        <View style={{
+          height: 20,
+        }}>
+          { uploadProgress !== undefined ?
+            <ProgressBar progress={uploadProgress} style={{flexGrow: 1}} height={20} width={300}/> :
+            undefined
+          }
+        </View>
+        <Pressable style={globalStyles.button} onPress={upload}>
+          <Text style={globalStyles.buttonText}>Upload</Text>
+        </Pressable>
       </ScrollView>
       <ActionButton title="Go Back" onPress={() => navigation.goBack()} />
     </View>
@@ -99,11 +134,6 @@ const PatientUploadScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  scrollViewContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexGrow: 1,
-  },
   touchableItem: {
     width: 200,
     height: 200,

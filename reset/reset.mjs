@@ -313,7 +313,7 @@ async function resetStorage() {
 
 // Credentials are now required for modifying tables.
 // TODO: use service account or whatever for fixing tables instead.
-await signInWithEmailAndPassword(auth, 'mpeschel@gmail.com', 'password');
+await signInWithEmailAndPassword(auth, 'mgrey@gmail.com', 'password');
 
 await Promise.all([
     ...Object.keys(tables).map(name => resetTable(name)),
