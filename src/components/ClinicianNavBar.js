@@ -8,12 +8,16 @@ import globalStyles from '../globalStyles';
 function ClinicianNavBar({navigation}) {
     return (
         <View style={styles.container}>
-            <Button title="Home" onPress={() => navigation.navigate("ClinicianHome")}/>
+            <Pressable style={globalStyles.button} onPress={() => navigation.navigate("ClinicianHome")}>
+                <Text style={globalStyles.buttonText}>Home</Text>
+            </Pressable>
             <Pressable style={globalStyles.button} onPress={() => navigation.navigate("ClinicianPatients")} id="pressable-navbar-patients">
                 <Text style={globalStyles.buttonText}>Patients</Text>
                 <FetchUnreadBadge fetchValue={fetchUnreadCount} />
             </Pressable>
-            <Button title="Options" onPress={() => navigation.navigate("ClinicianHome")}/>
+            <Pressable style={globalStyles.button} onPress={() => navigation.navigate("ClinicianEdit")}>
+                <Text style={globalStyles.buttonText}>Edit Accounts</Text>
+            </Pressable>
         </View>
     );
 }
