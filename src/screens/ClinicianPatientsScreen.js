@@ -3,11 +3,11 @@ import {
   View, ScrollView,
   Text, Image, Pressable, TextInput,
   StyleSheet,
-  Dimensions,
+  Platform,
 } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Picker } from '@react-native-picker/picker';
-import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 import { getDocs, query, collection, where } from 'firebase/firestore';
 
@@ -65,35 +65,59 @@ function getSort(sortBy, sortAscending) {
   }
 }
 
-function SearchSortBar({onChangeText, searchAscending, setSearchAscending, sortBy, setSortBy}) {
-  return (<View style={{flexDirection: Dimensions.get('window').width > 500 ? 'row' : 'column'}}>
+function SearchSortBar({scrollViewLayout, onChangeText, searchAscending, setSearchAscending, sortBy, setSortBy}) {
+  if (scrollViewLayout === undefined) return <></>;
+
+  return (<View style={{
+    flexDirection: scrollViewLayout.width > 500 ? 'row' : 'column',
+    gap: 20,
+  }}>
 
     <TextInput
-      style={styles.inputSearch}
+      style={{
+        flexGrow: 1,
+        minWidth: 0,
+    
+        borderColor: 'gray',
+        borderWidth: 1,
+        
+        height: 40,
+        padding: 10,
+        zIndex: 1,
+      }}
       placeholder="Search"
       onChangeText={(text) => onChangeText(text.toLowerCase())}
     />
 
-    <View style={{flexDirection: 'row'}}>
-
-    <View style={{height: 40, justifyContent: 'center'}}><Text>Sort by </Text></View>
-    <Picker
-      style={{height: 40, flexShrink: 0, flexGrow: 1, flexBasis: 158, backgroundColor: '#dddddd'}}
-      selectedValue={sortBy}
-      onValueChange={(itemValue, itemIndex) =>
-        setSortBy(itemValue)
-      }
-    >
-      <Picker.Item label="Last Message" value="date" />
-      <Picker.Item label="Name" value="name" />
-    </Picker>
-    <Pressable style={{justifyContent: 'center', paddingLeft: 20, paddingRight: 20, height: 40}} onPress={() => {setSearchAscending(!searchAscending)}}>
-      <Ionicons
-        name={searchAscending ? 'arrow-up-outline' : 'arrow-down-outline'}
-        size={32}
-        color="green"
-      />
-    </Pressable>
+    <View style={{
+      flexDirection: 'row',
+      alignItems: 'center',
+      height: 80,
+    }}>
+      <Text>Sort by </Text>
+      <Picker
+        style={{
+          flexShrink: 0,
+          flexGrow: 1,
+          flexBasis: 158,
+          backgroundColor: Platform.OS === 'android' ? '#dddddd' : undefined,
+          zIndex: -1,
+        }}
+        selectedValue={sortBy}
+        onValueChange={(itemValue, itemIndex) =>
+          setSortBy(itemValue)
+        }
+      >
+        <Picker.Item label="Last Message" value="date" />
+        <Picker.Item label="Name" value="name" />
+      </Picker>
+      <Pressable style={{justifyContent: 'center', paddingLeft: 20, paddingRight: 20, height: 40}} onPress={() => {setSearchAscending(!searchAscending)}}>
+        <Ionicons
+          name={searchAscending ? 'arrow-up-outline' : 'arrow-down-outline'}
+          size={32}
+          color="green"
+        />
+      </Pressable>
     </View>
   </View>)
 }
@@ -137,11 +161,10 @@ const getPatientsIdsUnread = async () => {
 };
 
 const ClinicianPatientsScreen = () => {
-  // useIsFocused(); // Force refresh no longer works for some reason.
-
   const [ patients, setPatients ] = useState(null);
   const [ search, setSearch ] = useState("");
 
+  const [ scrollViewLayout, setScrollViewLayout ] = useState(undefined);
   const [ searchAscending, setSearchAscending ] = useState(true);
   const [ sortBy, setSortBy ] = useState("date");
   const patientsViewProps = { patients, search, searchAscending, sortBy };
@@ -152,11 +175,11 @@ const ClinicianPatientsScreen = () => {
   }, [])
 
   return (
-    <ScrollView style={{flexGrow: 1, }}>
+    <ScrollView style={{flexGrow: 1, }} onLayout={event => setScrollViewLayout(event.nativeEvent.layout)}>
       <View style={{marginHorizontal: 40, }}>
         
       <Text style={globalStyles.h1} nativeID='text-patients-header'>Patients</Text>
-      <SearchSortBar onChangeText={setSearch} {...{searchAscending, setSearchAscending, sortBy, setSortBy}} />
+      <SearchSortBar onChangeText={setSearch} {...{scrollViewLayout, searchAscending, setSearchAscending, sortBy, setSortBy}} />
       <PatientsView {...patientsViewProps} />
       </View>
     </ScrollView>
@@ -175,17 +198,6 @@ const styles = StyleSheet.create({
   }, patientThumbnail: {
     width: 90,
     height: 90,
-  }, inputSearch: {
-    flexGrow: 1,
-    minWidth: 0,
-
-    borderColor: 'gray',
-    borderWidth: 1,
-    
-    height: 40,
-    padding: 10,
-    marginBottom: 20,
-    marginRight: 20,
   },
 });
 
