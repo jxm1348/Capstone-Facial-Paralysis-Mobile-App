@@ -6,12 +6,12 @@ import { db, auth } from '../state.js';
 import globalStyles from '../globalStyles';
 
 export default function NewMessageBar({toUid}) {
-    const newMessageRef = useRef();
+    const [ message, setMessage ] = useState("");
     const [ newMessageSent, setNewMessageSent ] = useState(false);
   
     const sendMessage = async () => {
       const newMessage = {
-        message: newMessageRef.current.value,
+        message,
         messageVersion: 3,
         images: {},
         read: false,
@@ -36,7 +36,7 @@ export default function NewMessageBar({toUid}) {
         height: 40,
         padding: 10,
       }}
-      ref={newMessageRef}
+      onChangeText={(text) => setMessage(text)}
       placeholder="New message..."
       nativeID="text-input-new-message"
     />
