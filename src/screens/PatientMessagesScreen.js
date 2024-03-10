@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, FlatList, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, FlatList } from 'react-native';
 import { getDocs, collection, query, where, or, and } from 'firebase/firestore';
 
 import { FlexNavigationBar } from '../components/NavigationBar';
@@ -15,16 +15,15 @@ function compareDateDescending(m1, m2) {
   return m2.date - m1.date;
 }
 
-function PatientMessages({navigation, messages}) {
+function PatientMessages({messages}) {
   if (!messages) return <PatientMessagesSkeleton />;
-
-  return (<View style={{flexGrow: 1}}>
-  <FlatList
-    data={messages}
-    keyExtractor={(item) => item.id.toString()}
-    renderItem={({item}) => <ReportRow message={item} />}
-  />
-  </View>);
+  
+  return (<FlatList
+      data={messages}
+      keyExtractor={(item) => item.id}
+      renderItem={({item}) => <ReportRow message={item} />}
+      style={{flexGrow: 1, flexBasis: 0}}
+    />);
 }
 
 function curryFetchMessages({withUid, setMessages}) {
@@ -56,16 +55,11 @@ const PatientMessagesScreen = ({ navigation, route }) => {
 
   return (
     <View style={{flexGrow: 1}}>
-      <ScrollView style={{flexGrow: 1, flexBasis: 0, display: 'flex'}}>
-        <NewMessageBar toUid={state.clinicianUid} />
-        <PatientMessages {...{navigation, messages}}/>
-      </ScrollView>
+      <NewMessageBar toUid={state.clinicianUid} />
+      <PatientMessages {...{navigation, messages}} />
       <FlexNavigationBar buttons={buttons} />
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-});
 
 export default PatientMessagesScreen;
