@@ -41,7 +41,7 @@ function getReportTiles(message) {
         return imageKeyOrder
             .map(key => message.images[key])
             .filter(result => result)
-            .map(imageName => <ReportTile3 uid={message.from} imageName={imageName}/>);
+            .map(imageName => <ReportTile3 uid={message.from} imageName={imageName} key={imageName} />);
     }
 }
 
