@@ -57,13 +57,13 @@ const PatientUploadScreen = ({navigation}) => {
   const [ buttonGridLayout, setButtonGridLayout ] = useState(undefined);
   
   const images = {
-    'at-rest': require('../resources/face-f-at-rest.png'),
-    'eyebrows-up': require('../resources/face-f-eyebrows-up.png'),
-    'eyes-closed': require('../resources/face-f-eyes-closed.png'),
-    'nose-wrinkle': require('../resources/face-f-nose-wrinkle.png'),
-    'big-smile': require('../resources/face-f-big-smile.png'),
-    'lips-puckered': require('../resources/face-f-lips-puckered.png'),
-    'lower-teeth-bared': require('../resources/face-f-lower-teeth-bared.png'),
+    'at-rest': require('../resources/face-mp-at-rest.jpg'),
+    'eyebrows-up': require('../resources/face-mp-eyebrows-up.jpg'),
+    'eyes-closed': require('../resources/face-mp-eyes-closed.jpg'),
+    'nose-wrinkle': require('../resources/face-mp-nose-wrinkle.jpg'),
+    'big-smile': require('../resources/face-mp-big-smile.jpg'),
+    'lips-puckered': require('../resources/face-mp-lips-puckered.jpg'),
+    'lower-teeth-bared': require('../resources/face-mp-lower-teeth-bared.jpg'),
   };
 
   Object.assign(images, state.workingMessage.images);
