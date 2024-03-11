@@ -15,7 +15,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.mpeschel10.fa.test.ios"
     },
     "android": {
       "adaptiveIcon": {

@@ -1,7 +1,5 @@
 # Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
 
-android
-
 # dependencies
 node_modules/
 
@@ -13,7 +11,6 @@ web-build/
 # Native code generated with npx expo prebuild
 # (Note that you need a second step to actually build the app e.g. sh android/gradlew)
 android
-ios
 
 # Native
 *.orig.*
