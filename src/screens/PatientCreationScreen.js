@@ -1,11 +1,10 @@
 import { doc, setDoc } from 'firebase/firestore';
-import { createUserWithEmailAndPassword, signOut } from 'firebase/auth';
 import { useState } from 'react';
 import { Image, View, TextInput, Pressable, Text } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Picker } from '@react-native-picker/picker';
 
-import { auth, db, accountCreationHackAuth } from '../state';
+import { auth, db } from '../state';
 import globalStyles from '../globalStyles';
 
 const PatientCreationScreen = ({navigation}) => {
@@ -16,9 +15,29 @@ const PatientCreationScreen = ({navigation}) => {
   const [profilePicture, setProfilePicture] = useState(null);
 
   const handleCreation = async () => {
-    const userCredential = await createUserWithEmailAndPassword(accountCreationHackAuth, email, password);
-    signOut(accountCreationHackAuth);
+    const token = await auth.currentUser.getIdToken();
+    // console.log("My token is ", token);
+    const body = JSON.stringify({
+      token,
+      "user": {
+          email,
+          password,
+          displayName: name,
+          "roles": [userType === 'Clinician' ? 'c' : 'p'],
+      }
+    });
+    // console.log("My body is ", body);
 
+    const userResult = await fetch('https://fa.mpeschel10.com/users.json', {
+      method: 'POST',
+      body,
+    });
+
+    const bodyText = await userResult.text();
+    console.log(userResult.status, userResult.statusText);
+    console.log(Object.fromEntries(userResult.headers));
+    console.log('Body: ', bodyText);
+    
     const userData = {
       email,
       name,
@@ -27,7 +46,7 @@ const PatientCreationScreen = ({navigation}) => {
       thumbnail: profilePicture ? profilePicture.uri : null, // Pass profile picture URI if available
     };
 
-    await setDoc(doc(db, 'users', userCredential.user.uid), userData);
+    await setDoc(doc(db, 'users', JSON.parse(bodyText)), userData);
     navigation.navigate('ClinicianEdit');
   };
 
@@ -38,7 +57,7 @@ const PatientCreationScreen = ({navigation}) => {
       aspect: [4, 3],
       quality: 1,
     })
-    console.log(response);
+    // console.log(response);
     if (!response.canceled) {
       setProfilePicture(response.assets[0]);
     }
