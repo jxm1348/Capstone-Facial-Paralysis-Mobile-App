@@ -1,6 +1,5 @@
 import { useState, useRef } from 'react';
 import {
-  Image,
   StyleSheet, 
   TextInput, 
   View, 
@@ -37,6 +36,7 @@ const LoginScreen = ({ navigation }) => {
   const passwordInput = useRef();
 
   const [emailErrorText, setEmailErrorText] = useState(undefined);
+  const [resetEmailSent, setResetEmailSent] = useState(false);
 
   const handleLogin = async () => {
     if (password !== 'password') {
@@ -53,6 +53,7 @@ const LoginScreen = ({ navigation }) => {
   const handleResetPassword = () => sendPasswordResetEmail(auth, email?.trim())
     .then(() => {
       console.log('success');
+      setResetEmailSent(true);
     })
     .catch((error) => {
       console.log('Password reset error code:', error.code);
@@ -139,6 +140,9 @@ const LoginScreen = ({ navigation }) => {
       </Pressable>
       <View style={{gap:12}}>
         {debugButtons}
+      </View>
+      <View style={{height: 17}}>
+        {resetEmailSent && <Text>Success: If the account {email} exists, a password reset email was sent to it.</Text>}
       </View>
       <Pressable onPress={handleResetPassword} id="pressable-reset-password" style={{
         textDecoration: 'underline',
