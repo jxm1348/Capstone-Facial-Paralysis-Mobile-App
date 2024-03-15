@@ -59,9 +59,9 @@ const PatientUploadScreen = ({navigation}) => {
   const images = {
     'at-rest': require('../resources/face-mp-at-rest.jpg'),
     'eyebrows-up': require('../resources/face-mp-eyebrows-up.jpg'),
-    'eyes-closed': require('../resources/face-mp-eyes-closed.jpg'),
+    'eyes-closed': require('../resources/face-mp-eyes-closed-tightly.jpg'),
     'nose-wrinkle': require('../resources/face-mp-nose-wrinkle.jpg'),
-    'big-smile': require('../resources/face-mp-big-smile.jpg'),
+    'big-smile': require('../resources/face-mp-big-smile-teeth-closed.jpg'),
     'lips-puckered': require('../resources/face-mp-lips-puckered.jpg'),
     'lower-teeth-bared': require('../resources/face-mp-lower-teeth-bared.jpg'),
   };
