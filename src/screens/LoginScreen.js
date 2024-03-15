@@ -5,7 +5,8 @@ import {
   View, 
   Alert,
   Pressable,
-  Text 
+  Text, 
+  ActivityIndicator,
 } from 'react-native';
 
 import globalStyles from '../globalStyles';
@@ -36,6 +37,7 @@ const LoginScreen = ({ navigation }) => {
   const passwordInput = useRef();
 
   const [emailErrorText, setEmailErrorText] = useState(undefined);
+  const [resetEmailActive, setResetEmailActive] = useState(false);
   const [resetEmailSent, setResetEmailSent] = useState(false);
 
   const handleLogin = async () => {
@@ -50,10 +52,13 @@ const LoginScreen = ({ navigation }) => {
     navigation.navigate(role === 'clinician' ? 'ClinicianHome' : 'PatientHome');
   };
 
-  const handleResetPassword = () => sendPasswordResetEmail(auth, email?.trim())
+  const handleResetPassword = () => {
+    setResetEmailActive(true);
+    sendPasswordResetEmail(auth, email?.trim())
     .then(() => {
       console.log('success');
       setResetEmailSent(true);
+      setResetEmailActive(false);
     })
     .catch((error) => {
       console.log('Password reset error code:', error.code);
@@ -64,8 +69,10 @@ const LoginScreen = ({ navigation }) => {
       } else {
         setEmailErrorText(error.message);
       }
-      emailInput.current?.focus()
+      emailInput.current?.focus();
+      setResetEmailActive(false);
     });
+  }
 
   const debugClinicianLogin = async (email) => {
     await login(email, 'password');
@@ -147,8 +154,13 @@ const LoginScreen = ({ navigation }) => {
       <Pressable onPress={handleResetPassword} id="pressable-reset-password" style={{
         textDecoration: 'underline',
         color: '#00f',
+        flexDirection: 'row',
+        gap: 6,
       }}>
         <Text style={{color: '#00f'}}>Send password reset email</Text>
+        <View style={{width: 17}}>
+          {resetEmailActive && <ActivityIndicator style={{height: 17, width: 17}}/>}
+        </View>
       </Pressable>
     </View>
   );
