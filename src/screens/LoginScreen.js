@@ -10,7 +10,8 @@ import {
 } from 'react-native';
 
 import globalStyles from '../globalStyles';
-import state, { login } from '../state.js';
+import state, { login, auth } from '../state.js';
+import { sendPasswordResetEmail } from 'firebase/auth';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -31,6 +32,16 @@ const LoginScreen = ({ navigation }) => {
     navigation.navigate(role === 'clinician' ? 'ClinicianHome' : 'PatientHome');
   };
 
+  const handleResetPassword = async () => {
+    sendPasswordResetEmail(auth, email)
+      .then(() => {
+        console.log('success');
+      })
+      .catch((error) => {
+        console.error('error:', error.code, ':', error.message);
+      });
+  }
+
   const debugClinicianLogin = async (email) => {
     await login(email, 'password');
     navigation.navigate('ClinicianHome');
@@ -44,21 +55,21 @@ const LoginScreen = ({ navigation }) => {
   const debugButtons = [];
   if (state.demoIsDebug) {
     debugButtons.push(<Pressable key={0} style={globalStyles.button} onPress={async () => {
-      await login('mpeschel@gmail.com', 'password');
+      await login('mpeschel10@gmail.com', 'password');
       navigation.navigate('PatientCamera', {imageKey: 'eyebrows-up'});
     }}>
       <Text style={{color: 'white'}}>Debug Camera</Text>
     </Pressable>);
-    debugButtons.push(<Pressable key={1} style={globalStyles.button} onPress={() => debugClinicianLogin('mgrey@gmail.com')} nativeID="pressable-debug-clinician">
+    debugButtons.push(<Pressable key={1} style={globalStyles.button} onPress={() => debugClinicianLogin('mgrey@gmail.com')} id="pressable-debug-clinician">
       <Text style={{color: 'white'}}>Debug log in as Meredith Grey</Text>
     </Pressable>);
-    debugButtons.push(<Pressable key={2} style={globalStyles.button} onPress={() => debugClinicianLogin('taltman@gmail.com')} nativeID="pressable-debug-taltman">
+    debugButtons.push(<Pressable key={2} style={globalStyles.button} onPress={() => debugClinicianLogin('taltman@gmail.com')} id="pressable-debug-taltman">
       <Text style={{color: 'white'}}>Debug log in as Teddy Altman</Text>
     </Pressable>);
-    debugButtons.push(<Pressable key={3} style={globalStyles.button} onPress={() => debugClinicianLogin('cyang@gmail.com')} nativeID="pressable-debug-cyang">
+    debugButtons.push(<Pressable key={3} style={globalStyles.button} onPress={() => debugClinicianLogin('cyang@gmail.com')} id="pressable-debug-cyang">
       <Text style={{color: 'white'}}>Debug log in as Cristina Yang</Text>
     </Pressable>);
-    debugButtons.push(<Pressable key={4} style={globalStyles.button} onPress={() => debugPatientLogin('mpeschel@gmail.com')}>
+    debugButtons.push(<Pressable key={4} style={globalStyles.button} onPress={() => debugPatientLogin('mpeschel10@gmail.com')}>
       <Text style={{color: 'white'}}>Debug log in as Mark Peschel</Text>
     </Pressable>);
     debugButtons.push(<Pressable key={5} style={globalStyles.button} onPress={() => debugPatientLogin('jcarson@gmail.com')}>
@@ -72,7 +83,7 @@ const LoginScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <TextInput
-        nativeID="text-input-email"
+        id="text-input-email"
         ref={emailInput}
         autoComplete="email"
         autoFocus={true}
@@ -83,7 +94,7 @@ const LoginScreen = ({ navigation }) => {
         onChangeText={(text) => setEmail(text)}
       />
       <TextInput
-        nativeID="text-input-password"
+        id="text-input-password"
         ref={passwordInput}
         autoComplete="current-password"
         returnKeyType="go"
@@ -93,10 +104,16 @@ const LoginScreen = ({ navigation }) => {
         onSubmitEditing={handleLogin}
         onChangeText={(text) => setPassword(text)}
       />
-      <Pressable onPress={handleLogin} nativeID="pressable-login" style={globalStyles.button}>
+      <Pressable onPress={handleLogin} id="pressable-login" style={globalStyles.button}>
         <Text style={globalStyles.buttonText}>Login</Text>
       </Pressable>
       {debugButtons}
+      <Pressable onPress={handleResetPassword} id="pressable-reset-password" style={{
+        textDecoration: 'underline',
+        color: '#00f',
+      }}>
+        <Text style={{color: '#00f'}}>Send password reset email</Text>
+      </Pressable>
     </View>
   );
 };
