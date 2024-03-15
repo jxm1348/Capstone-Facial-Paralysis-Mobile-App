@@ -1,4 +1,5 @@
-import { View, Button, StyleSheet, Pressable, Text } from "react-native";
+import { View, StyleSheet, Pressable, Text } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 import { fetchUnreadCount } from "../state";
 import FetchUnreadBadge from "./FetchUnreadBadge";
@@ -6,6 +7,7 @@ import FetchUnreadBadge from "./FetchUnreadBadge";
 import globalStyles from '../globalStyles';
 
 function ClinicianNavBar({navigation}) {
+    if (!navigation) navigation = useNavigation();
     return (
         <View style={styles.container}>
             <Pressable style={globalStyles.button} onPress={() => navigation.navigate("ClinicianHome")}>

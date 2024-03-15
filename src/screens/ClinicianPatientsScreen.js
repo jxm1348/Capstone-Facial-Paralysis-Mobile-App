@@ -11,6 +11,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { getDocs, query, collection, where } from 'firebase/firestore';
 
+import ClinicianNavBar from '../components/ClinicianNavBar';
 import UnreadBadge from '../components/UnreadBadge';
 import globalStyles from '../globalStyles';
 import { auth, db } from '../state.js';
@@ -71,6 +72,7 @@ function SearchSortBar({scrollViewLayout, onChangeText, searchAscending, setSear
   return (<View style={{
     flexDirection: scrollViewLayout.width > 500 ? 'row' : 'column',
     gap: 20,
+    alignItems:  scrollViewLayout.width > 500 ? 'center' : 'start'
   }}>
 
     <TextInput
@@ -82,6 +84,7 @@ function SearchSortBar({scrollViewLayout, onChangeText, searchAscending, setSear
         borderWidth: 1,
         
         height: 40,
+        width: '100%',
         padding: 10,
         zIndex: 1,
       }}
@@ -150,7 +153,6 @@ const getPatientsIdsUnread = async () => {
           userCounts[message.from] = 0;
       userCounts[message.from]++;
   }
-  
 
   return usersSnapshot.docs.map(userDocument => {
       const user = userDocument.data();
@@ -174,8 +176,8 @@ const ClinicianPatientsScreen = () => {
     getPatientsIdsUnread().then(setPatients);
   }, [])
 
-  return (
-    <ScrollView style={{flexGrow: 1, }} onLayout={event => setScrollViewLayout(event.nativeEvent.layout)}>
+  return (<View style={{flexGrow: 1, }}>
+    <ScrollView style={{flexGrow: 1, flexBasis: 0, }} onLayout={event => setScrollViewLayout(event.nativeEvent.layout)}>
       <View style={{marginHorizontal: 40, }}>
         
       <Text style={globalStyles.h1} nativeID='text-patients-header'>Patients</Text>
@@ -183,7 +185,8 @@ const ClinicianPatientsScreen = () => {
       <PatientsView {...patientsViewProps} />
       </View>
     </ScrollView>
-  );
+    <ClinicianNavBar />
+  </View>);
 };
 
 const styles = StyleSheet.create({
