@@ -7,7 +7,7 @@ import { goToClinicianMessagesMark } from '../testlib.mjs';
 const fetchEnter = () => new Promise(resolve => process.stdin.once('data', resolve));
 
 const SERVER_URL = 'http://127.0.0.1:19006';
-const debug = false;
+const debug = true;
 const headless = !debug && true;
 
 // This line is so I get autocomplete in VScode
@@ -30,7 +30,7 @@ describe('Patient Messages', () => {
         await driver.manage().setTimeouts({ implicit: 10000 });
 
         await driver.get(SERVER_URL);
-        await driver.findElement(By.id('text-input-email')).sendKeys('mpeschel@gmail.com');
+        await driver.findElement(By.id('text-input-email')).sendKeys('mpeschel10@gmail.com');
         await driver.findElement(By.id('text-input-password')).sendKeys('password');
         await driver.findElement(By.id('pressable-login')).click();
         

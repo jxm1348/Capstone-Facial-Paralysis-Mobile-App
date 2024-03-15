@@ -1,16 +1,33 @@
 import { useState, useRef } from 'react';
 import {
-  Image,
   StyleSheet, 
   TextInput, 
   View, 
   Alert,
   Pressable,
-  Text 
+  Text, 
+  ActivityIndicator,
 } from 'react-native';
 
 import globalStyles from '../globalStyles';
-import state, { login } from '../state.js';
+import state, { login, auth } from '../state.js';
+import { sendPasswordResetEmail } from 'firebase/auth';
+
+function getEmailErrorText(email) {
+  try {
+    if (!email.includes('@')) return 'Email must have an @ sign.';
+    const atParts = email.split('@');
+    if (atParts.length > 2) return 'Email must have exactly one @ sign.';
+    if (atParts.length < 2) return '@ sign must be in middle of email.';
+    const [ prefix, suffix ] = atParts;
+    if (!suffix.includes('.')) return 'Email must have a period.';
+    if (suffix.startsWith('.')) return 'Email domain can\'t start with a period.';
+    if (suffix.endsWith('.')) return 'Email can\'t end with a period.';
+  } catch(error) {
+
+  }
+  return 'Invalid email';
+}
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -18,6 +35,10 @@ const LoginScreen = ({ navigation }) => {
 
   const emailInput = useRef();
   const passwordInput = useRef();
+
+  const [emailErrorText, setEmailErrorText] = useState(undefined);
+  const [resetEmailActive, setResetEmailActive] = useState(false);
+  const [resetEmailSent, setResetEmailSent] = useState(false);
 
   const handleLogin = async () => {
     if (password !== 'password') {
@@ -31,6 +52,28 @@ const LoginScreen = ({ navigation }) => {
     navigation.navigate(role === 'clinician' ? 'ClinicianHome' : 'PatientHome');
   };
 
+  const handleResetPassword = () => {
+    setResetEmailActive(true);
+    sendPasswordResetEmail(auth, email?.trim())
+    .then(() => {
+      console.log('success');
+      setResetEmailSent(true);
+      setResetEmailActive(false);
+    })
+    .catch((error) => {
+      console.log('Password reset error code:', error.code);
+      if (error.code === 'auth/missing-email') {
+        setEmailErrorText('Please type your email here first.');
+      } else if (error.code === 'auth/invalid-email') {
+        setEmailErrorText(getEmailErrorText(email));
+      } else {
+        setEmailErrorText(error.message);
+      }
+      emailInput.current?.focus();
+      setResetEmailActive(false);
+    });
+  }
+
   const debugClinicianLogin = async (email) => {
     await login(email, 'password');
     navigation.navigate('ClinicianHome');
@@ -43,47 +86,53 @@ const LoginScreen = ({ navigation }) => {
 
   const debugButtons = [];
   if (state.demoIsDebug) {
-    debugButtons.push(<Pressable key={0} style={globalStyles.button} onPress={async () => {
-      await login('mpeschel@gmail.com', 'password');
+    debugButtons.push(<Pressable key={0} style={[globalStyles.button, styles.button]} onPress={async () => {
+      await login('mpeschel10@gmail.com', 'password');
       navigation.navigate('PatientCamera', {imageKey: 'eyebrows-up'});
     }}>
-      <Text style={{color: 'white'}}>Debug Camera</Text>
+      <Text style={globalStyles.buttonText}>Debug Camera</Text>
     </Pressable>);
-    debugButtons.push(<Pressable key={1} style={globalStyles.button} onPress={() => debugClinicianLogin('mgrey@gmail.com')} nativeID="pressable-debug-clinician">
-      <Text style={{color: 'white'}}>Debug log in as Meredith Grey</Text>
+    debugButtons.push(<Pressable key={1} style={[globalStyles.button, styles.button]} onPress={() => debugClinicianLogin('mgrey@gmail.com')} id="pressable-debug-clinician">
+      <Text style={globalStyles.buttonText}>Debug log in as Meredith Grey</Text>
     </Pressable>);
-    debugButtons.push(<Pressable key={2} style={globalStyles.button} onPress={() => debugClinicianLogin('taltman@gmail.com')} nativeID="pressable-debug-taltman">
-      <Text style={{color: 'white'}}>Debug log in as Teddy Altman</Text>
+    debugButtons.push(<Pressable key={2} style={[globalStyles.button, styles.button]} onPress={() => debugClinicianLogin('taltman@gmail.com')} id="pressable-debug-taltman">
+      <Text style={globalStyles.buttonText}>Debug log in as Teddy Altman</Text>
     </Pressable>);
-    debugButtons.push(<Pressable key={3} style={globalStyles.button} onPress={() => debugClinicianLogin('cyang@gmail.com')} nativeID="pressable-debug-cyang">
-      <Text style={{color: 'white'}}>Debug log in as Cristina Yang</Text>
+    debugButtons.push(<Pressable key={3} style={[globalStyles.button, styles.button]} onPress={() => debugClinicianLogin('cyang@gmail.com')} id="pressable-debug-cyang">
+      <Text style={globalStyles.buttonText}>Debug log in as Cristina Yang</Text>
     </Pressable>);
-    debugButtons.push(<Pressable key={4} style={globalStyles.button} onPress={() => debugPatientLogin('mpeschel@gmail.com')}>
-      <Text style={{color: 'white'}}>Debug log in as Mark Peschel</Text>
+    debugButtons.push(<Pressable key={4} style={[globalStyles.button, styles.button]} onPress={() => debugPatientLogin('mpeschel10@gmail.com')}>
+      <Text style={globalStyles.buttonText}>Debug log in as Mark Peschel</Text>
     </Pressable>);
-    debugButtons.push(<Pressable key={5} style={globalStyles.button} onPress={() => debugPatientLogin('jcarson@gmail.com')}>
-      <Text style={{color: 'white'}}>Debug log in as Josh Carson</Text>
+    debugButtons.push(<Pressable key={5} style={[globalStyles.button, styles.button]} onPress={() => debugPatientLogin('jcarson@gmail.com')}>
+      <Text style={globalStyles.buttonText}>Debug log in as Josh Carson</Text>
     </Pressable>);
-    debugButtons.push(<Pressable key={6} style={globalStyles.button} onPress={() => debugPatientLogin('jxm@gmail.com')}>
-      <Text style={{color: 'white'}}>Debug log in as jxm</Text>
+    debugButtons.push(<Pressable key={6} style={[globalStyles.button, styles.button]} onPress={() => debugPatientLogin('jxm@gmail.com')}>
+      <Text style={globalStyles.buttonText}>Debug log in as jxm</Text>
     </Pressable>);
   }
 
   return (
     <View style={styles.container}>
+      <View style={{alignItems: 'center', borderRadius: 5, backgroundColor: emailErrorText && '#d00', padding: 5}}>
+        <View style={{height: 19, justifyContent: 'center'}}>
+          {emailErrorText && <Text style={{fontSize: 12, color: '#fff'}}>{emailErrorText}</Text>}
+        </View>
+        <TextInput
+          id="text-input-email"
+          ref={emailInput}
+          autoComplete="email"
+          autoFocus={true}
+          returnKeyType="next"
+          style={styles.input}
+          placeholder="Email"
+          onSubmitEditing={() => passwordInput.current?.focus()}
+          onChangeText={(text) => {setEmail(text); setEmailErrorText(undefined)}}
+        />
+      </View>
+      
       <TextInput
-        nativeID="text-input-email"
-        ref={emailInput}
-        autoComplete="email"
-        autoFocus={true}
-        returnKeyType="next"
-        style={styles.input}
-        placeholder="Email"
-        onSubmitEditing={() => passwordInput.current?.focus()}
-        onChangeText={(text) => setEmail(text)}
-      />
-      <TextInput
-        nativeID="text-input-password"
+        id="text-input-password"
         ref={passwordInput}
         autoComplete="current-password"
         returnKeyType="go"
@@ -93,10 +142,26 @@ const LoginScreen = ({ navigation }) => {
         onSubmitEditing={handleLogin}
         onChangeText={(text) => setPassword(text)}
       />
-      <Pressable onPress={handleLogin} nativeID="pressable-login" style={globalStyles.button}>
+      <Pressable onPress={handleLogin} id="pressable-login" style={[globalStyles.button, styles.button]}>
         <Text style={globalStyles.buttonText}>Login</Text>
       </Pressable>
-      {debugButtons}
+      <View style={{gap:12}}>
+        {debugButtons}
+      </View>
+      <View style={{height: 17}}>
+        {resetEmailSent && <Text>Success: If the account {email} exists, a password reset email was sent to it.</Text>}
+      </View>
+      <Pressable onPress={handleResetPassword} id="pressable-reset-password" style={{
+        textDecoration: 'underline',
+        color: '#00f',
+        flexDirection: 'row',
+        gap: 6,
+      }}>
+        <Text style={{color: '#00f'}}>Send password reset email</Text>
+        <View style={{width: 17}}>
+          {resetEmailActive && <ActivityIndicator style={{height: 17, width: 17}}/>}
+        </View>
+      </Pressable>
     </View>
   );
 };
@@ -106,15 +171,20 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'safe center',
     alignItems: 'center',
+    gap: 20,
   },
   input: {
     height: 40,
     borderColor: 'gray',
+    backgroundColor: '#f2f2f2',
     borderWidth: 1,
-    marginBottom: 20,
     width: 200,
     padding: 10,
+    margin: 2,
   },
+  button: {
+    margin: 0,
+  }
 });
 
 export default LoginScreen;

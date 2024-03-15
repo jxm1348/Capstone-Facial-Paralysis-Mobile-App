@@ -67,7 +67,7 @@ const defaultUsers = {
     'gRnnZGMDUOOThH8Jdbfu': {roles: ['a', 'c'], clinicianUid: null, name:'Meredith Grey', email: "mgrey@gmail.com", thumbnail: placeholderThumbnail, latestMessage: null},
     'mSz5ZmtDK6KmqxK7NN5Q': {roles: ['c'], clinicianUid: null, name:'Cristina Yang', email: "cyang@gmail.com", thumbnail: placeholderThumbnail, latestMessage: null},
     'QSQIUuX0RHfOD2KStyks': {roles: ['c'], clinicianUid: null, name:'Teddy Altman', email: "taltman@gmail.com", thumbnail: placeholderThumbnail, latestMessage: null},
-    'K8bhUx2Hqv2LjfP4BsKy': {roles: ['p'], clinicianUid: 'gRnnZGMDUOOThH8Jdbfu', name:'Mark Peschel', email: "mpeschel@gmail.com", thumbnail: 'https://avatars.githubusercontent.com/u/111475917?v=4', latestMessage: '2024-01-20'},
+    'K8bhUx2Hqv2LjfP4BsKy': {roles: ['p'], clinicianUid: 'gRnnZGMDUOOThH8Jdbfu', name:'Mark Peschel', email: "mpeschel10@gmail.com", thumbnail: 'https://avatars.githubusercontent.com/u/111475917?v=4', latestMessage: '2024-01-20'},
     '5NEvyWyAES1DVuuJ7BDZ': {roles: ['p'], clinicianUid: 'mSz5ZmtDK6KmqxK7NN5Q', name:'jxm', email: "jxm@gmail.com", thumbnail: 'https://avatars.githubusercontent.com/u/143039729?v=4', latestMessage: '2024-02-14'},
     'lSHYQROPdgk7kJTsZxJu': {roles: ['p'], clinicianUid: 'gRnnZGMDUOOThH8Jdbfu', name:'Josh Carson', email: "jcarson@gmail.com", thumbnail: 'https://avatars.githubusercontent.com/u/18175844?v=4', latestMessage: '2024-01-19'},
     'SMHTCPm51vgYphdkDVly': {roles: ['p'], clinicianUid: 'gRnnZGMDUOOThH8Jdbfu', name:'Owen Wilson', email: "owilson@gmail.com", thumbnail: placeholderThumbnail, latestMessage: null},
@@ -318,7 +318,7 @@ await signInWithEmailAndPassword(auth, 'mgrey@gmail.com', 'password');
 await Promise.all([
     ...Object.keys(tables).map(name => resetTable(name)),
     resetStorage(),
-    // resetUsers(),
+    resetUsers(),
 ]);
 
 // Closing the database connection is necessary so node.js doesn't hang after the reset function is done.
