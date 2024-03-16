@@ -3,7 +3,7 @@ import { useNavigation } from "@react-navigation/native";
 
 import { fetchUnreadCount } from "../state";
 import FetchUnreadBadge from "./FetchUnreadBadge";
-
+import Ionicons from '@expo/vector-icons/Ionicons';
 import globalStyles from '../globalStyles';
 
 function ClinicianNavBar({navigation}) {
@@ -11,14 +11,33 @@ function ClinicianNavBar({navigation}) {
     return (
         <View style={styles.container}>
             <Pressable style={globalStyles.button} onPress={() => navigation.navigate("ClinicianHome")}>
-                <Text style={globalStyles.buttonText}>Home</Text>
+                <Ionicons 
+                    name={'home-outline'}
+                    size={32}
+                    color="#fff"
+                />
             </Pressable>
             <Pressable style={globalStyles.button} onPress={() => navigation.navigate("ClinicianPatients")} id="pressable-navbar-patients">
-                <Text style={globalStyles.buttonText}>Patients</Text>
+                <Ionicons 
+                    name={'person-outline'}
+                    size={32}
+                    color="#fff"
+                />
                 <FetchUnreadBadge fetchValue={fetchUnreadCount} />
             </Pressable>
+            <Pressable style={globalStyles.button} onPress={() => navigation.navigate("PatientCreation")} id="pressable-navbar-add-patient">
+                <Ionicons 
+                    name={'person-add-outline'}
+                    size={32}
+                    color="#fff"
+                />
+            </Pressable>
             <Pressable style={globalStyles.button} onPress={() => navigation.navigate("ClinicianEdit")}>
-                <Text style={globalStyles.buttonText}>Edit Accounts</Text>
+                <Ionicons 
+                    name={'pencil-outline'}
+                    size={32}
+                    color="#fff"
+                />
             </Pressable>
         </View>
     );

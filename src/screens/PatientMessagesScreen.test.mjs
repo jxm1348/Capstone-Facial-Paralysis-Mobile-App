@@ -7,7 +7,7 @@ import { goToClinicianMessagesMark } from '../testlib.mjs';
 const fetchEnter = () => new Promise(resolve => process.stdin.once('data', resolve));
 
 const SERVER_URL = 'http://127.0.0.1:19006';
-const debug = true;
+const debug = false;
 const headless = !debug && true;
 
 // This line is so I get autocomplete in VScode
