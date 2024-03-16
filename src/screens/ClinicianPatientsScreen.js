@@ -1,7 +1,7 @@
 import { useState, useEffect, } from 'react';
 import {
   View, ScrollView,
-  Text, Image, Pressable, TextInput, ActivityIndicator,
+  Text, Image, Pressable, TextInput,
   StyleSheet,
   Platform,
 } from 'react-native';
@@ -9,6 +9,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import * as ImagePicker from 'expo-image-picker';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
+import { CircleSnail as ProgressCircleSnail } from 'react-native-progress';
 
 import { getDocs, query, collection, where, deleteDoc, doc } from 'firebase/firestore';
 
@@ -35,6 +36,8 @@ function PatientMessagesEdit({patient, handleCancelEdit}) {
   const handleDelete = async () => {
     setIsDeleting(true);
     console.log("Deleting patient", patient);
+
+    // await new Promise(resolve => setTimeout(resolve, 3000));
     const token = await auth.currentUser.getIdToken();
     const body = JSON.stringify({
       token,
@@ -129,8 +132,8 @@ function PatientMessagesEdit({patient, handleCancelEdit}) {
       <Pressable style={[globalStyles.button, {backgroundColor: '#f00'}]} onPress={handleDelete}>
         <View>
           {isDeleting
-            ? <ActivityIndicator />
-            : <Ionicons name="trash" size={16} color="#fff" />
+            ? <ProgressCircleSnail color={'#fff'} size={20} indeterminate={true} />
+            : <Ionicons name="trash" size={20} color="#fff" />
           }
         </View>
       </Pressable>

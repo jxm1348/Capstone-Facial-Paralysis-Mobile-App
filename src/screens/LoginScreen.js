@@ -6,8 +6,8 @@ import {
   Alert,
   Pressable,
   Text, 
-  ActivityIndicator,
 } from 'react-native';
+import { CircleSnail as ProgressCircleSnail } from 'react-native-progress';
 
 import globalStyles from '../globalStyles';
 import state, { login, auth } from '../state.js';
@@ -52,15 +52,15 @@ const LoginScreen = ({ navigation }) => {
     navigation.navigate(role === 'clinician' ? 'ClinicianHome' : 'PatientHome');
   };
 
-  const handleResetPassword = () => {
+  const handleResetPassword = async () => {
     setResetEmailActive(true);
-    sendPasswordResetEmail(auth, email?.trim())
-    .then(() => {
-      console.log('success');
+    console.log("Trying to reset password for email '", email, "'");
+    
+    // await new Promise(resolve => setTimeout(resolve, 3000));
+    try {
+      await sendPasswordResetEmail(auth, email?.trim())
       setResetEmailSent(true);
-      setResetEmailActive(false);
-    })
-    .catch((error) => {
+    } catch(error) {
       console.log('Password reset error code:', error.code);
       if (error.code === 'auth/missing-email') {
         setEmailErrorText('Please type your email here first.');
@@ -70,8 +70,10 @@ const LoginScreen = ({ navigation }) => {
         setEmailErrorText(error.message);
       }
       emailInput.current?.focus();
-      setResetEmailActive(false);
-    });
+      setResetEmailSent(false);
+    };
+    
+    setResetEmailActive(false);
   }
 
   const debugClinicianLogin = async (email) => {
@@ -159,7 +161,7 @@ const LoginScreen = ({ navigation }) => {
       }}>
         <Text style={{color: '#00f'}}>Send password reset email</Text>
         <View style={{width: 17}}>
-          {resetEmailActive && <ActivityIndicator style={{height: 17, width: 17}}/>}
+          {resetEmailActive && <ProgressCircleSnail color='#00f' size={17} indeterminate={true} />}
         </View>
       </Pressable>
     </View>
