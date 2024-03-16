@@ -11,7 +11,7 @@ import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 import { CircleSnail as ProgressCircleSnail } from 'react-native-progress';
 
-import { getDocs, query, collection, where, deleteDoc, doc } from 'firebase/firestore';
+import { query, collection, where, deleteDoc, doc, onSnapshot } from 'firebase/firestore';
 
 import ClinicianNavBar from '../components/ClinicianNavBar';
 import UnreadBadge from '../components/UnreadBadge';
@@ -281,19 +281,19 @@ function ClinicianPatientsScreen() {
   const [ searchAscending, setSearchAscending ] = useState(true);
   const [ sortBy, setSortBy ] = useState("date");
 
-  useEffect(() => {
-    getDocs(query(
+  useEffect(() => onSnapshot(
+    query(
       collection(db, 'users'),
       where('clinicianUid', '==', auth.currentUser.uid)
-    )).then(setUsersSnapshot);
-  }, []);
+    ), setUsersSnapshot)
+  , []);
   
-  useEffect(() => {
-    getDocs(query(
+  useEffect(() => onSnapshot(
+    query(
       collection(db, 'messages'),
       where('to', '==', auth.currentUser.uid)
-    )).then(setMessagesSnapshot);
-  }, [])
+    ), setMessagesSnapshot
+  ), []);
 
   useEffect(() => {
     if (usersSnapshot && messagesSnapshot) {
