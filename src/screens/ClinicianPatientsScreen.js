@@ -97,7 +97,7 @@ function SearchSortBar({scrollViewLayout, onChangeText, searchAscending, setSear
       alignItems: 'center',
       height: 80,
     }}>
-      <Text>Sort by </Text>
+      <Text style={{flexShrink: 0,}}>Sort by </Text>
       <Picker
         style={{
           flexShrink: 0,
