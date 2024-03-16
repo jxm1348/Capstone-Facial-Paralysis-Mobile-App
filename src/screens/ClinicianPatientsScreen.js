@@ -1,7 +1,7 @@
 import { useState, useEffect, } from 'react';
 import {
   View, ScrollView,
-  Text, Image, Pressable, TextInput,
+  Text, Image, Pressable, TextInput, ActivityIndicator,
   StyleSheet,
   Platform,
 } from 'react-native';
@@ -10,7 +10,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 
-import { getDocs, query, collection, where } from 'firebase/firestore';
+import { getDocs, query, collection, where, deleteDoc, doc } from 'firebase/firestore';
 
 import ClinicianNavBar from '../components/ClinicianNavBar';
 import UnreadBadge from '../components/UnreadBadge';
@@ -26,13 +26,33 @@ function PatientMessagesEdit({patient, handleCancelEdit}) {
   const [ email, setEmail ] = useState(patient.email);
   const [ displayName, setDisplayName ] = useState(patient.name);
 
+  const [ isDeleting, setIsDeleting ] = useState(false);
+
   const handleSaveEdits = () => {
     console.log("Saving edits");
   }
 
-  const handleDelete = () => {
-    console.log("Deleting user.");
-  }
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    console.log("Deleting patient", patient);
+    const token = await auth.currentUser.getIdToken();
+    const body = JSON.stringify({
+      token,
+      "user": {uid: patient.id}
+    });
+
+    const userResult = await fetch('https://fa.mpeschel10.com/users.json', {
+      method: 'DELETE',
+      body,
+    });
+    // const bodyText = await userResult.text();
+    // console.log(userResult.status, userResult.statusText);
+    // console.log(Object.fromEntries(userResult.headers));
+    // console.log('Body: ', bodyText);
+    
+    await deleteDoc(doc(db, 'users', patient.id));
+    setIsDeleting(false);
+  };
 
   const handleChooseImage = async () => {
     const response = await ImagePicker.launchImageLibraryAsync({
@@ -107,7 +127,12 @@ function PatientMessagesEdit({patient, handleCancelEdit}) {
         <Text style={globalStyles.buttonText}>Cancel</Text>
       </Pressable>
       <Pressable style={[globalStyles.button, {backgroundColor: '#f00'}]} onPress={handleDelete}>
-        <Ionicons name="trash" size={16} color="#fff" />
+        <View>
+          {isDeleting
+            ? <ActivityIndicator />
+            : <Ionicons name="trash" size={16} color="#fff" />
+          }
+        </View>
       </Pressable>
     </View>
   </View>);
