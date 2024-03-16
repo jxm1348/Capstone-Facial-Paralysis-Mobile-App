@@ -6,6 +6,7 @@ import {
   Platform,
 } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import * as ImagePicker from 'expo-image-picker';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 
@@ -20,17 +21,108 @@ function PatientsSkeleton() {
   return (<Text>Loading...</Text>);
 }
 
-function PatientMessagesPressable({patient}) {
+function PatientMessagesEdit({patient, handleCancelEdit}) {
+  const [ profilePicture, setProfilePicture ] = useState(() => ({uri: patient.thumbnail}));
+  const [ email, setEmail ] = useState(patient.email);
+  const [ displayName, setDisplayName ] = useState(patient.name);
+
+  const handleSaveEdits = () => {
+    console.log("Saving edits");
+  }
+
+  const handleDelete = () => {
+    console.log("Deleting user.");
+  }
+
+  const handleChooseImage = async () => {
+    const response = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    })
+    if (!response.canceled) {
+      setProfilePicture(response.assets[0]);
+    }
+  };
+
+  return (<View
+    style={[
+      styles.patientContainer,
+      { backgroundColor: '#ddd', flexDirection: 'column'}
+    ]}
+    id={`view-edit-${patient.id}`}
+  >
+    <View style={{flexDirection: 'row', alignItems: 'center',}}>
+      <View style={{flexGrow: 1, marginHorizontal: 25, flexShrink: 1}}>
+        <TextInput style={{
+        flexGrow: 1,
+        minWidth: 0,
+    
+        borderColor: 'gray',
+        borderWidth: 1,
+        
+        height: 40,
+        width: '100%',
+        padding: 10,
+        zIndex: 1,
+      }} defaultValue={displayName} onChangeText={text => setDisplayName(text)} placeholder='Username'></TextInput>
+        <TextInput style={{
+        flexGrow: 1,
+        minWidth: 0,
+    
+        borderColor: 'gray',
+        borderWidth: 1,
+        
+        height: 40,
+        width: '100%',
+        padding: 10,
+        zIndex: 1,
+      }} defaultValue={email} onChangeText={text => setEmail(text)} placeholder='Email'></TextInput>
+      </View>
+      <View>
+        <Pressable onPress={handleChooseImage}>
+          <Image
+            style={styles.patientThumbnail}
+            source={profilePicture}
+          />
+          <Ionicons
+            style={{
+              position: 'absolute',
+              left: (90 - 32) / 2,
+              top: (90 - 32) / 2,
+            }}
+            name="pencil-outline"
+            size={32}
+            color="#ff0"
+          />
+        </Pressable>
+      </View>
+    </View>
+    <View style={{flexDirection: 'row'}}>
+      <Pressable style={globalStyles.button} onPress={handleSaveEdits}>
+        <Text style={globalStyles.buttonText}>Save</Text>
+      </Pressable>
+      <Pressable style={globalStyles.button} onPress={handleCancelEdit}>
+        <Text style={globalStyles.buttonText}>Cancel</Text>
+      </Pressable>
+      <Pressable style={[globalStyles.button, {backgroundColor: '#f00'}]} onPress={handleDelete}>
+        <Ionicons name="trash" size={16} color="#fff" />
+      </Pressable>
+    </View>
+  </View>);
+}
+
+function PatientMessagesPressable({patient, handleLongPress}) {
   const navigation = useNavigation();
-  const { name } = patient;
-  return (
-    <Pressable
-      style={styles.patientContainer}
-      onPress={() => navigation.navigate('ClinicianPatient', {id: patient.id, name})}
-      nativeID={`pressable-patient-${patient.id}`}
-    >
+  return (<Pressable
+    style={styles.patientContainer}
+    onPress={() => navigation.navigate('ClinicianPatient', {id: patient.id, name: patient.name})}
+    onLongPress={handleLongPress}
+    id={`pressable-patient-${patient.id}`}
+  >
     <View style={{flexGrow: 1, marginHorizontal: 25, flexShrink: 1}}>
-      <Text style={{fontSize: 35}}>{name}</Text>
+      <Text style={{fontSize: 35}}>{patient.name}</Text>
       { patient.latestMessage !== null ?
         <Text style={{}}>Last message {patient.latestMessage}</Text> :
         undefined
@@ -43,8 +135,7 @@ function PatientMessagesPressable({patient}) {
       />
       <UnreadBadge value={patient.unread} />
     </View>
-    </Pressable>
-  );
+  </Pressable>);
 }
 
 function compareDateAscending(p1, p2) {
@@ -127,13 +218,27 @@ function SearchSortBar({scrollViewLayout, onChangeText, searchAscending, setSear
 
 function PatientsView({patients, search, searchAscending, sortBy}) {
   if (patients === null) return <PatientsSkeleton />;
+
+  const [ editingPatientId, setEditingPatient ] = useState(undefined);
+
   const patientItems = patients
     .slice()
     .filter(patient => patient.name.toLowerCase().indexOf(search) >= 0)
     .sort(getSort(sortBy, searchAscending))
-    .map(patient =>
-      <PatientMessagesPressable key={patient.name} patient={patient} />
-    );
+    .map(patient => {
+      if (patient.id === editingPatientId)
+        return (<PatientMessagesEdit
+          key={patient.id}
+          patient={patient}
+          handleCancelEdit={() => setEditingPatient(undefined)}
+        />);
+      else
+        return (<PatientMessagesPressable
+          key={patient.id}
+          patient={patient}
+          handleLongPress={() => setEditingPatient(patient.id)}
+        />);
+    });
   return <View id="view-patients">{patientItems}</View>;
 }
 
@@ -180,7 +285,7 @@ const ClinicianPatientsScreen = () => {
     <ScrollView style={{flexGrow: 1, flexBasis: 0, }} onLayout={event => setScrollViewLayout(event.nativeEvent.layout)}>
       <View style={{marginHorizontal: 40, }}>
         
-      <Text style={globalStyles.h1} nativeID='text-patients-header'>Patients</Text>
+      <Text style={globalStyles.h1} id='text-patients-header'>Patients</Text>
       <SearchSortBar onChangeText={setSearch} {...{scrollViewLayout, searchAscending, setSearchAscending, sortBy, setSortBy}} />
       <PatientsView {...patientsViewProps} />
       </View>

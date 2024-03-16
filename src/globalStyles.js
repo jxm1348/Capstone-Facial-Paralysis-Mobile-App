@@ -18,6 +18,7 @@ const globalStyles = StyleSheet.create({
         padding: 12,
         borderRadius: 4,
         margin: 8,
+        flexDirection: 'row',
     }, buttonText: {
         color: '#ffffff',
         fontSize: 20,
