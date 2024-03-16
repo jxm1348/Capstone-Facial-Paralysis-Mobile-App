@@ -245,7 +245,7 @@ function SearchSortBar({scrollViewLayout, onChangeText, searchAscending, setSear
 }
 
 function PatientsView({patients, search, searchAscending, sortBy}) {
-  if (patients === null) return <PatientsSkeleton />;
+  if (!patients) return <PatientsSkeleton />;
 
   const [ editingPatientId, setEditingPatient ] = useState(undefined);
 
@@ -270,52 +270,58 @@ function PatientsView({patients, search, searchAscending, sortBy}) {
   return <View id="view-patients">{patientItems}</View>;
 }
 
-// This function returns a list of patients for the current user as well as the counts of their unread messages.
-const getPatientsIdsUnread = async () => {
-  const usersSnapshot = await getDocs(query(
-    collection(db, 'users'),
-    where('clinicianUid', '==', auth.currentUser.uid)
-  ));
-  
-  const q = query(collection(db, 'messages'), where('to', '==', auth.currentUser.uid));
-  const messagesSnapshot = await getDocs(q);
-  const userCounts = {};
-  for (const message of messagesSnapshot.docs.map(d => d.data())) {
-      if (message.read) continue;
-      if (userCounts[message.from] === undefined)
-          userCounts[message.from] = 0;
-      userCounts[message.from]++;
-  }
+function ClinicianPatientsScreen() {
+  const [ patients, setPatients ] = useState(undefined);
+  const [ usersSnapshot, setUsersSnapshot ] = useState(undefined);
+  const [ messagesSnapshot, setMessagesSnapshot ] = useState(undefined);
 
-  return usersSnapshot.docs.map(userDocument => {
-      const user = userDocument.data();
-      user.id = userDocument.id;
-      user.unread = userCounts[userDocument.id] ?? 0;
-      return user;
-  });
-};
-
-const ClinicianPatientsScreen = () => {
-  const [ patients, setPatients ] = useState(null);
   const [ search, setSearch ] = useState("");
 
   const [ scrollViewLayout, setScrollViewLayout ] = useState(undefined);
   const [ searchAscending, setSearchAscending ] = useState(true);
   const [ sortBy, setSortBy ] = useState("date");
-  const patientsViewProps = { patients, search, searchAscending, sortBy };
-
 
   useEffect(() => {
-    getPatientsIdsUnread().then(setPatients);
+    getDocs(query(
+      collection(db, 'users'),
+      where('clinicianUid', '==', auth.currentUser.uid)
+    )).then(setUsersSnapshot);
+  }, []);
+  
+  useEffect(() => {
+    getDocs(query(
+      collection(db, 'messages'),
+      where('to', '==', auth.currentUser.uid)
+    )).then(setMessagesSnapshot);
   }, [])
 
+  useEffect(() => {
+    if (usersSnapshot && messagesSnapshot) {
+      const userCounts = {};
+      for (const message of messagesSnapshot.docs.map(d => d.data())) {
+        if (message.read) continue;
+        if (userCounts[message.from] === undefined)
+            userCounts[message.from] = 0;
+        userCounts[message.from]++;
+      }
+    
+      const result = usersSnapshot.docs.map(userDocument => {
+        const user = userDocument.data();
+        user.id = userDocument.id;
+        user.unread = userCounts[userDocument.id] ?? 0;
+        return user;
+      });
+      setPatients(result);
+    }
+  }, [usersSnapshot, messagesSnapshot]);
+  
   return (<View style={{flexGrow: 1, }}>
     <ScrollView style={{flexGrow: 1, flexBasis: 0, }} onLayout={event => setScrollViewLayout(event.nativeEvent.layout)}>
       <View style={{marginHorizontal: 40, }}>
         
       <Text style={globalStyles.h1} id='text-patients-header'>Patients</Text>
       <SearchSortBar onChangeText={setSearch} {...{scrollViewLayout, searchAscending, setSearchAscending, sortBy, setSortBy}} />
-      <PatientsView {...patientsViewProps} />
+      <PatientsView {...{patients, search, searchAscending, sortBy}} />
       </View>
     </ScrollView>
     <ClinicianNavBar />
