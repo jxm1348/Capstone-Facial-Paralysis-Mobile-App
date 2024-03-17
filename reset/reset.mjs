@@ -268,11 +268,9 @@ async function getPaths(dir) {
     return paths;
 }
 
-async function resetStorage() {
-    // await deleteDir(ref(storage)); // Clean reset. Deletes all files to be reuploaded anew. Slow.
-    
-    const localRoot = path.join(process.cwd(), 'reset', 'mirror');
-    const remoteRoot = adminStorage.bucket('facial-analytics-f8b9e.appspot.com');
+async function syncBucket(bucketName) {
+    const localRoot = path.join(process.cwd(), 'reset', bucketName);
+    const remoteRoot = adminStorage.bucket(bucketName);
 
     const localPathsArray = await getPaths(localRoot);
     const localPaths = Object.fromEntries(localPathsArray.map(p => [
@@ -308,6 +306,13 @@ async function resetStorage() {
                 path.join(localRoot, localPath), {destination:localPath}
             );
         }
+    }
+}
+
+async function resetStorage() {
+    // await deleteDir(ref(storage)); // Clean reset. Deletes all files to be reuploaded anew. Slow.
+    for (const bucketName of ['facial-analytics-f8b9e', 'facial-analytics-f8b9e']) {
+        await syncBucket(bucketName)
     }
 }
 
