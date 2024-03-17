@@ -11,7 +11,7 @@ import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 import { CircleSnail as ProgressCircleSnail } from 'react-native-progress';
 
-import { query, collection, where, deleteDoc, doc, onSnapshot } from 'firebase/firestore';
+import { query, collection, where, deleteDoc, doc, onSnapshot, updateDoc } from 'firebase/firestore';
 
 import ClinicianNavBar from '../components/ClinicianNavBar';
 import UnreadBadge from '../components/UnreadBadge';
@@ -34,8 +34,27 @@ function PatientMessagesEdit({patient, handleCancelEdit}) {
     setIsSaving(true);
     try {
       console.log("Begin save");
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      
+      // await new Promise(resolve => setTimeout(resolve, 3000));
+      const parameters = {
+          token: await auth.currentUser.getIdToken(),
+          uid: patient.id,
+      };
+      
+      const serverBody = JSON.stringify({displayName, email});
+      const docUpdate = {name: displayName, email};
+
+      const result = await fetch(
+          "https://fa.mpeschel10.com/users.json?" + new URLSearchParams(parameters), {
+          method: 'PUT',
+          body: serverBody
+      });
+      // console.log("Got result", result.status, result.statusText);
+      // console.log(await result.text());
+      await updateDoc(doc(db, 'users', patient.id), docUpdate);
+
       console.log("End save");
+      handleCancelEdit();
     } finally {
       setIsSaving(false);
     }
