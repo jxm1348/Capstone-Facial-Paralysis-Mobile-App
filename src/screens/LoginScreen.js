@@ -41,15 +41,18 @@ const LoginScreen = ({ navigation }) => {
   const [resetEmailSent, setResetEmailSent] = useState(false);
 
   const handleLogin = async () => {
-    if (password !== 'password') {
-      console.log('Refusing to navigate to clinician or patient home since password wrong.');
-      Alert.alert('Invalid credentials');
+    try {
+      await login(email, password);
+    } catch (error) {
+      console.log(error);
+      console.log(error.code, error.message);
+      Alert.alert('Email or password incorrect.');
       return;
     }
-    
-    await login(email, password);
-    const role = state.idTokenResult.claims.roles.includes('c') ? 'clinician' : 'patient';
-    navigation.navigate(role === 'clinician' ? 'ClinicianHome' : 'PatientHome');
+    navigation.navigate(state.idTokenResult.claims.roles.includes('c')
+      ? 'ClinicianHome'
+      : 'PatientHome'
+    );
   };
 
   const handleResetPassword = async () => {
