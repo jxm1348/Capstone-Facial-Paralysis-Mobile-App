@@ -24,9 +24,17 @@ function PatientsSkeleton() {
 
 function PatientMessagesEdit({patient, handleCancelEdit}) {
   const [ profilePicture, setProfilePicture ] = useState(() => ({uri: patient.thumbnail}));
+  const [ displayName, setDisplayName ] = useState(patient.name);
   const [ email, setEmail ] = useState(patient.email);
   const [ password, setPassword ] = useState(undefined);
-  const [ displayName, setDisplayName ] = useState(patient.name);
+  
+  const [ clinicianEmail, setClinicianEmail ] = useState(undefined);
+  const [ shouldUpdateClinician, setShouldUpdateClinician ] = useState(false);
+
+  useEffect(() => onSnapshot(
+    doc(db, 'users', patient.clinicianUid),
+    snapshot => setClinicianEmail(snapshot.data().email)
+  ), []);
 
   const [ isDeleting, setIsDeleting ] = useState(false);
   const [ isSaving, setIsSaving ] = useState(false);
@@ -34,10 +42,10 @@ function PatientMessagesEdit({patient, handleCancelEdit}) {
   const handleSaveEdits = async () => {
     setIsSaving(true);
     try {
-      console.log("Begin save");
+      console.log('Begin save');
       
       // await new Promise(resolve => setTimeout(resolve, 3000));
-      const parameters = {
+      const serverParameters = {
           token: await auth.currentUser.getIdToken(),
           uid: patient.id,
       };
@@ -45,19 +53,33 @@ function PatientMessagesEdit({patient, handleCancelEdit}) {
       const serverUpdate = {displayName, email};
       if (password !== undefined) serverUpdate.password = password;
       const serverBody = JSON.stringify(serverUpdate);
-      console.log("Server body is ", serverBody);
+      // console.log('Server body is ', serverBody);
+      
       const docUpdate = {name: displayName, email};
+      if (shouldUpdateClinician) {
+        const clinicianParameters = new URLSearchParams({
+          token: await auth.currentUser.getIdToken(),
+          email: clinicianEmail,
+        });
+        
+        const clinicianResponse = await fetch('https://fa.mpeschel10.com/users.json?' + clinicianParameters);
+        if (clinicianResponse.status !== 200) {
+          console.log("Update failed due to can't find clinician uid");
+          return;
+        }
+        docUpdate.clinicianUid = (await clinicianResponse.json()).uid;
+      }
 
       const result = await fetch(
-          "https://fa.mpeschel10.com/users.json?" + new URLSearchParams(parameters), {
+          'https://fa.mpeschel10.com/users.json?' + new URLSearchParams(serverParameters), {
           method: 'PUT',
           body: serverBody
       });
-      // console.log("Got result", result.status, result.statusText);
+      // console.log('Got result', result.status, result.statusText);
       // console.log(await result.text());
       await updateDoc(doc(db, 'users', patient.id), docUpdate);
 
-      console.log("End save");
+      console.log('End save');
       handleCancelEdit();
     } finally {
       setIsSaving(false);
@@ -132,11 +154,19 @@ function PatientMessagesEdit({patient, handleCancelEdit}) {
       </View>
     </View>
     <TextInput  style={styles.textInput}
-        placeholder="Password"
+        placeholder="New Password"
         secureTextEntry
         defaultValue={password}
         onChangeText={setPassword}
     />
+    <View style={{flexDirection: 'row', alignItems: 'center',}}>
+      <Text>Clinician: </Text>
+      <TextInput style={styles.textInput}
+          placeholder="Clinician Email"
+          value={clinicianEmail ?? ''}
+          onChangeText={text => {setShouldUpdateClinician(true); setClinicianEmail(text);}}
+      />
+    </View>
     <View style={{flexDirection: 'row'}}>
       <Pressable style={globalStyles.button} onPress={handleSaveEdits}>
         {isSaving
