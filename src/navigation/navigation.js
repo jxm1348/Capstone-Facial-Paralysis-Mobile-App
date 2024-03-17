@@ -8,8 +8,6 @@ import ClinicianPatientsScreen from '../screens/ClinicianPatientsScreen';
 import ClinicianPatientScreen from '../screens/ClinicianPatientScreen';
 import ReportScreen from '../screens/ReportScreen';
 import PatientCreationScreen from '../screens/PatientCreationScreen';
-import ClinicianEditScreen from '../screens/ClinicianEditScreen';
-import AccountEditScreen from '../screens/AcccountEditScreen';
 
 import PatientHomeScreen from '../screens/PatientHomeScreen';
 import PatientMessagesScreen from '../screens/PatientMessagesScreen';
@@ -30,8 +28,6 @@ export default function MainNavigator() {
             <Stack.Screen name="ClinicianPatient" component={ClinicianPatientScreen} />
             <Stack.Screen name="Report" component={ReportScreen} />
             <Stack.Screen name="PatientCreation" component ={PatientCreationScreen} />
-            <Stack.Screen name="ClinicianEdit" component={ClinicianEditScreen} />
-            <Stack.Screen name="AccountEdit" component={AccountEditScreen} />
             
             <Stack.Screen name="PatientHome" component={PatientHomeScreen} />
             <Stack.Screen name="PatientUpload" component={PatientUploadScreen} />

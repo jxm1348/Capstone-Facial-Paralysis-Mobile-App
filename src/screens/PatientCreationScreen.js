@@ -6,6 +6,7 @@ import { Picker } from '@react-native-picker/picker';
 
 import { auth, db } from '../state';
 import globalStyles from '../globalStyles';
+import ClinicianNavBar from '../components/ClinicianNavBar';
 
 const PatientCreationScreen = ({navigation}) => {
   const [name, setName] = useState('');
@@ -47,7 +48,7 @@ const PatientCreationScreen = ({navigation}) => {
     };
 
     await setDoc(doc(db, 'users', JSON.parse(bodyText)), userData);
-    navigation.navigate('ClinicianEdit');
+    navigation.navigate('ClinicianPatients');
   };
 
   const handleChooseImage = async () => {
@@ -63,13 +64,8 @@ const PatientCreationScreen = ({navigation}) => {
     }
   };
 
-  return (
-    <View
-      style={{
-        gap: 6,
-        margin: 6,
-      }}
-    >
+  return (<View style={{flexGrow: 1, gap: 6, margin: 6,}}>
+    <View style={{flexGrow: 1}}>
       <TextInput
         placeholder="Name"
         value={name}
@@ -104,7 +100,8 @@ const PatientCreationScreen = ({navigation}) => {
         <Text style={globalStyles.buttonText}>Create Account</Text>
       </Pressable>
     </View>
-  );
+    <ClinicianNavBar />
+  </View>);
 };
 
 export default PatientCreationScreen;

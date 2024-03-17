@@ -8,39 +8,18 @@ import globalStyles from '../globalStyles';
 
 function ClinicianNavBar({navigation}) {
     if (!navigation) navigation = useNavigation();
-    return (
-        <View style={styles.container}>
-            <Pressable style={globalStyles.button} onPress={() => navigation.navigate("ClinicianHome")}>
-                <Ionicons 
-                    name={'home-outline'}
-                    size={32}
-                    color="#fff"
-                />
-            </Pressable>
-            <Pressable style={globalStyles.button} onPress={() => navigation.navigate("ClinicianPatients")} id="pressable-navbar-patients">
-                <Ionicons 
-                    name={'person-outline'}
-                    size={32}
-                    color="#fff"
-                />
-                <FetchUnreadBadge fetchValue={fetchUnreadCount} />
-            </Pressable>
-            <Pressable style={globalStyles.button} onPress={() => navigation.navigate("PatientCreation")} id="pressable-navbar-add-patient">
-                <Ionicons 
-                    name={'person-add-outline'}
-                    size={32}
-                    color="#fff"
-                />
-            </Pressable>
-            <Pressable style={globalStyles.button} onPress={() => navigation.navigate("ClinicianEdit")}>
-                <Ionicons 
-                    name={'pencil-outline'}
-                    size={32}
-                    color="#fff"
-                />
-            </Pressable>
-        </View>
-    );
+    return (<View style={styles.container}>
+        <Pressable style={globalStyles.button} onPress={() => navigation.navigate("ClinicianHome")}>
+            <Ionicons name={'home-outline'} size={32} color="#fff"/>
+        </Pressable>
+        <Pressable style={globalStyles.button} onPress={() => navigation.navigate("ClinicianPatients")} id="pressable-navbar-patients">
+            <Ionicons name={'person-outline'} size={32} color="#fff"/>
+            <FetchUnreadBadge fetchValue={fetchUnreadCount} />
+        </Pressable>
+        <Pressable style={globalStyles.button} onPress={() => navigation.navigate("PatientCreation")} id="pressable-navbar-add-patient">
+            <Ionicons name={'person-add-outline'} size={32} color="#fff"/>
+        </Pressable>
+    </View>);
 }
 
 const styles = StyleSheet.create({
