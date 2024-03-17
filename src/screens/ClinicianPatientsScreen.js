@@ -28,9 +28,17 @@ function PatientMessagesEdit({patient, handleCancelEdit}) {
   const [ displayName, setDisplayName ] = useState(patient.name);
 
   const [ isDeleting, setIsDeleting ] = useState(false);
+  const [ isSaving, setIsSaving ] = useState(false);
 
-  const handleSaveEdits = () => {
-    console.log("Saving edits");
+  const handleSaveEdits = async () => {
+    setIsSaving(true);
+    try {
+      console.log("Begin save");
+      await new Promise(resolve => setTimeout(resolve, 3000));
+      console.log("End save");
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   const handleDelete = async () => {
@@ -124,7 +132,10 @@ function PatientMessagesEdit({patient, handleCancelEdit}) {
     </View>
     <View style={{flexDirection: 'row'}}>
       <Pressable style={globalStyles.button} onPress={handleSaveEdits}>
-        <Text style={globalStyles.buttonText}>Save</Text>
+        {isSaving
+            ? <ProgressCircleSnail color={'#fff'} size={20} indeterminate={true} />
+            : <Text style={globalStyles.buttonText}>Save</Text>
+        }
       </Pressable>
       <Pressable style={globalStyles.button} onPress={handleCancelEdit}>
         <Text style={globalStyles.buttonText}>Cancel</Text>
