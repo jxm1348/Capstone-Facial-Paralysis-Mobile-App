@@ -25,6 +25,7 @@ function PatientsSkeleton() {
 function PatientMessagesEdit({patient, handleCancelEdit}) {
   const [ profilePicture, setProfilePicture ] = useState(() => ({uri: patient.thumbnail}));
   const [ email, setEmail ] = useState(patient.email);
+  const [ password, setPassword ] = useState(undefined);
   const [ displayName, setDisplayName ] = useState(patient.name);
 
   const [ isDeleting, setIsDeleting ] = useState(false);
@@ -41,7 +42,10 @@ function PatientMessagesEdit({patient, handleCancelEdit}) {
           uid: patient.id,
       };
       
-      const serverBody = JSON.stringify({displayName, email});
+      const serverUpdate = {displayName, email};
+      if (password !== undefined) serverUpdate.password = password;
+      const serverBody = JSON.stringify(serverUpdate);
+      console.log("Server body is ", serverBody);
       const docUpdate = {name: displayName, email};
 
       const result = await fetch(
@@ -104,31 +108,9 @@ function PatientMessagesEdit({patient, handleCancelEdit}) {
     id={`view-edit-${patient.id}`}
   >
     <View style={{flexDirection: 'row', alignItems: 'center',}}>
-      <View style={{flexGrow: 1, marginHorizontal: 25, flexShrink: 1}}>
-        <TextInput style={{
-        flexGrow: 1,
-        minWidth: 0,
-    
-        borderColor: 'gray',
-        borderWidth: 1,
-        
-        height: 40,
-        width: '100%',
-        padding: 10,
-        zIndex: 1,
-      }} defaultValue={displayName} onChangeText={text => setDisplayName(text)} placeholder='Username'></TextInput>
-        <TextInput style={{
-        flexGrow: 1,
-        minWidth: 0,
-    
-        borderColor: 'gray',
-        borderWidth: 1,
-        
-        height: 40,
-        width: '100%',
-        padding: 10,
-        zIndex: 1,
-      }} defaultValue={email} onChangeText={text => setEmail(text)} placeholder='Email'></TextInput>
+      <View style={{flexGrow: 1, flexShrink: 1}}>
+        <TextInput style={styles.textInput} defaultValue={displayName} onChangeText={text => setDisplayName(text)} placeholder='Username'></TextInput>
+        <TextInput style={styles.textInput} defaultValue={email} onChangeText={text => setEmail(text)} placeholder='Email'></TextInput>
       </View>
       <View>
         <Pressable onPress={handleChooseImage}>
@@ -149,6 +131,12 @@ function PatientMessagesEdit({patient, handleCancelEdit}) {
         </Pressable>
       </View>
     </View>
+    <TextInput  style={styles.textInput}
+        placeholder="Password"
+        secureTextEntry
+        defaultValue={password}
+        onChangeText={setPassword}
+    />
     <View style={{flexDirection: 'row'}}>
       <Pressable style={globalStyles.button} onPress={handleSaveEdits}>
         {isSaving
@@ -370,7 +358,19 @@ const styles = StyleSheet.create({
   }, patientThumbnail: {
     width: 90,
     height: 90,
-  },
+  }, textInput: {
+    flexGrow: 1,
+    minWidth: 0,
+    flexBasis: 0,
+
+    borderColor: 'gray',
+    borderWidth: 1,
+    
+    height: 40,
+    width: '100%',
+    padding: 10,
+    zIndex: 1,
+  }
 });
 
 export default ClinicianPatientsScreen;
