@@ -26,7 +26,8 @@ const firebaseConfig = {
 const uninitialized = getApps().length === 0;
 export const app = uninitialized ? initializeApp(firebaseConfig) : getApp();
 export const db = getFirestore(app);
-export const storage = getStorage(app);
+export const storage = getStorage(app, 'gs://facial-analytics-f8b9e.appspot.com');
+export const profilesStorage = getStorage(app, 'gs://facial-analytics-f8b9e');
 export const auth = uninitialized ?  initializeAuth(app, authConfig) : getAuth();
 
 // Credit to "devnull69" of https://stackoverflow.com/users/1030974/devnull69

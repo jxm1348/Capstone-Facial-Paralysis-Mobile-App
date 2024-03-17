@@ -16,14 +16,27 @@ import { query, collection, where, deleteDoc, doc, onSnapshot, updateDoc } from 
 import ClinicianNavBar from '../components/ClinicianNavBar';
 import UnreadBadge from '../components/UnreadBadge';
 import globalStyles from '../globalStyles';
-import { auth, db } from '../state.js';
+import { auth, db, profilesStorage } from '../state.js';
+import { getDownloadURL, ref } from 'firebase/storage';
 
 function PatientsSkeleton() {
   return (<Text>Loading...</Text>);
 }
 
 function PatientMessagesEdit({patient, handleCancelEdit}) {
-  const [ profilePicture, setProfilePicture ] = useState(() => ({uri: patient.thumbnail}));
+  const [ profileSource, setProfileSource ] = useState(undefined);
+  useEffect(() => {
+    if (typeof patient.thumbnail === 'string') {
+      setProfileSource({uri: patient.thumbnail});
+    } else if (patient.thumbnail.thumbnailVersion === 1) {
+      const thumbnailRef = ref(profilesStorage, `profiles/${patient.id}/${patient.thumbnail.name}`);
+      getDownloadURL(thumbnailRef).then(uri => {
+        if (profileSource === undefined) setProfileSource({uri})
+      });
+    }
+  }, []);
+  const [ shouldUpdateProfile, setShouldUpdateProfile ] = useState(false);
+
   const [ displayName, setDisplayName ] = useState(patient.name);
   const [ email, setEmail ] = useState(patient.email);
   const [ password, setPassword ] = useState(undefined);
@@ -118,7 +131,8 @@ function PatientMessagesEdit({patient, handleCancelEdit}) {
       quality: 1,
     })
     if (!response.canceled) {
-      setProfilePicture(response.assets[0]);
+      setProfileSource({uri:response.assets[0].uri});
+      setShouldUpdateProfile(true);
     }
   };
 
@@ -138,7 +152,7 @@ function PatientMessagesEdit({patient, handleCancelEdit}) {
         <Pressable onPress={handleChooseImage}>
           <Image
             style={styles.patientThumbnail}
-            source={profilePicture}
+            source={profileSource}
           />
           <Ionicons
             style={{
@@ -191,6 +205,16 @@ function PatientMessagesEdit({patient, handleCancelEdit}) {
 
 function PatientMessagesPressable({patient, handleLongPress}) {
   const navigation = useNavigation();
+  const [ profileSource, setProfileSource ] = useState(undefined);
+  useEffect(() => {
+    if (typeof patient.thumbnail === 'string') {
+      setProfileSource({uri: patient.thumbnail});
+    } else if (patient.thumbnail.thumbnailVersion === 1) {
+      const thumbnailRef = ref(profilesStorage, `profiles/${patient.id}/${patient.thumbnail.name}`);
+      getDownloadURL(thumbnailRef).then(uri => setProfileSource({uri}));
+    }
+  }, []);
+
   return (<Pressable
     style={styles.patientContainer}
     onPress={() => navigation.navigate('ClinicianPatient', {id: patient.id, name: patient.name})}
@@ -207,7 +231,7 @@ function PatientMessagesPressable({patient, handleLongPress}) {
     <View>
       <Image
         style={styles.patientThumbnail}
-        source={{ uri: patient.thumbnail }}
+        source={profileSource}
       />
       <UnreadBadge value={patient.unread} />
     </View>
