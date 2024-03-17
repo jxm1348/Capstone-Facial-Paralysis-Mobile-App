@@ -285,7 +285,7 @@ function SearchSortBar({scrollViewLayout, onChangeText, searchAscending, setSear
         <Ionicons
           name={searchAscending ? 'arrow-up-outline' : 'arrow-down-outline'}
           size={32}
-          color="green"
+          color="#2288f0"
         />
       </Pressable>
     </View>
@@ -324,17 +324,20 @@ function ClinicianPatientsScreen() {
   const [ messagesSnapshot, setMessagesSnapshot ] = useState(undefined);
 
   const [ search, setSearch ] = useState("");
+  const [ showAllAccounts, setShowAllAccounts ] = useState(false);
 
   const [ scrollViewLayout, setScrollViewLayout ] = useState(undefined);
   const [ searchAscending, setSearchAscending ] = useState(true);
   const [ sortBy, setSortBy ] = useState("date");
 
   useEffect(() => onSnapshot(
-    query(
+    showAllAccounts
+    ? collection(db, 'users')
+    : query(
       collection(db, 'users'),
       where('clinicianUid', '==', auth.currentUser.uid)
     ), setUsersSnapshot)
-  , []);
+  , [showAllAccounts]);
   
   useEffect(() => onSnapshot(
     query(
@@ -366,10 +369,13 @@ function ClinicianPatientsScreen() {
   return (<View style={{flexGrow: 1, }}>
     <ScrollView style={{flexGrow: 1, flexBasis: 0, }} onLayout={event => setScrollViewLayout(event.nativeEvent.layout)}>
       <View style={{marginHorizontal: 40, }}>
-        
-      <Text style={globalStyles.h1} id='text-patients-header'>Patients</Text>
-      <SearchSortBar onChangeText={setSearch} {...{scrollViewLayout, searchAscending, setSearchAscending, sortBy, setSortBy}} />
-      <PatientsView {...{patients, search, searchAscending, sortBy}} />
+        <Text style={globalStyles.h1} id='text-patients-header'>Patients</Text>
+        <SearchSortBar onChangeText={setSearch} {...{scrollViewLayout, searchAscending, setSearchAscending, sortBy, setSortBy}} />
+        <Pressable style={[globalStyles.button, {justifyContent: 'space-between'}]} onPress={() => setShowAllAccounts(!showAllAccounts)}>
+          <Text style={globalStyles.buttonText}>{showAllAccounts ? 'Show Only My Patients' : 'Show All Accounts'}</Text>
+          <Ionicons name={showAllAccounts ? "eye-off-outline" : "eye-outline"} size={32} color="#fff" />
+        </Pressable>
+        <PatientsView {...{patients, search, searchAscending, sortBy}} />
       </View>
     </ScrollView>
     <ClinicianNavBar />
