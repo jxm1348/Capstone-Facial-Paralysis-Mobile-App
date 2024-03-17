@@ -15,6 +15,8 @@ const PatientCreationScreen = ({navigation}) => {
   const [userType, setUserType] = useState('Patient');
   const [profilePicture, setProfilePicture] = useState(null);
 
+  const [ warning, setWarning ] = useState(undefined);
+
   const handleCreation = async () => {
     const token = await auth.currentUser.getIdToken();
     // console.log("My token is ", token);
@@ -35,9 +37,13 @@ const PatientCreationScreen = ({navigation}) => {
     });
 
     const bodyText = await userResult.text();
-    console.log(userResult.status, userResult.statusText);
-    console.log(Object.fromEntries(userResult.headers));
-    console.log('Body: ', bodyText);
+    if (userResult.status !== 200) {
+      console.log(userResult.status, userResult.statusText);
+      console.log(Object.fromEntries(userResult.headers));
+      console.log('Body: ', bodyText);
+      setWarning(bodyText);
+      return;
+    }
     
     const userData = {
       email,
@@ -66,22 +72,23 @@ const PatientCreationScreen = ({navigation}) => {
 
   return (<View style={{flexGrow: 1, gap: 6, margin: 6,}}>
     <View style={{flexGrow: 1}}>
+      {warning && <Text style={{backgroundColor: '#d00', color: '#fff'}}>{warning}</Text>}
       <TextInput
         placeholder="Name"
         value={name}
-        onChangeText={setName}
+        onChangeText={text => {setWarning(undefined); setName(text);}}
         autoFocus={true}
       />
       <TextInput
         placeholder="Email"
         value={email}
-        onChangeText={setEmail}
+        onChangeText={text => {setWarning(undefined); setEmail(text);}}
       />
       <TextInput
         placeholder="Password"
         secureTextEntry
         value={password}
-        onChangeText={setPassword}
+        onChangeText={text => {setWarning(undefined); setPassword(text);}}
       />
       <Picker
         selectedValue={userType}
