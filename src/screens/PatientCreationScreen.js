@@ -1,12 +1,12 @@
 import { doc, setDoc } from 'firebase/firestore';
 import { useState } from 'react';
-import { Image, View, TextInput, Pressable, Text } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
+import { View, TextInput, Pressable, Text, } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 
 import { auth, db } from '../state';
 import globalStyles from '../globalStyles';
 import ClinicianNavBar from '../components/ClinicianNavBar';
+import PreviewImagePicker from '../components/PreviewImagePicker';
 
 const PatientCreationScreen = ({navigation}) => {
   const [name, setName] = useState('');
@@ -57,52 +57,47 @@ const PatientCreationScreen = ({navigation}) => {
     navigation.navigate('ClinicianPatients');
   };
 
-  const handleChooseImage = async () => {
-    const response = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    })
-    // console.log(response);
-    if (!response.canceled) {
-      setProfilePicture(response.assets[0]);
-    }
+  // response is of type https://docs.expo.dev/versions/latest/sdk/imagepicker/#imagepickerresult
+  //  which has member assets : ImagePickerAsset[] https://docs.expo.dev/versions/latest/sdk/imagepicker/#imagepickerasset
+  const onImagePickerResult = imagePickerResult => {
+    setProfilePicture(imagePickerResult.assets[0]);
   };
 
   return (<View style={{flexGrow: 1, gap: 6, margin: 6,}}>
     <View style={{flexGrow: 1}}>
-      {warning && <Text style={{backgroundColor: '#d00', color: '#fff'}}>{warning}</Text>}
-      <TextInput
-        placeholder="Name"
-        value={name}
-        onChangeText={text => {setWarning(undefined); setName(text);}}
-        autoFocus={true}
-      />
-      <TextInput
-        placeholder="Email"
-        value={email}
-        onChangeText={text => {setWarning(undefined); setEmail(text);}}
-      />
-      <TextInput
-        placeholder="Password"
-        secureTextEntry
-        value={password}
-        onChangeText={text => {setWarning(undefined); setPassword(text);}}
-      />
-      <Picker
-        selectedValue={userType}
-        onValueChange={(itemValue) => setUserType(itemValue)}>
-        <Picker.Item label="Patient" value="Patient" />
-        <Picker.Item label="Clinician" value="Clinician" />
-      </Picker>
-      <Pressable style={globalStyles.button} onPress={handleChooseImage}>
-        <Text style={globalStyles.buttonText}>Choose Profile Picture</Text>
-      </Pressable>
-      {profilePicture && <Image 
-          source={{uri: profilePicture.uri}}
-          style={{width:90, height:90, alignSelf: 'center'}}
-      />}
+      {warning && <Text style={{backgroundColor: '#d00', color: '#fff', padding: 12, borderRadius: 3, marginBottom: 6}}>{warning}</Text>}  
+      <View style={{flexDirection: 'row'}}>
+        <View style={{flexGrow: 1}}>
+          <TextInput
+            placeholder="Name"
+            value={name}
+            onChangeText={text => {setWarning(undefined); setName(text);}}
+            autoFocus={true}
+          />
+          <TextInput
+            placeholder="Email"
+            value={email}
+            onChangeText={text => {setWarning(undefined); setEmail(text);}}
+          />
+          <TextInput
+            placeholder="Password"
+            secureTextEntry
+            value={password}
+            onChangeText={text => {setWarning(undefined); setPassword(text);}}
+          />
+        </View>
+        <PreviewImagePicker image={profilePicture} onImagePickerResult={onImagePickerResult} />
+      </View>
+      <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <Text>User Type: </Text>
+        <Picker
+          style={{flexGrow: 1}}
+          selectedValue={userType}
+          onValueChange={(itemValue) => setUserType(itemValue)}>
+          <Picker.Item label="Patient" value="Patient" />
+          <Picker.Item label="Clinician" value="Clinician" />
+        </Picker>
+      </View>
       <Pressable style={globalStyles.button} onPress={handleCreation}>
         <Text style={globalStyles.buttonText}>Create Account</Text>
       </Pressable>
