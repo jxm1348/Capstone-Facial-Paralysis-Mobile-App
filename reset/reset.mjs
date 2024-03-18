@@ -67,9 +67,9 @@ const defaultUsers = {
     'gRnnZGMDUOOThH8Jdbfu': {roles: ['a', 'c'], clinicianUid: null, name:'Meredith Grey', email: "mgrey@gmail.com", thumbnail: placeholderThumbnail, latestMessage: null},
     'mSz5ZmtDK6KmqxK7NN5Q': {roles: ['c'], clinicianUid: null, name:'Cristina Yang', email: "cyang@gmail.com", thumbnail: placeholderThumbnail, latestMessage: null},
     'QSQIUuX0RHfOD2KStyks': {roles: ['c'], clinicianUid: null, name:'Teddy Altman', email: "taltman@gmail.com", thumbnail: placeholderThumbnail, latestMessage: null},
-    'K8bhUx2Hqv2LjfP4BsKy': {roles: ['p'], clinicianUid: 'gRnnZGMDUOOThH8Jdbfu', name:'Mark Peschel', email: "mpeschel10@gmail.com", thumbnail: {thumbnailVersion: 1, name: 'profile.jpg'}, latestMessage: '2024-01-20'},
-    '5NEvyWyAES1DVuuJ7BDZ': {roles: ['p'], clinicianUid: 'mSz5ZmtDK6KmqxK7NN5Q', name:'jxm', email: "jxm@gmail.com", thumbnail: {thumbnailVersion: 1, name: 'profile.png'}, latestMessage: '2024-02-14'},
-    'lSHYQROPdgk7kJTsZxJu': {roles: ['p'], clinicianUid: 'gRnnZGMDUOOThH8Jdbfu', name:'Josh Carson', email: "jcarson@gmail.com", thumbnail: {thumbnailVersion: 1, name: 'profile.jpg'}, latestMessage: '2024-01-19'},
+    'K8bhUx2Hqv2LjfP4BsKy': {roles: ['p'], clinicianUid: 'gRnnZGMDUOOThH8Jdbfu', name:'Mark Peschel', email: "mpeschel10@gmail.com", thumbnail: {thumbnailVersion: 1, name: 'profile_180x180.jpg'}, latestMessage: '2024-01-20'},
+    '5NEvyWyAES1DVuuJ7BDZ': {roles: ['p'], clinicianUid: 'mSz5ZmtDK6KmqxK7NN5Q', name:'jxm', email: "jxm@gmail.com", thumbnail: {thumbnailVersion: 1, name: 'profile_180x180.png'}, latestMessage: '2024-02-14'},
+    'lSHYQROPdgk7kJTsZxJu': {roles: ['p'], clinicianUid: 'gRnnZGMDUOOThH8Jdbfu', name:'Josh Carson', email: "jcarson@gmail.com", thumbnail: {thumbnailVersion: 1, name: 'profile_180x180.jpg'}, latestMessage: '2024-01-19'},
     'SMHTCPm51vgYphdkDVly': {roles: ['p'], clinicianUid: 'gRnnZGMDUOOThH8Jdbfu', name:'Owen Wilson', email: "owilson@gmail.com", thumbnail: placeholderThumbnail, latestMessage: null},
     'mI0cChVwn0AzBN0AhJXv': {roles: ['p'], clinicianUid: 'gRnnZGMDUOOThH8Jdbfu', name:'Robert Downey Junior', email: "rjunior@gmail.com", thumbnail: placeholderThumbnail, latestMessage: '2024-01-06'},
     'wfDM8ya0ModdQEP3RIsm': {roles: ['p'], clinicianUid: 'gRnnZGMDUOOThH8Jdbfu', name:'John doe', email: "jdoe@gmail.com", thumbnail: placeholderThumbnail, latestMessage: '2024-01-19'},
@@ -294,6 +294,17 @@ async function syncBucket(bucketName) {
             if (localPaths[remoteOriginalImagePath]) continue;
             // console.log('Expected source does not exist');
         }
+
+        if (remotePath.includes('profiles')) {
+            // console.log('Considering remote thumbnail', remotePath);
+            const parsedRemotePath = path.parse(remotePath);
+            const originalImageName = parsedRemotePath.name.split('_')[0] + parsedRemotePath.ext;
+            
+            const remoteOriginalImagePath = path.join(parsedRemotePath.dir, originalImageName);
+            // console.log('Expected source is', remoteOriginalImagePath);
+            if (localPaths[remoteOriginalImagePath]) continue;
+            // console.log('Expected source does not exist');
+        }
         
         console.log('Deleting', remotePath);
         await remoteRoot.file(remotePath).delete();
@@ -301,6 +312,18 @@ async function syncBucket(bucketName) {
 
     for (const localPath in localPaths) {
         if (!remotePaths[localPath]) {
+            if (localPath.includes('profiles')) {
+                // console.log('Considering local pre_thumbnail', localPath);
+                const parsedLocalPath = path.parse(localPath);
+                const remoteImageName = parsedLocalPath.name + '_180x180' + parsedLocalPath.ext;
+                
+                const remoteOriginalImagePath = path.join(parsedLocalPath.dir, remoteImageName);
+                // console.log('Expected remote is', remoteOriginalImagePath);
+                if (remotePaths[remoteOriginalImagePath]) continue;
+                // console.log('Expected remote does not exist');
+                process.exit();
+            }
+            
             console.log('Uploading', localPath);
             await remoteRoot.upload(
                 path.join(localRoot, localPath), {destination:localPath}

@@ -3,10 +3,25 @@ import { useState } from 'react';
 import { View, TextInput, Pressable, Text, } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 
-import { auth, db } from '../state';
+import { auth, db, profilesStorage, URIToBlob } from '../state';
 import globalStyles from '../globalStyles';
 import ClinicianNavBar from '../components/ClinicianNavBar';
 import PreviewImagePicker from '../components/PreviewImagePicker';
+
+import { URIToExtension } from '../constants.js';
+import { ref, uploadBytes } from 'firebase/storage';
+
+const saveProfilePicture = async (uid, uri) => {
+  console.log("Saving uri", uri);
+  const imageExtension = URIToExtension(uri);
+  console.log("Got extension", imageExtension);
+  const uriBlob = await URIToBlob(uri);
+  await uploadBytes(
+    ref(profilesStorage, `profiles/${uid}/profile.${imageExtension}`),
+    uriBlob
+  );
+  return `profile_180x180.${imageExtension}`;
+}
 
 const PatientCreationScreen = ({navigation}) => {
   const [name, setName] = useState('');
@@ -44,16 +59,22 @@ const PatientCreationScreen = ({navigation}) => {
       setWarning(bodyText);
       return;
     }
+    const newUid = JSON.parse(bodyText);
+
+    let thumbnail = null;
+    if (profilePicture) {
+      thumbnail = {thumbnailVersion: 1, name: await saveProfilePicture(newUid, profilePicture.uri)}
+    }
     
     const userData = {
       email,
       name,
       clinicianUid: userType === 'Patient' ? auth.currentUser.uid : null,
       latestMessage: null,
-      thumbnail: profilePicture ? profilePicture.uri : null, // Pass profile picture URI if available
+      thumbnail,
     };
 
-    await setDoc(doc(db, 'users', JSON.parse(bodyText)), userData);
+    await setDoc(doc(db, 'users', newUid), userData);
     navigation.navigate('ClinicianPatients');
   };
 

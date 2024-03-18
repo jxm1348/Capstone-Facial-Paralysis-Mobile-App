@@ -12,15 +12,7 @@ import globalStyles from '../globalStyles';
 import { useIsFocused } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
 
-function URIToExtension(uri) {
-  if (uri.startsWith('data:image/png;') || uri.endsWith('.png')) {
-    return 'png';
-  } else if (uri.startsWith('data:image/jpg;') || uri.endsWith('.jpg')) {
-    return 'jpg';
-  } else {
-    return uri.split('.').pop();
-  }
-}
+import { URIToExtension } from '../constants.js';
 
 let awfulHackyResolutionCount = 0;
 const aspectRatio = [4, 3]; // height x width
