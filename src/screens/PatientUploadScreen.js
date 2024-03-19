@@ -7,12 +7,10 @@ import { Bar as ProgressBar } from 'react-native-progress';
 
 
 import { imageKeyOrder } from '../constants';
-import state, { URIToBlob, auth, db, fetchUniqueInt, storage } from '../state.js';
+import state, { URIToBlob, URIToExtension, auth, db, fetchUniqueInt, storage } from '../state.js';
 import globalStyles from '../globalStyles';
 import { useIsFocused } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
-
-import { URIToExtension } from '../constants.js';
 
 let awfulHackyResolutionCount = 0;
 const aspectRatio = [4, 3]; // height x width
