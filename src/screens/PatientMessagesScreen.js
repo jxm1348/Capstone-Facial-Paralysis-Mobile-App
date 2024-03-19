@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { View, Text, FlatList } from 'react-native';
-import { getDocs, collection, query, where, or, and } from 'firebase/firestore';
+import { collection, query, where, or, and, onSnapshot } from 'firebase/firestore';
 
 import { FlexNavigationBar } from '../components/NavigationBar';
 import NewMessageBar from '../components/NewMessageBar';
@@ -26,24 +26,6 @@ function PatientMessages({messages}) {
     />);
 }
 
-function curryFetchMessages({withUid, setMessages}) {
-  return () => {
-    getDocs(query(
-      collection(db, 'messages'),
-      or(
-        and(where('from', '==', auth.currentUser.uid), where('to', '==', withUid)),
-        and(where('from', '==', withUid), where('to', '==', auth.currentUser.uid)),
-      )
-    )).then(querySnapshot => {
-      setMessages(querySnapshot.docs.map(document => {
-        const result = document.data();
-        result.id = document.id;
-        return result;
-      }).sort(compareDateDescending))
-    })
-  };
-}
-
 const PatientMessagesScreen = ({ navigation, route }) => {
   const { withUid } = route.params;
   const buttons = [
@@ -51,7 +33,22 @@ const PatientMessagesScreen = ({ navigation, route }) => {
   ];
 
   const [ messages, setMessages ] = useState(null);
-  useEffect(curryFetchMessages({withUid, setMessages}), []);
+  useEffect(() => onSnapshot(
+    query(
+      collection(db, 'messages'),
+      or(
+        and(where('from', '==', auth.currentUser.uid), where('to', '==', withUid)),
+        and(where('from', '==', withUid), where('to', '==', auth.currentUser.uid)),
+      )
+    ),
+    querySnapshot => {
+      setMessages(querySnapshot.docs.map(document => {
+        const result = document.data();
+        result.id = document.id;
+        return result;
+      }).sort(compareDateDescending))
+    }
+  ), []);
 
   return (
     <View style={{flexGrow: 1}}>
