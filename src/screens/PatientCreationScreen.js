@@ -1,27 +1,12 @@
 import { doc, setDoc } from 'firebase/firestore';
 import { useState } from 'react';
-import { View, TextInput, Pressable, Text, } from 'react-native';
+import { View, TextInput, Pressable, Text } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 
-import { auth, db, profilesStorage, URIToBlob } from '../state';
+import { auth, db, saveProfilePicture } from '../state';
 import globalStyles from '../globalStyles';
 import ClinicianNavBar from '../components/ClinicianNavBar';
 import PreviewImagePicker from '../components/PreviewImagePicker';
-
-import { URIToExtension } from '../constants.js';
-import { ref, uploadBytes } from 'firebase/storage';
-
-const saveProfilePicture = async (uid, uri) => {
-  console.log("Saving uri", uri);
-  const imageExtension = URIToExtension(uri);
-  console.log("Got extension", imageExtension);
-  const uriBlob = await URIToBlob(uri);
-  await uploadBytes(
-    ref(profilesStorage, `profiles/${uid}/profile.${imageExtension}`),
-    uriBlob
-  );
-  return `profile_180x180.${imageExtension}`;
-}
 
 const PatientCreationScreen = ({navigation}) => {
   const [name, setName] = useState('');

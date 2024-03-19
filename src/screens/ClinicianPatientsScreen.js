@@ -6,7 +6,6 @@ import {
   Platform,
 } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import * as ImagePicker from 'expo-image-picker';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 import { CircleSnail as ProgressCircleSnail } from 'react-native-progress';
@@ -16,8 +15,9 @@ import { query, collection, where, deleteDoc, doc, onSnapshot, updateDoc } from 
 import ClinicianNavBar from '../components/ClinicianNavBar';
 import UnreadBadge from '../components/UnreadBadge';
 import globalStyles from '../globalStyles';
-import { auth, db, profilesStorage } from '../state.js';
+import { auth, db, profilesStorage, saveProfilePicture } from '../state.js';
 import { getDownloadURL, ref } from 'firebase/storage';
+import PreviewImagePicker from '../components/PreviewImagePicker.js';
 
 function PatientsSkeleton() {
   return (<Text>Loading...</Text>);
@@ -35,6 +35,7 @@ function PatientMessagesEdit({patient, handleCancelEdit}) {
       });
     }
   }, []);
+
   const [ shouldUpdateProfile, setShouldUpdateProfile ] = useState(false);
 
   const [ displayName, setDisplayName ] = useState(patient.name);
@@ -69,6 +70,10 @@ function PatientMessagesEdit({patient, handleCancelEdit}) {
       // console.log('Server body is ', serverBody);
       
       const docUpdate = {name: displayName, email};
+      if (shouldUpdateProfile) {
+        docUpdate.thumbnail = {thumbnailVersion: 1, name: await saveProfilePicture(patient.id, profileSource.uri)}
+      }
+      
       if (shouldUpdateClinician) {
         const clinicianParameters = new URLSearchParams({
           token: await auth.currentUser.getIdToken(),
@@ -123,17 +128,9 @@ function PatientMessagesEdit({patient, handleCancelEdit}) {
     setIsDeleting(false);
   };
 
-  const handleChooseImage = async () => {
-    const response = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    })
-    if (!response.canceled) {
-      setProfileSource({uri:response.assets[0].uri});
-      setShouldUpdateProfile(true);
-    }
+  const onImagePickerResult = imagePickerResult => {
+    setProfileSource(imagePickerResult.assets[0]);
+    setShouldUpdateProfile(true);
   };
 
   return (<View
@@ -148,24 +145,7 @@ function PatientMessagesEdit({patient, handleCancelEdit}) {
         <TextInput style={styles.textInput} defaultValue={displayName} onChangeText={text => setDisplayName(text)} placeholder='Username'></TextInput>
         <TextInput style={styles.textInput} defaultValue={email} onChangeText={text => setEmail(text)} placeholder='Email'></TextInput>
       </View>
-      <View>
-        <Pressable onPress={handleChooseImage}>
-          <Image
-            style={styles.patientThumbnail}
-            source={profileSource}
-          />
-          <Ionicons
-            style={{
-              position: 'absolute',
-              left: (90 - 32) / 2,
-              top: (90 - 32) / 2,
-            }}
-            name="pencil-outline"
-            size={32}
-            color="#ff0"
-          />
-        </Pressable>
-      </View>
+      <PreviewImagePicker onImagePickerResult={onImagePickerResult} image={profileSource} />
     </View>
     <TextInput  style={styles.textInput}
         placeholder="New Password"

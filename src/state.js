@@ -3,7 +3,7 @@
 // import firebase from '@react-native-firebase/app';
 
 import { initializeApp, getApp, getApps } from 'firebase/app';
-import { getStorage } from 'firebase/storage';
+import { getStorage, ref, uploadBytes } from 'firebase/storage';
 import { getAuth, signInWithEmailAndPassword, initializeAuth, } from 'firebase/auth';
 import {
     getFirestore,
@@ -79,6 +79,16 @@ export async function URIToBlob(URI) {
     }
 }
   
+export function URIToExtension(uri) {
+    if (uri.startsWith('data:image/png;') || uri.endsWith('.png')) {
+        return 'png';
+    } else if (uri.startsWith('data:image/jpg;') || uri.endsWith('.jpg')) {
+        return 'jpg';
+    } else {
+        return uri.split('.').pop();
+    }
+}
+
 export function getUnreadPatient(patient) {
     let total = 0;
     for (const key in patient.messages) {
@@ -145,6 +155,19 @@ export const login = async (email, password) => {
     state.idTokenResult = idTokenResult;
     state.clinicianUid = userData.clinicianUid;
 }
+
+export const saveProfilePicture = async (uid, uri) => {
+    // console.log("Saving uri", uri);
+    const imageExtension = URIToExtension(uri);
+    // console.log("Got extension", imageExtension);
+    const uriBlob = await URIToBlob(uri);
+    await uploadBytes(
+      ref(profilesStorage, `profiles/${uid}/profile.${imageExtension}`),
+      uriBlob
+    );
+    return `profile_180x180.${imageExtension}`;
+}
+  
 
 export const setPatientRead = async (patient) => {
     const q = query(
