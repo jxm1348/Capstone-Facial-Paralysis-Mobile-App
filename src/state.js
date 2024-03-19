@@ -3,7 +3,7 @@
 // import firebase from '@react-native-firebase/app';
 
 import { initializeApp, getApp, getApps } from 'firebase/app';
-import { getStorage, ref, uploadBytes } from 'firebase/storage';
+import { deleteObject, getStorage, list, ref, uploadBytes } from 'firebase/storage';
 import { getAuth, signInWithEmailAndPassword, initializeAuth, } from 'firebase/auth';
 import {
     getFirestore,
@@ -156,18 +156,30 @@ export const login = async (email, password) => {
     state.clinicianUid = userData.clinicianUid;
 }
 
+export async function tryDeleteOldProfilePictures(dir, currentName) {
+    const { items } = await list(ref(profilesStorage, dir));
+    for (const reference of items) {
+        if (reference.name !== currentName) {
+            console.log("Deleting old profile picture", reference.name);
+            deleteObject(reference);
+        }
+    }
+}
+
 export const saveProfilePicture = async (uid, uri) => {
     // console.log("Saving uri", uri);
     const imageExtension = URIToExtension(uri);
     // console.log("Got extension", imageExtension);
     const uriBlob = await URIToBlob(uri);
+    const newName = `profile.${imageExtension}`;
     await uploadBytes(
-      ref(profilesStorage, `profiles/${uid}/profile.${imageExtension}`),
+      ref(profilesStorage, `profiles/${uid}/${newName}`),
       uriBlob
     );
+
+    tryDeleteOldProfilePictures(`profiles/${uid}`, newName);
     return `profile_180x180.${imageExtension}`;
 }
-  
 
 export const setPatientRead = async (patient) => {
     const q = query(
