@@ -2,9 +2,8 @@ import { useEffect, useState } from 'react';
 import { Text, View, Pressable, ScrollView } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import {
-  getDoc, getDocs,
   doc, collection, query,
-  where, and, or,
+  where, and, or, onSnapshot
 } from 'firebase/firestore';
 
 import globalStyles from '../globalStyles';
@@ -23,12 +22,10 @@ function compareDateDescending(m1, m2) {
 
 
 const ClinicianPatientScreen = ({navigation, route}) => {
-  const isFocused = useIsFocused();
-
   const { id, name } = route.params;
   const patientUid = id;
 
-  const [ patient, setPatient ] = useState(null);
+  const [ patientSnapshot, setPatientSnapshot ] = useState(undefined);
   const [ messages, setMessages ] = useState(undefined);
   
   // The purpose of newMessages is to highlight recent messages.
@@ -38,28 +35,28 @@ const ClinicianPatientScreen = ({navigation, route}) => {
   // Therefore, newMessages has a manually-enforced lifetime
   //  that ends when the screen "loses focus" (someone navigates away).
   const [ newMessages, setNewMessages ] = useState({});
+  
+  useEffect(() => onSnapshot(doc(db, 'users', patientUid), setPatientSnapshot), []);
+  
+  const isFocused = useIsFocused();
   useEffect(() => { if (!isFocused) {
+    // console.log("IsFocused event");
     messages.forEach(message => message.new = false);
     setNewMessages({});
   }}, [isFocused]);
-  
-  useEffect(() => {
-    getDoc(doc(db, 'users', patientUid))
-    .then(document => {
-      const result = document.data();
-      result.uid = patientUid;
-      setPatient(result);
-    });
-    
-    getDocs(query(
+
+  useEffect(() => onSnapshot(
+    query(
       collection(db, 'messages'),
       or(
         and(where('from', '==', patientUid), where('to', '==', auth.currentUser.uid),),
         and(where('from', '==', auth.currentUser.uid), where('to', '==', patientUid),),
       )
-    )).then(
-      querySnapshot => {setMessages(
-        querySnapshot.docs.map(document => {
+    ),
+    messagesSnapshot => {
+      // console.log("Snapshot event");
+      setMessages(
+        messagesSnapshot.docs.map(document => {
           const result = document.data();
           result.id = document.id;
           
@@ -68,12 +65,12 @@ const ClinicianPatientScreen = ({navigation, route}) => {
           
           return result;
         })
-      )}
-    )
-  }, []);
-
+      );
+    }
+  ), []);
+  
   let messageComponents;
-  if (patient === null || messages === undefined) {
+  if (messages === undefined) {
     messageComponents = <PatientSkeleton />;
   } else {
     messageComponents = messages
@@ -84,12 +81,12 @@ const ClinicianPatientScreen = ({navigation, route}) => {
         </Pressable>)
       );
 
-    setPatientRead(patient);
+    setPatientRead(patientUid);
   }
   
   return (
     <View style={{flexGrow: 1}}>
-      <Text style={globalStyles.h1}>{name}</Text>
+      <Text style={globalStyles.h1}>{patientSnapshot?.data().name ?? name}</Text>
       <ScrollView style={{flexGrow: 1}}>
         <NewMessageBar toUid={patientUid} />
         <ScrollView style={{flexGrow: 1, marginBottom: 100}} vertical={true} horizontal={true}>

@@ -181,15 +181,16 @@ export const saveProfilePicture = async (uid, uri) => {
     return `profile_180x180.${imageExtension}`;
 }
 
-export const setPatientRead = async (patient) => {
+export const setPatientRead = async (patientUid) => {
     const q = query(
         collection(db, 'messages'),
-        and(where('from', '==', patient.uid), where('to', '==', auth.currentUser.uid)),
+        and(where('from', '==', patientUid), where('to', '==', auth.currentUser.uid)),
     );
     
     const messages = await getDocs(q);
     messages.docs.forEach(document => {
         if (document.data().read) return;
+        // console.log("Updating doc:", document.id);
         updateDoc(doc(db, 'messages', document.id), {read: true});
     });
 }
