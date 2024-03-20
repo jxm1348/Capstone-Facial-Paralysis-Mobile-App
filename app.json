@@ -22,10 +22,16 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.mpeschel10.fa.test.android"
+      "package": "com.mpeschel10.fa.test.android",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "1c52323a-e55a-42d6-ad57-61afe0c5cb50"
+      }
     }
   }
 }

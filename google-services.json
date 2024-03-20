@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1087200042336",
+    "project_id": "facial-analytics-f8b9e",
+    "storage_bucket": "facial-analytics-f8b9e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1087200042336:android:4ceea4c88950ba77f41205",
+        "android_client_info": {
+          "package_name": "com.mpeschel10.fa.test.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1087200042336-pai25utvjod7nnlefsf759k4r2ucthsc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3nAUrvfksApYU80sf2lNdPlBvQKmQQBM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1087200042336-pai25utvjod7nnlefsf759k4r2ucthsc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
