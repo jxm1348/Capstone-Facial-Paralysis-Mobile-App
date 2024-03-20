@@ -2,6 +2,10 @@
 // Try uncommenting the following line, maybe?
 // import firebase from '@react-native-firebase/app';
 
+import * as Notifications from 'expo-notifications'; // Documented https://docs.expo.dev/versions/latest/sdk/notifications/
+import * as Device from 'expo-device';
+import Constants from 'expo-constants';
+
 import { initializeApp, getApp, getApps } from 'firebase/app';
 import { deleteObject, getStorage, list, ref, uploadBytes } from 'firebase/storage';
 import { getAuth, signInWithEmailAndPassword, initializeAuth, } from 'firebase/auth';
@@ -146,6 +150,56 @@ export const fetchUnreadCount = async () => {
     return messagesSnapshot.docs.length;
 }
 
+const registerNotificationsServer = async () => {
+    async function registerForPushNotificationsAsync() {
+      let token;
+    
+      if (Platform.OS === 'android') {
+        Notifications.setNotificationChannelAsync('default', {
+          name: 'default',
+          importance: Notifications.AndroidImportance.MAX,
+          vibrationPattern: [0, 250, 250, 250],
+          lightColor: '#FF231F7C',
+        });
+      }
+    
+      if (Device.isDevice) {
+        const { status: existingStatus } = await Notifications.getPermissionsAsync();
+        let finalStatus = existingStatus;
+        if (existingStatus !== 'granted') {
+          const { status } = await Notifications.requestPermissionsAsync();
+          finalStatus = status;
+        }
+        if (finalStatus !== 'granted') {
+          alert('Failed to get push token for push notification!');
+          return;
+        }
+        console.log('projectId:', Constants.expoConfig.extra.eas.projectId);
+        token = await Notifications.getExpoPushTokenAsync({
+          projectId: Constants.expoConfig.extra.eas.projectId,
+        });
+        console.log(token);
+      } else {
+        alert('Must use physical device for Push Notifications');
+      }
+    
+      return token.data;
+    }
+
+    registerForPushNotificationsAsync().then(token => console.log('My token is ', token));
+}
+
+const registerNotificationsLocal = () => {
+    Notifications.setNotificationHandler({
+        handleNotification: () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: false,
+        }),
+    });
+    console.log("Have set handler");
+}
+
 export const login = async (email, password) => {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const idTokenResult = await userCredential.user.getIdTokenResult();
@@ -154,6 +208,8 @@ export const login = async (email, password) => {
     
     state.idTokenResult = idTokenResult;
     state.clinicianUid = userData.clinicianUid;
+    registerNotificationsLocal();
+    registerNotificationsServer();
 }
 
 export async function tryDeleteOldProfilePictures(dir, currentName) {
