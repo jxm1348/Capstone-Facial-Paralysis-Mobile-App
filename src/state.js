@@ -150,43 +150,42 @@ export const fetchUnreadCount = async () => {
     return messagesSnapshot.docs.length;
 }
 
+const registerPushToken = async (pushToken) => {
+    const idToken = await auth.currentUser.getIdToken();
+    const params = new URLSearchParams({token: idToken});
+    
+    const result = await fetch('https://fa.mpeschel10.com/notifications.json?' + params, {
+      method: 'PUT',
+      body: JSON.stringify(pushToken),
+    });
+
+    console.log('Push notifications result status: ', result.status);
+    console.log('Push notifications result body: ', await result.text());
+}
+
 const registerNotificationsServer = async () => {
-    async function registerForPushNotificationsAsync() {
-      let token;
-    
-      if (Platform.OS === 'android') {
+    if (Platform.OS === 'android') {
         Notifications.setNotificationChannelAsync('default', {
-          name: 'default',
-          importance: Notifications.AndroidImportance.MAX,
-          vibrationPattern: [0, 250, 250, 250],
-          lightColor: '#FF231F7C',
+            name: 'default',
+            importance: Notifications.AndroidImportance.MAX,
+            vibrationPattern: [0, 250, 250, 250],
+            lightColor: '#FF231F7C',
         });
-      }
-    
-      if (Device.isDevice) {
-        const { status: existingStatus } = await Notifications.getPermissionsAsync();
-        let finalStatus = existingStatus;
-        if (existingStatus !== 'granted') {
-          const { status } = await Notifications.requestPermissionsAsync();
-          finalStatus = status;
-        }
-        if (finalStatus !== 'granted') {
-          alert('Failed to get push token for push notification!');
-          return;
-        }
-        console.log('projectId:', Constants.expoConfig.extra.eas.projectId);
-        token = await Notifications.getExpoPushTokenAsync({
-          projectId: Constants.expoConfig.extra.eas.projectId,
-        });
-        console.log(token);
-      } else {
-        alert('Must use physical device for Push Notifications');
-      }
-    
-      return token.data;
     }
 
-    registerForPushNotificationsAsync().then(token => console.log('My token is ', token));
+    const permissionsQuietResult = await Notifications.getPermissionsAsync();
+    if (permissionsQuietResult.status !== 'granted') {
+        const permissionsAskResult = await Notifications.requestPermissionsAsync();
+        if (permissionsAskResult.status !== 'granted') return;
+        // Should do something to remember the choice so we don't pester the user every time they log in
+    }
+    
+    const tokenResult = await Notifications.getExpoPushTokenAsync({
+        projectId: Constants.expoConfig.extra.eas.projectId,
+    });
+    
+    console.log('Registering pushToken', tokenResult.data);
+    await registerPushToken(tokenResult.data);
 }
 
 const registerNotificationsLocal = () => {
@@ -197,7 +196,7 @@ const registerNotificationsLocal = () => {
         shouldSetBadge: false,
         }),
     });
-    console.log("Have set handler");
+    console.log("Have set notifications handler");
 }
 
 export const login = async (email, password) => {
@@ -208,8 +207,10 @@ export const login = async (email, password) => {
     
     state.idTokenResult = idTokenResult;
     state.clinicianUid = userData.clinicianUid;
-    registerNotificationsLocal();
-    registerNotificationsServer();
+    if (Device.isDevice) {
+        registerNotificationsLocal();
+        registerNotificationsServer();
+    }
 }
 
 export async function tryDeleteOldProfilePictures(dir, currentName) {
