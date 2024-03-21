@@ -15,7 +15,11 @@ function Tile3({style, uid, imageName}) {
     const [ uri, setUri ] = useState(undefined);
     useEffect(() => {(async () => {
         const imageRef = ref(storage, `images/${uid}/${imageName}`);
-        setUri(await getDownloadURL(imageRef));
+        try {
+            setUri(await getDownloadURL(imageRef));
+        } catch (error) {
+            
+        }
     })();}, []);
     
     if (uri === undefined) {

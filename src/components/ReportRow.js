@@ -19,7 +19,11 @@ function ReportTile3({uid, imageName}) {
         const imageExtension = imageName.split('.').pop();
         const imagePrefix = imageName.slice(0, imageName.length - imageExtension.length - 1);
         const thumbnailRef = ref(storage, `images/${uid}/thumbnails/${imagePrefix}_90x120.${imageExtension}`);
-        setUri(await getDownloadURL(thumbnailRef));
+        try {
+            setUri(await getDownloadURL(thumbnailRef));
+        } catch (error) {
+            
+        }
     })();}, []);
     
     if (uri === undefined) {

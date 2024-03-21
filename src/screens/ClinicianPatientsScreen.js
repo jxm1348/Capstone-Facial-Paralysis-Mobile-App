@@ -26,13 +26,15 @@ function PatientsSkeleton() {
 function PatientMessagesEdit({patient, handleCancelEdit}) {
   const [ profileSource, setProfileSource ] = useState(undefined);
   useEffect(() => {
-    if (typeof patient.thumbnail === 'string') {
+    if (patient.thumbnail === undefined || patient.thumbnail === null) {
+      return;
+    } else if (typeof patient.thumbnail === 'string') {
       setProfileSource({uri: patient.thumbnail});
     } else if (patient.thumbnail.thumbnailVersion === 1) {
       const thumbnailRef = ref(profilesStorage, `profiles/${patient.id}/${patient.thumbnail.name}`);
       getDownloadURL(thumbnailRef).then(uri => {
         if (profileSource === undefined) setProfileSource({uri})
-      });
+      }).catch(error => {});
     }
   }, []);
 
@@ -187,11 +189,13 @@ function PatientMessagesPressable({patient, handleLongPress}) {
   const navigation = useNavigation();
   const [ profileSource, setProfileSource ] = useState(undefined);
   useEffect(() => {
-    if (typeof patient.thumbnail === 'string') {
+    if (patient.thumbnail === undefined || patient.thumbnail === null) {
+      return;
+    } else if (typeof patient.thumbnail === 'string') {
       setProfileSource({uri: patient.thumbnail});
-    } else if (patient.thumbnail.thumbnailVersion === 1) {
+    } else if (patient.thumbnail?.thumbnailVersion === 1) {
       const thumbnailRef = ref(profilesStorage, `profiles/${patient.id}/${patient.thumbnail.name}`);
-      getDownloadURL(thumbnailRef).then(uri => setProfileSource({uri}));
+      getDownloadURL(thumbnailRef).then(uri => setProfileSource({uri})).catch(error => {});
     }
   }, []);
 
@@ -209,10 +213,14 @@ function PatientMessagesPressable({patient, handleLongPress}) {
       }
     </View>
     <View>
-      <Image
-        style={styles.patientThumbnail}
-        source={profileSource}
-      />
+      {
+        profileSource
+        ? <Image
+          style={styles.patientThumbnail}
+          source={profileSource}
+        />
+        : <View style={styles.patientThumbnail} />
+      }
       <UnreadBadge value={patient.unread} />
     </View>
   </Pressable>);
