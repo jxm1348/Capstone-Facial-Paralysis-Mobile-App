@@ -1,3 +1,5 @@
+import { Platform } from 'react-native';
+
 // I have no idea how to actually build for mobile.
 // Try uncommenting the following line, maybe?
 // import firebase from '@react-native-firebase/app';
@@ -55,11 +57,11 @@ function dataURIToBlob(dataURI) {
 // Credit to "Fiston Emmanuel" of https://stackoverflow.com/users/12431576/fiston-emmanuel
 // Via https://stackoverflow.com/a/75421175/6286797
 const addressURIToBlob = async (uri) => {
-    console.log("Launching new XMLHttpRequest to resolve uri", uri);
+    // console.log("Launching new XMLHttpRequest to resolve uri", uri);
     const blob = await new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.onload = function () {
-        console.log("Resolving on", xhr.response);
+        // console.log("Resolving on", xhr.response); // THIS LINE IS VERY BAD and causes crashes when app is compiled since xhr.response is like 10 MB
         resolve(xhr.response);
       };
       xhr.onerror = function (e) {
@@ -68,14 +70,14 @@ const addressURIToBlob = async (uri) => {
       xhr.responseType = "blob";
       xhr.open("GET", uri, true);
       xhr.send(null);
-      console.log("xhr sent");
+    //   console.log("xhr sent");
     });
   
     return blob;
 };
 
 export async function URIToBlob(URI) {
-    console.log("Considering URI that starts with", URI.slice(0, 60));
+    // console.log("Considering URI that starts with", URI.slice(0, 60));
     if (URI.startsWith("data")) {
         return dataURIToBlob(URI);
     } else {
