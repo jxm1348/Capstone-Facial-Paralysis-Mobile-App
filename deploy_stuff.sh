@@ -19,14 +19,20 @@ export ANDROID_HOME="$HOME/Android/Sdk"
 # For publishing to google play store, I guess?
 [ ! -f android/app/facial-analytics-test.keystore ] && keytool -genkeypair -v -storetype PKCS12 -keystore secrets/facial-analytics-test.keystore -alias test -keyalg RSA -keysize 2048 -validity 10000
 
-npx expo prebuild -p android
-cd android
-sh ./gradlew assembleRelease
-SUCCESS=$?
-cd ..
+SUCCESS="-1"
+npm install &&
+npx expo prebuild -p android && {
+    # [ ! -f android/app/facial-analytics-test.keystore ] && mkdir -p android/app/ && keytool -genkeypair -v -storetype PKCS12 -keystore android/app/facial-analytics-test.keystore -alias test -keyalg RSA -keysize 2048 -validity 10000
+    true
+} && cd android && {
+    sh ./gradlew assembleRelease &&
+    SUCCESS=$?
+    cd ..
+}
 
 [ "$SUCCESS" = "0" ] && {
     echo ""
-    echo "Built android apk. Location should be android/app/build/outputs/apk/release/app-release.apk"
+    echo "Built android apk. Try installing it with:"
+    echo "adb install android/app/build/outputs/apk/release/app-release.apk"
     echo "BTW, I was able to install this without the app store by loading it on my phone, then \"opening\" it, then enabling the install unknown apps permission. -M 2024-03-01"
 }

@@ -32,6 +32,9 @@
       "eas": {
         "projectId": "1c52323a-e55a-42d6-ad57-61afe0c5cb50"
       }
-    }
+    },
+    "plugins": [
+      "react-native-vision-camera"
+    ]
   }
 }
