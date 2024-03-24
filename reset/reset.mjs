@@ -321,7 +321,7 @@ async function syncBucket(bucketName) {
                 // console.log('Expected remote is', remoteOriginalImagePath);
                 if (remotePaths[remoteOriginalImagePath]) continue;
                 // console.log('Expected remote does not exist');
-                process.exit();
+                // process.exit();
             }
             
             console.log('Uploading', localPath);
@@ -346,7 +346,7 @@ await signInWithEmailAndPassword(auth, 'mgrey@gmail.com', 'password');
 await Promise.all([
     ...Object.keys(tables).map(name => resetTable(name)),
     resetStorage(),
-    resetUsers(),
+    // resetUsers(),
 ]);
 
 // Closing the database connection is necessary so node.js doesn't hang after the reset function is done.

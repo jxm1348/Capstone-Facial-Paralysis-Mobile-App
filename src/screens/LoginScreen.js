@@ -92,8 +92,8 @@ const LoginScreen = ({ navigation }) => {
   const debugButtons = [];
   if (state.demoIsDebug) {
     debugButtons.push(<Pressable key={0} style={[globalStyles.button, styles.button]} onPress={async () => {
-      await login('mpeschel10@gmail.com', 'password');
-      navigation.navigate('PatientCamera', {imageKey: 'eyebrows-up'});
+      // await login('mpeschel10@gmail.com', 'password');
+      navigation.navigate('Patient Face Camera', {imageKey: 'eyes-closed'});
     }}>
       <Text style={globalStyles.buttonText}>Debug Camera</Text>
     </Pressable>);
