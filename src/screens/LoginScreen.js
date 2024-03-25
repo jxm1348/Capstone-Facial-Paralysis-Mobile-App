@@ -1,13 +1,15 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import {
   StyleSheet, 
   TextInput, 
   View, 
   Alert,
   Pressable,
-  Text, 
+  Text,
+  Switch, 
 } from 'react-native';
 import { CircleSnail as ProgressCircleSnail } from 'react-native-progress';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import globalStyles from '../globalStyles';
 import state, { login, auth } from '../state.js';
@@ -32,6 +34,7 @@ function getEmailErrorText(email) {
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
 
   const emailInput = useRef();
   const passwordInput = useRef();
@@ -40,9 +43,27 @@ const LoginScreen = ({ navigation }) => {
   const [resetEmailActive, setResetEmailActive] = useState(false);
   const [resetEmailSent, setResetEmailSent] = useState(false);
 
+  useEffect(() => {
+    const retrieveStoredEmail = async () => {
+      try {
+        const storedEmail = await AsyncStorage.getItem('storedEmail');
+        if (storedEmail) {
+          setEmail(storedEmail);
+        }
+      } catch (error) {
+        console.error('Error retrieving stored email:', error);
+      }
+    };
+
+    retrieveStoredEmail();
+  }, []);
+
   const handleLogin = async () => {
     try {
       await login(email, password);
+      if (rememberMe) {
+        await AsyncStorage.setItem('storedEmail', email);
+      }
     } catch (error) {
       console.log(error);
       console.log(error.code, error.message);
@@ -117,6 +138,7 @@ const LoginScreen = ({ navigation }) => {
     </Pressable>);
   }
 
+  
   return (
     <View style={styles.container}>
       <View style={{alignItems: 'center', borderRadius: 5, backgroundColor: emailErrorText && '#d00', padding: 5}}>
@@ -135,7 +157,6 @@ const LoginScreen = ({ navigation }) => {
           onChangeText={(text) => {setEmail(text); setEmailErrorText(undefined)}}
         />
       </View>
-      
       <TextInput
         id="text-input-password"
         ref={passwordInput}
@@ -147,6 +168,10 @@ const LoginScreen = ({ navigation }) => {
         onSubmitEditing={handleLogin}
         onChangeText={(text) => setPassword(text)}
       />
+      <View style={styles.rememberMeContainer}>
+        <Text style={styles.rememberMeText}>Remember Me</Text>
+        <Switch value={rememberMe} onValueChange={setRememberMe} />
+      </View>
       <Pressable onPress={handleLogin} id="pressable-login" style={[globalStyles.button, styles.button]}>
         <Text style={globalStyles.buttonText}>Login</Text>
       </Pressable>
@@ -186,6 +211,14 @@ const styles = StyleSheet.create({
     width: 200,
     padding: 10,
     margin: 2,
+  },
+  rememberMeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  rememberMeText: {
+    marginRight: 10,
   },
   button: {
     margin: 0,
