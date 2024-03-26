@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Text, View, Pressable } from 'react-native';
 
-import { Camera, useCameraDevice, useFrameProcessor } from 'react-native-vision-camera';
+import { Camera, runAtTargetFps, useCameraDevice, useFrameProcessor } from 'react-native-vision-camera';
 import { detectFaces } from 'react-native-vision-camera-face-detector'
 import { Worklets } from 'react-native-worklets-core'
 
@@ -17,8 +17,10 @@ export function CameraYes({handleFaces, cameraRef}) {
     
     const frameProcessor = useFrameProcessor((frame) => {
         'worklet'
-        // console.log(`${logTag}Running face detector!` + new Date());
-        detectFaces(frame, handleFacesDetection, {/* detection settings*/});
+        runAtTargetFps(10, () => {
+            'worklet'
+            detectFaces(frame, handleFacesDetection, {/* detection settings*/});
+        })
     }, [handleFacesDetection]);
   
     console.log(logTag + Camera.getAvailableCameraDevices());
