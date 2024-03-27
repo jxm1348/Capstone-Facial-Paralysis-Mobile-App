@@ -191,11 +191,9 @@ const registerNotificationsServer = async () => {
     
     let tokenResult = undefined;
     try {
-        tokenResult = await Notifications.getExpoPushTokenAsync({
-            projectId: easProjectId,
-        });
+        tokenResult = await Notifications.getDevicePushTokenAsync();
     } catch (error) {
-        console.error(notificationTag, 'Error on getExpoPushToken', error);
+        console.error(notificationTag, 'Error on getDevicePushTokenAsync', error);
         throw error;
     }
     
