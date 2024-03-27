@@ -6,7 +6,6 @@ import { Platform } from 'react-native';
 
 import * as Notifications from 'expo-notifications'; // Documented https://docs.expo.dev/versions/latest/sdk/notifications/
 import * as Device from 'expo-device';
-import Constants from 'expo-constants';
 
 import { initializeApp, getApp, getApps } from 'firebase/app';
 import { deleteObject, getStorage, list, ref, uploadBytes } from 'firebase/storage';
@@ -18,6 +17,7 @@ import {
     and, where, runTransaction, getDoc,
 } from 'firebase/firestore';
 import authConfig from './stateAuthConfig';
+import { easProjectId } from './constants';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -152,6 +152,8 @@ export const fetchUnreadCount = async () => {
     return messagesSnapshot.docs.length;
 }
 
+const notificationTag = '98a474800c61 ';
+
 const registerPushToken = async (pushToken) => {
     const idToken = await auth.currentUser.getIdToken();
     const params = new URLSearchParams({token: idToken});
@@ -161,12 +163,14 @@ const registerPushToken = async (pushToken) => {
       body: JSON.stringify(pushToken),
     });
 
-    console.log('Push notifications result status: ', result.status);
-    console.log('Push notifications result body: ', await result.text());
+    console.log(notificationTag, 'Push notifications result status: ', result.status);
+    console.log(notificationTag, 'Push notifications result body: ', await result.text());
 }
 
 const registerNotificationsServer = async () => {
+    console.log(notificationTag, 'Start of registerNotificationsServer');
     if (Platform.OS === 'android') {
+        console.log(notificationTag, 'Platform android');
         Notifications.setNotificationChannelAsync('default', {
             name: 'default',
             importance: Notifications.AndroidImportance.MAX,
@@ -174,19 +178,28 @@ const registerNotificationsServer = async () => {
             lightColor: '#FF231F7C',
         });
     }
+    console.log(notificationTag, 'After platform android');
 
     const permissionsQuietResult = await Notifications.getPermissionsAsync();
     if (permissionsQuietResult.status !== 'granted') {
         const permissionsAskResult = await Notifications.requestPermissionsAsync();
+        console.log(notificationTag, 'Ask result is', JSON.stringify(permissionsAskResult));
         if (permissionsAskResult.status !== 'granted') return;
         // Should do something to remember the choice so we don't pester the user every time they log in
     }
+    console.log(notificationTag, 'After getPermiissionasync, quetresult is ', JSON.stringify(permissionsQuietResult));
     
-    const tokenResult = await Notifications.getExpoPushTokenAsync({
-        projectId: Constants.expoConfig.extra.eas.projectId,
-    });
+    let tokenResult = undefined;
+    try {
+        tokenResult = await Notifications.getExpoPushTokenAsync({
+            projectId: easProjectId,
+        });
+    } catch (error) {
+        console.error(notificationTag, 'Error on getExpoPushToken', error);
+        throw error;
+    }
     
-    console.log('Registering pushToken', tokenResult.data);
+    console.log(notificationTag, 'Registering pushToken', tokenResult.data);
     await registerPushToken(tokenResult.data);
 }
 
@@ -198,7 +211,7 @@ const registerNotificationsLocal = () => {
         shouldSetBadge: false,
         }),
     });
-    console.log("Have set notifications handler");
+    console.log(notificationTag, "Have set notifications handler");
 }
 
 export const login = async (email, password) => {
