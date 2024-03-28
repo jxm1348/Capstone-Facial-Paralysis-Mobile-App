@@ -17,7 +17,6 @@ import {
     and, where, runTransaction, getDoc,
 } from 'firebase/firestore';
 import authConfig from './stateAuthConfig';
-import { easProjectId } from './constants';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -203,11 +202,31 @@ const registerNotificationsServer = async () => {
 
 const registerNotificationsLocal = () => {
     Notifications.setNotificationHandler({
-        handleNotification: () => ({
-        shouldShowAlert: true,
-        shouldPlaySound: true,
-        shouldSetBadge: false,
-        }),
+        handleNotification: (notification) => {
+            try {
+                console.log('Handling notification', JSON.stringify(notification));
+                const message = notification.request?.trigger?.remoteMessage?.notification?.body;
+                if (message) {
+                    console.log('Rescheduling notification so it has the correct body.');
+                    const result = Notifications.scheduleNotificationAsync({
+                        content: {
+                          body: message,
+                        },
+                        trigger: null,
+                    });
+                    result.then(thing => console.log(thing)).catch(error => console.error(error));
+                    return {};
+                } else {
+                    return {
+                        shouldShowAlert: true,
+                        shouldPlaySound: true,
+                        shouldSetBadge: false,
+                    };
+                };
+            } catch (error) {
+                console.error(error);
+            }
+        },
     });
     console.log(notificationTag, "Have set notifications handler");
 }
